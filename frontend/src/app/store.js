@@ -1,8 +1,10 @@
-import { configureStore } from '@reduxjs/toolkit'
-import counterReducer from '../features/form/formSlice'
+import { configureStore } from '@reduxjs/toolkit';
+import TextInputReducer from '../features/form/formTextInputSlice';
+import DateinputReducer from '../features/form/formDateInputSlice';
 
 export default configureStore({
   reducer: {
-    field: counterReducer,
+    TextInputFields: TextInputReducer,
+    DateinputFields: DateinputReducer,
   },
 })

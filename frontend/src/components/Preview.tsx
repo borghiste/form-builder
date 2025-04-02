@@ -20,36 +20,54 @@ import Selection from '../components/UI/Selection';
 import RadioGroupComponent from './UI/RadioGroupComponent';
 import TextInput from './UI/TextInput';
 import Dateinput from './UI/Dateinput';
-import {removeTextInput, selectField} from '../features/form/formSlice';
+import {removeTextInput, selectTextInputFields} from '../features/form/formTextInputSlice';
+
 import {useSelector, useDispatch} from 'react-redux';
+import { selectDateInputFields } from '../features/form/formDateInputSlice';
 export default function Preview(){
 
-      const field = useSelector(selectField);
+       const TextInputFields = useSelector(selectTextInputFields);
+       const DateinputFields = useSelector(selectDateInputFields);
+
+     
       const dispatch = useDispatch();
      
     return(
         <>
        <Box>
+        <h1 className='text-5xl'>Preview</h1>
 
-    <form className='flex flex-col justify-between' onSubmit={(e)=>e.preventDefault()}>
-
+     <form className='flex flex-col justify-between' onSubmit={(e)=>{e.preventDefault()}} >
+    
 
 
 
  
   
 <fieldset className=' bg-white border-2 flex flex-col'>
-  {/* <InputLabel>Form title</InputLabel>
+   <InputLabel>Form title</InputLabel>
   <TextField></TextField>
-        <h2 className='text-3xl'>form title</h2> */}
-      {field.map((el)=>(
+        <h2 className='text-3xl'>form title</h2> 
+       {TextInputFields.map((el)=>(
             <Box key={el}>
 
-      <TextInput  label={el.label}/>
+      <TextInput  label={el.label} length={el.length}  required={el.required} />
       <DeleteButton onClick={()=>{dispatch(removeTextInput(el))}}/>
             </Box>
       ))
+      } 
+
+      {
+            DateinputFields.map((el)=>(
+                  <Box key={el}>
+                        
+                        <Dateinput label={el.label} />
+                  </Box>
+            ))
+ 
       }
+
+  
   
 
 
@@ -85,9 +103,9 @@ export default function Preview(){
 
 
       </fieldset>
+<Button type='submit' size='large'>Save</Button>
       </form>
      
-<Button type='submit' size='large'>Save</Button>
 
 
       </Box>

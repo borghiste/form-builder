@@ -3,13 +3,13 @@ import InputLabel from '@mui/material/InputLabel';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
-export default function Dateinput(){
+export default function Dateinput({label}){
     return(
         <>
-        <InputLabel> datalabel</InputLabel>
+        <InputLabel> {label}</InputLabel>
      <LocalizationProvider dateAdapter={AdapterDayjs}>
       
-      <DateField label="data field"/>
+      <DateField label="date field"/>
   
       </LocalizationProvider> 
         </>
