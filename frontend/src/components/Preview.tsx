@@ -1,9 +1,10 @@
-import React from 'react';
-
+import React, { useState } from 'react';
+import { useRef } from 'react';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import { DateField } from '@mui/x-date-pickers/DateField';
+// MUI components
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DateField } from '@mui/x-date-pickers/DateField';
 import { Button, FormControl, TextField } from '@mui/material';
 import Input from '@mui/material';
 import Select from '@mui/material/Select';
@@ -14,58 +15,113 @@ import TextareaAutosize from '@mui/material/TextareaAutosize';
  import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
-import Chip from '@mui/material/Chip';
+
 import DeleteButton from './UI/DeleteButton';
 import Selection from '../components/UI/Selection';
 import RadioGroupComponent from './UI/RadioGroupComponent';
 import TextInput from './UI/TextInput';
-import Dateinput from './UI/Dateinput';
+import EditIcon from '@mui/icons-material/Edit';
+import Dateinput from '../components/UI/Dateinput';
+
+
+// reducers
 import {removeTextInput, selectTextInputFields} from '../features/form/formTextInputSlice';
+import {selectDateInputFields} from '../features/form/formDateInputSlice';
 
 import {useSelector, useDispatch} from 'react-redux';
-import { selectDateInputFields } from '../features/form/formDateInputSlice';
+
 export default function Preview(){
+
+      const titleRef = useRef('');
+
+      const [titleForm, titleFormisSet] = useState(false);
+
+      const [titleFormValue, setTitleFormValue ] = useState('')
 
        const TextInputFields = useSelector(selectTextInputFields);
        const DateinputFields = useSelector(selectDateInputFields);
 
      
       const dispatch = useDispatch();
+
+
+
+      // handle  form title
+            function handleTitleForm(e){
+                
+                  setTitleFormValue(titleRef.current.value)
+                  
+            if(e === 'Enter'){
+                  titleFormisSet(!titleForm)
+            }
+            }
+
      
     return(
+
         <>
        <Box>
-        <h1 className='text-5xl'>Preview</h1>
-
-     <form className='flex flex-col justify-between' onSubmit={(e)=>{e.preventDefault()}} >
+        <h2 className='text-5xl'>Preview</h2>
+       <form className='flex flex-col justify-between' onSubmit={(e)=>{e.preventDefault()}} >
     
-
+      
 
 
  
   
-<fieldset className=' bg-white border-2 flex flex-col'>
-   <InputLabel>Form title</InputLabel>
-  <TextField></TextField>
-        <h2 className='text-3xl'>form title</h2> 
-       {TextInputFields.map((el)=>(
+<fieldset className=' bg-white border-2 flex flex-col min-w-full'>
+
+   <InputLabel sx={{color:'black'}}>Form title:</InputLabel>
+
+
+      {titleForm && titleRef.current.value ? <Box>
+      <h3 className='text-3xl'>{titleRef.current.value}</h3>   
+
+                  <Button onClick={()=>{titleFormisSet(!titleForm)}}>
+
+             <EditIcon/> 
+                  </Button>
+      </Box> :   <TextField inputRef={titleRef} type='text' onKeyDown={(e)=>{handleTitleForm(e.key)}} defaultValue={titleFormValue}/>
+
+  }
+
+   
+        
+
+
+
+
+
+
+
+       {
+       TextInputFields.map((el)=>(
             <Box key={el}>
 
       <TextInput  label={el.label} length={el.length}  required={el.required} />
       <DeleteButton onClick={()=>{dispatch(removeTextInput(el))}}/>
             </Box>
       ))
-      } 
-
+      
+}
       {
-            DateinputFields.map((el)=>(
-                  <Box key={el}>
-                        
-                        <Dateinput label={el.label} />
-                  </Box>
-            ))
- 
+
+      DateinputFields.map((el)=> (
+            <Box key={el}>
+                  <Dateinput label={el.label}/>
+                  <DeleteButton/>
+            </Box>
+      )
+      )
       }
+
+
+
+
+
+
+<input value={'2025-02-03'} type='date'/>
+
 
   
   
@@ -79,15 +135,10 @@ export default function Preview(){
     
 
 
-<Box display={'flex'}>
+
 
 
 <RadioGroupComponent/>
-<DeleteButton/>
-</Box>
-  <Dateinput/>  
-
-
 
 
   <InputLabel>label</InputLabel>
@@ -108,10 +159,7 @@ export default function Preview(){
      
 
 
-      </Box>
-
-
-
+</Box>
         </>
     )
 }

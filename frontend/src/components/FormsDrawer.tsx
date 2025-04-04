@@ -35,8 +35,8 @@ export default function FormsDrawer() {
         <Button>
 
       <ListItemIcon className='text-6xl'>
-
-      <ArrowCircleLeftIcon/>
+      <ArrowCircleRightIcon/>
+      
   </ListItemIcon>
         </Button>
       </List>
@@ -62,16 +62,16 @@ export default function FormsDrawer() {
   );
 
   return (
-    <div className='' >
+    <div className='ms-auto ' >
       <Button variant='outlined' onClick={toggleDrawer(true)} className=''>
         <ListItemIcon className='text-6xl'>
 
-        <ArrowCircleRightIcon/>
+        <ArrowCircleLeftIcon/>
         </ListItemIcon>
       
 
       </Button>
-      <Drawer open={open} onClose={toggleDrawer(false)}>
+      <Drawer  anchor='right' open={open} onClose={toggleDrawer(false)}>
         {DrawerList}
       </Drawer>
     </div>

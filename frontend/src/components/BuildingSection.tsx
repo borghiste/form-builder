@@ -5,8 +5,11 @@ import  Button  from "@mui/material/Button";
 
 import SimpleButton from "./UI/SimpleButton";
 import TextInputBox from "./buildingComponents/TextInputBox";
+import DateinputBox from "./buildingComponents/DateInputBox";
+import SelectionBox from "./buildingComponents/SelectionBox";
 import { useDispatch, useSelector } from "react-redux";
 import { addTextInput } from "../features/form/formTextInputSlice";
+
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -31,16 +34,17 @@ export default function BuildingSection(){
         
         return(
             <div className=' 
-            overflow-hidden  text-3xl flex flex-col'>
+            overflow-hidden  text-5xl flex flex-col'>
    <h1>building</h1>
 
 
-        
 
-
-
-  <TextInputBox isRequired={isRequired} maxLengthRef={maxLengthRef}  InputLabelRef={InputLabelRef} setisRequired={setisRequired}/> 
+  <TextInputBox isRequired={isRequired} maxLengthRef={maxLengthRef} InputLabelRef={InputLabelRef} setisRequired={setisRequired}/> 
     
+
+<DateinputBox />
+
+<SelectionBox/>
 
 
     {/* <SimpleButton text={'date'} startIcon={<DateRangeIcon/>} />

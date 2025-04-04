@@ -12,8 +12,18 @@ export const DateinputSlice = createSlice({
                 }
         ],
     },
+    reducers:{
+            addDateInput:(state)=>{
+                const newobj = {
+                    id: 3,
+                    label:'test3'
+                }
+                {state.value.push(newobj);}
+            }
+    }
 })
 
+export const {addDateInput} = DateinputSlice.actions
 
 export const selectDateInputFields = (state) => state.DateinputFields.value
 

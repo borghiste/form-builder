@@ -17,18 +17,23 @@ export default function App(){
 
     return(
 
+
+      <>
      
 
 
-      <div className='flex flex-col sm:flex-row'>
-         <FormsDrawer/> 
-    
+<header className='w-full flex justify-end'>
 
+         <FormsDrawer/> 
+</header>
+      <main className='flex flex-col sm:flex-row sm:justify-center'>
+    
 
       <BuildingSection/>
       <Preview/>
-      </div>
+      </main>
 
+      </>
     
     )    
 }
