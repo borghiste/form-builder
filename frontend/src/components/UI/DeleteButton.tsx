@@ -19,7 +19,7 @@ export default function DeleteButton({onClick}){
         color="warning"
         variant="outlined"
         onClick={onClick}/>
-        <DeleteIcon color="error"/>
+        
     </div>
 )
 }

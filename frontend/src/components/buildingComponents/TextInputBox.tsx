@@ -10,6 +10,7 @@ import SimpleButton from "../UI/SimpleButton";
 
 //hooks
 import { useDispatch } from "react-redux";
+import { useRef, useState } from 'react';
 
 
 // reducers
@@ -17,16 +18,22 @@ import { addTextInput } from "../../features/form/formTextInputSlice";
 
 import { nanoid } from '@reduxjs/toolkit';
 
-// contain the component that allows user to add text input fields to the form and its logic
+// contains the component that allows user to add text input fields to the form, its logic and states
 
-export default function TextInputBox({isRequired, setisRequired, InputLabelRef, maxLengthRef}){
+export default function TextInputBox(){
+
+    const InputLabelRef = useRef();
+
+    const maxLengthRef = useRef();
+
+    const[ isRequired, setisRequired] = useState(false);
 
     const dispatch = useDispatch();
 
     return(
         <>
         <h3>text section</h3>
-        <Box className={'border-1 '}>
+        <Box className={'border-1 w-min '}>
 
     <div className="flex text-xl ">
         <InputLabel sx={{color:'black'}} >LABEL NAME:</InputLabel>

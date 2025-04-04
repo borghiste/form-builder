@@ -23,26 +23,32 @@ import { InputLabel } from "@mui/material";
 import { nanoid } from "@reduxjs/toolkit";
 
 export default function BuildingSection(){
+
     const dispatch = useDispatch();
 
+    // TEXT FIELD STATES AND REFS
         const InputLabelRef = useRef();
 
         const maxLengthRef = useRef();
 
-        const[ isRequired, setisRequired] = useState(false)
+        const[ isRequired, setisRequired] = useState(false);
+
+        // DATE FIELDS STATES AND REFS
+
+       
         
         
         return(
-            <div className=' 
+            <div className=' w-1/2
             overflow-hidden  text-5xl flex flex-col'>
    <h1>building</h1>
 
 
 
-  <TextInputBox isRequired={isRequired} maxLengthRef={maxLengthRef} InputLabelRef={InputLabelRef} setisRequired={setisRequired}/> 
+  <TextInputBox/> 
     
 
-<DateinputBox />
+<DateinputBox/>
 
 <SelectionBox/>
 

@@ -24,19 +24,30 @@ import EditIcon from '@mui/icons-material/Edit';
 import Dateinput from '../components/UI/Dateinput';
 
 
-// reducers
+// text reducers
 import {removeTextInput, selectTextInputFields} from '../features/form/formTextInputSlice';
 import {selectDateInputFields} from '../features/form/formDateInputSlice';
+
+// date reducers
+
+ import {removeDateInput } from '../features/form/formDateInputSlice';
 
 import {useSelector, useDispatch} from 'react-redux';
 
 export default function Preview(){
 
+
+      //  SET FORM TITLE STATES
       const titleRef = useRef('');
 
+
+      //SET THE PREVIEW VALUE OF THE FORM TITLE INPUT
       const [titleForm, titleFormisSet] = useState(false);
 
       const [titleFormValue, setTitleFormValue ] = useState('')
+
+
+     
 
        const TextInputFields = useSelector(selectTextInputFields);
        const DateinputFields = useSelector(selectDateInputFields);
@@ -69,7 +80,7 @@ export default function Preview(){
 
  
   
-<fieldset className=' bg-white border-2 flex flex-col min-w-full'>
+<fieldset className=' bg-white border-2 flex flex-col w-full'>
 
    <InputLabel sx={{color:'black'}}>Form title:</InputLabel>
 
@@ -91,12 +102,12 @@ export default function Preview(){
 
 
 
-
+      {/* TEXT FIELDS */}
 
 
        {
-       TextInputFields.map((el)=>(
-            <Box key={el}>
+             TextInputFields.map((el)=>(
+                   <Box key={el.id}>
 
       <TextInput  label={el.label} length={el.length}  required={el.required} />
       <DeleteButton onClick={()=>{dispatch(removeTextInput(el))}}/>
@@ -104,12 +115,13 @@ export default function Preview(){
       ))
       
 }
+      {/* DATE FIELDS */}
       {
 
-      DateinputFields.map((el)=> (
-            <Box key={el}>
-                  <Dateinput label={el.label}/>
-                  <DeleteButton/>
+      DateinputFields.map((el, index)=> (
+            <Box key={el.id} className={'my-3'}>
+                  <Dateinput label={el.label} required={el.required} minDate={el.minDate}/>
+                  <DeleteButton onClick={()=> {dispatch(removeDateInput(el))}}/>
             </Box>
       )
       )
@@ -120,7 +132,7 @@ export default function Preview(){
 
 
 
-<input value={'2025-02-03'} type='date'/>
+
 
 
   

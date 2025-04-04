@@ -8,13 +8,21 @@ import DateRangeIcon from '@mui/icons-material/DateRange';
 
 import SimpleButton from "../UI/SimpleButton";
 
-import { addDateInput } from '../../features/form/formDateInputSlice';
+import { addDateInput, removeDateInput } from '../../features/form/formDateInputSlice';
 import { useDispatch } from "react-redux";
+import { useRef, useState } from "react";
+import { nanoid } from "@reduxjs/toolkit";
 
 
-// contain the component that allows user to add date input fields to the form and its logic
+// contain the component that allows user to add date input fields to the form 
 export default function DateinputBox(){
     const dispatch = useDispatch();
+    const [isRequired, setisRequired] = useState(false);
+    const minDateRef = useRef();
+    const maxDateRef = useRef();
+
+
+
     return(
 
 <Box className={'border-1'}>
@@ -32,21 +40,27 @@ export default function DateinputBox(){
     <div className="flex text-xl">
 
 <InputLabel sx={{color:'black'}}>min:</InputLabel>
-<input type="date" className="text-sm"/>
-    </div><div className="flex text-xl">
+<input type="date" className="text-sm" ref={minDateRef} />
+    </div>
+    
+    <div className="flex text-xl">
 
 <InputLabel sx={{color:'black'}}>max:</InputLabel>
-<input type="date" className="text-sm" />
+<input type="date" className="text-sm"  ref={maxDateRef}/>
     </div>
 
     <div className="flex items-center">
 
 <InputLabel sx={{color:'black'}}>REQUIRED FIELD
 </InputLabel>
-<Switch/>
+<Switch onChange={()=>{setisRequired(!isRequired)}}/>
 </div>
 
-<SimpleButton text={'ADD DATE FIELD'} color={'grey'} startIcon={<DateRangeIcon/>} onClick={()=>{dispatch(addDateInput())}} />
+<SimpleButton text={'ADD DATE FIELD'} color={'grey'} startIcon={<DateRangeIcon/>} onClick={()=>{dispatch(addDateInput({
+    id: nanoid(),
+    min: minDateRef.current.value,
+    max: maxDateRef.current.value,
+    required: isRequired}))}}/>
    
 
 
@@ -55,15 +69,6 @@ export default function DateinputBox(){
 
 
 
-    //     <p>
-    //     date costructor:
-    //     label
-    //     value
-    //     min
-    //     max 
-
    
-    //         </p>
-    // 
     )
 }
