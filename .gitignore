@@ -8,6 +8,9 @@
 # Node modules 
 /frontend/node_modules/
 
+# NOTES
+/frontend/NOTES
+
 # Build output
 /frontend/build/
 frontend/dist/
