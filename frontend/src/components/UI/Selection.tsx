@@ -4,7 +4,7 @@ import InputLabel from "@mui/material/InputLabel";
 import { useState } from "react";
 import { FormControl } from "@mui/material";
 
-export default function Slection({ label, id, items }) {
+export default function Slection({ label, id, items, onChange }) {
   const [selected, setSelected] = useState("");
 
 
@@ -17,6 +17,7 @@ export default function Slection({ label, id, items }) {
         id={id}
         value={selected}
         label={label}
+        onChange={onChange}
        
       >
         {items?.map((option) => (

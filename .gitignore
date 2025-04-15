@@ -9,7 +9,7 @@
 /frontend/node_modules/
 
 # NOTES
-/frontend/NOTES
+/frontend/notes.md
 
 # Build output
 /frontend/build/

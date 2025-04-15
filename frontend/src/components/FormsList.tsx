@@ -25,7 +25,7 @@ export default function formsList(){
 
 
 
-    const forms =[ {name: 'form1',
+    const forms =[ {name: 'form name1',
         fields: 5},
 
          {name: 'form2',
@@ -41,41 +41,40 @@ export default function formsList(){
 
 <Container disableGutters={true} component={'div'} className=''>
 
-<List className='h-screen w-full overflow-auto '>
-    <ListItem sx={{display:'flex'}}>
-        <ListItemText  sx={{font:'bold'}} primary='Form Name'/>
+<List className='h-full w-full overflow-auto ' sx={{zIndex:10}}>
+    <ListItem>
+        <ListItemText  sx={{font:'bold', display:'flex', justifyContent:'center'}} primary='Form Name'/>
             
       
 
 
-        <ListItemText className='font-bold' sx={{font:'bold'}} primary='Created time'/>
+        <ListItemText className='font-bold' sx={{font:'bold', display:'flex', justifyContent:'center'}} primary='Created time'/>
          
         
 
 
-        <ListItemText className='font-bold text-light-gray' sx={{font:'bold'}}>
-           Updated time 
-        </ListItemText>
+        <ListItemText className='font-bold text-light-gray' sx={{font:'bold', display:'flex', justifyContent:'center'}} primary='updated time'/>
+       
        
         <SimpleButton text={' + NEW FORM'} variant={'contained'} color={'gray.light'} textColor={'black'}/>
     </ListItem>
     <Divider/>
 
     {forms.map((form)=> (
-        <ListItem key={form.name} sx={{padding:0, display:'flex', justifyContent:'center'}} className='w-full '>
-<ListItemText >{form.name}</ListItemText>
+        <ListItem key={form.name}className='w-full '>
+<ListItemText sx={{display:'flex', justifyContent:'center'}}>{form.name}</ListItemText>
 
-<ListItemText className='font-bold text-white' sx={{font:'bold'}} primary='yyyy-mm-dd'/>
+<ListItemText className='font-bold' sx={{font:'bold', display:'flex', justifyContent:'center'}} primary='yyyy-mm-dd'/>
           
      
 
-        <ListItemText className='font-bold text-white' sx={{font:'bold'}} primary='yyyy-mm-dd'/>
+        <ListItemText primary='yyyy-mm-dd' sx={{display:'flex', justifyContent:'center'}}/>
         
         
-        <>
+        <Box sx={{display:'flex', justifyContent:'center'}}>
          <SimpleButton text={'edit'} color={''}  />
         <SimpleButton text={'delete'} color={'magenta.dark'} textColor={'black'} />   
-        </>
+        </Box>
        
  
 </ListItem>

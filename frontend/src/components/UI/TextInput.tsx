@@ -7,7 +7,7 @@ export default function TextInput({label, length, required, placeholder}){
         <FormControl sx={{bgcolor:'background'}}>
 
 
-        <FormLabel className='text-sm ' sx={{color:'black'}}>{label}
+        <FormLabel className='text-sm ' sx={{color:'text.primary'}}>{label}
         </FormLabel >
         <TextField size='medium' 
         slotProps={{htmlInput:{maxLength:`${length

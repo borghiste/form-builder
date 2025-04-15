@@ -10,10 +10,10 @@ import Paper from '@mui/material/Paper';
 import Switch from '@mui/material/Switch';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 
-
+import { useState } from 'react';
 import Selection from '../../UI/Selection';
 import SimpleButton from '../../UI/SimpleButton';
-import { TextField } from '@mui/material';
+import { TextField, Typography } from '@mui/material';
 
 import { DateField } from '@mui/x-date-pickers/DateField';
 
@@ -22,21 +22,31 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 export default function AddFieldsSection() {
   const types = ['text','number'];
 
+  const [selectedType, setSelectedType] = useState()
+
   return (
-    <div className="w-full text-light-gray">
-      <h3 className="text-2xl">Form Fields</h3>
-      <Selection label={'select field type'} items={types} />
+    <div className="w-full h-full text-gray">
+      <Typography component={'h4'} sx={{fontSize:20}}>Form Fields</Typography>
+      <Selection label={'select field type'} items={types} 
+      onChange={(e)=>{setSelectedType(e.target.value as string)}}/>
 
       <TableContainer>
         <Table sx={{ minWidth: 260 }} aria-label="field type and properties table">
+          
           <TableHead>
+              
             <TableRow >
               <TableCell   colSpan={2}>Set the properties for the field</TableCell>
             </TableRow>
           </TableHead>
 
           <TableBody>
+           
+              
             <TableRow>
+
+           
+             
               <TableCell size="small">Label Name:</TableCell>
               <TableCell align="center">
                 <TextField label={'insert label name'} size="small" fullWidth />
@@ -50,7 +60,7 @@ export default function AddFieldsSection() {
                 </TableCell>
 
                 <TableCell>
-                    <TextField type='number' />
+                    <TextField type='number' sx={{width:90}} />
                 </TableCell>
             </TableRow>
 
@@ -58,7 +68,7 @@ export default function AddFieldsSection() {
             <TableCell>
                 is Required:
             </TableCell>
-
+           
             <TableCell>
                 no<Switch/>yes
             </TableCell>
