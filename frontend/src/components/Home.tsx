@@ -5,7 +5,8 @@ import SimpleButton from "./UI/SimpleButton";
 export default function Home(){
 
     return(
-        <Box className="h-full flex flex-col justify-center items-center w-full">
+        <Box className="h-max flex flex-col justify-center items-center w-full"
+        sx={{minHeight:'100vh'}}>
            <br />
       <Typography variant="h1" sx={{color:'text.primary'}}>
         home

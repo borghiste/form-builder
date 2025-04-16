@@ -14,7 +14,7 @@ export default function Layout({children, mode, SetMode}){
 
     return(
      
-        <Box className={"h-screen  "} sx={{bgcolor: 'background.default'}}>
+        <Box   sx={{bgcolor: 'background.default', height:'100svh'}}>
         <Header mode={mode} setMode={SetMode}/>
         {children}
         <Footer/>

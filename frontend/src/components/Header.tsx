@@ -24,9 +24,9 @@ export default function Header({mode, setMode}){
         
 
             </Box>
-            <Divider/>
 
         </header>
+            <Divider/>
         </>
     )
 }

@@ -3,25 +3,25 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
+
 import ListItemText from '@mui/material/ListItemText';
-import Divider from '@mui/material/Divider';
-import EditIcon from '@mui/icons-material/Inbox';
+import { Outlet } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import SimpleButton from './UI/SimpleButton';
 
 // MUI
 import { Container, InputLabel, TableContainer } from '@mui/material';
-import SimpleButton from './UI/SimpleButton';
-import { Outlet } from 'react-router-dom';
-import { ThemeProvider } from '@mui/material';
+import ListItem from '@mui/material/ListItem';
+import Divider from '@mui/material/Divider';
+
 
 
 
   
 
-export default function formsList(){
+export default function FormsList(){
      
+    
 
 
 
@@ -37,15 +37,15 @@ export default function formsList(){
             ]
 
     return(
+        <>
       
 
-<Container disableGutters={true} component={'div'} className=''>
+<Container disableGutters={true} component={'div'} className='h-full'>
 
-<List className='h-full w-full overflow-auto ' sx={{zIndex:10}}>
+<List className=' w-full ' sx={{zIndex:10}}>
     <ListItem>
         <ListItemText  sx={{font:'bold', display:'flex', justifyContent:'center'}} primary='Form Name'/>
             
-      
 
 
         <ListItemText className='font-bold' sx={{font:'bold', display:'flex', justifyContent:'center'}} primary='Created time'/>
@@ -85,10 +85,15 @@ export default function formsList(){
 }
 <Divider/>
 </List>
+
+
 <Outlet/>
+
 </Container>
 
 
+
+</>
 
   )
 }

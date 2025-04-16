@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import AddFieldsPanel from '../Modal/AddFieldsPanel';
 import Preview from '../Modal/Preview';
 //MUI
@@ -16,34 +17,38 @@ const style = {
   left: '50%',
   transform: 'translate(-50%, -50%)',
   
-  heigth: 800,
+
   bgcolor: 'background.paper',
  paddingTop: 8,
   boxShadow: 24,
   display:'flex',
   overflow:'clip',
   justifyContent:'center',
-  flexDirection: 'column'
+  flexDirection: 'column',
+  maxHeigth: 800,
+  
   
   
 };
 
-export default function ModalBuilder() {
+export default function ModalBuilder({open, setOpen}) {
 
-
+  const navigate = useNavigate();
 
   return (
     <div>
       
       <Modal
+        onClose={()=>{setOpen(false); navigate('/login/forms')}}
+        open={open}
         
         open={true}
-        sx={{ display:'flex'}}
+        sx={{ display:'flex', minHeight:400, overflow:'scroll'}}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
         <Container sx={style}>
-          <Typography id="-modal-title" variant="h6" component="h2">
+          <Typography id="-modal-title" variant="h3" component="h3">
             Edit Form
           </Typography>
           <Divider/>

@@ -24,6 +24,11 @@ export default function App(){
 
 const [ darkMode, setDarkMode] = useState(false);
 
+const [modalOpen, setModalOpen] = useState(true)
+
+const handleModalOpen = () => setModalOpen(true)
+const handleModalClose = () =>  setModalOpen(false)
+
     return(
 
 
@@ -37,10 +42,10 @@ const [ darkMode, setDarkMode] = useState(false);
 
      <Routes>
       <Route path='/' element={<Home/>}/>
-      <Route path='admin' element={<Login/>}/>
-      <Route path='admin/forms' element={<FormsList/>}>
+      <Route path='login' element={<Login/>}/>
+      <Route path='login/forms' element={<FormsList/>}>
 
-      <Route path='new' element={<ModalBuilder/>}/>
+      <Route path='new' element={ modalOpen ? <ModalBuilder open={modalOpen} setOpen={setModalOpen}/> : null}/>
       </Route>
 
 
