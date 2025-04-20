@@ -1,0 +1,11 @@
+# FRONTEND
+
+# macOS
+.DS_Store
+
+
+# FRONTEND
+
+
+# Node modules 
+/frontend/node_modules/

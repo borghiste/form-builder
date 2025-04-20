@@ -1,0 +1,40 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "The front-end is a single page application showing the list of forms (Use the title provided by the APIs).   Clicking on a form should show the form and allow the user to submit a new entry, applying the validations specified in the back-office.   The form should be validated on the front-end, and the errors should be shown to the user.   The form should be submitted via AJAX, and the response should be shown to the user.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "tailwindcss": "tailwindcss"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@fontsource/roboto": "^5.1.1",
+    "@mui/icons-material": "^7.0.0",
+    "@mui/material": "^7.0.0",
+    "@mui/x-date-pickers": "^7.28.0",
+    "@reduxjs/toolkit": "^2.6.1",
+    "@tailwindcss/vite": "^4.1.3",
+    "dayjs": "^1.11.13",
+    "node": "^23.11.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-redux": "^9.2.0",
+    "tailwindcss": "^4.1.3"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.3",
+    "react-router-dom": "^7.5.0",
+    "vite": "^6.2.6"
+  }
+}
