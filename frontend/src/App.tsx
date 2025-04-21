@@ -5,13 +5,14 @@ import Layout from './components/Layout';
 export default function App(){
     return(
         
-        <BrowserRouter>
-            <Layout>
+        
+         <BrowserRouter>
+             <Layout>
 
-        <Routes>
+         <Routes>
 
-        </Routes>
-            </Layout>
-        </BrowserRouter>
+         </Routes>
+             </Layout>
+         </BrowserRouter>
     )
 }

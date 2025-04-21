@@ -1,32 +1,43 @@
-import { Box, Switch } from "@mui/material";
 
+import React from 'react';
+//MUI
+import { Box, Switch, Divider } from '@mui/material';
+import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 
+// COMPONENTS
+import BasicButton from '../UI/BasicButton';
 export default function Header(){
 
     return(
         <>
-          <header className="flex justify-end">
+        <Box component={'header'} sx={{display:'flex', justifyContent:'space-between'}} className="flex items-center justify-between">
     
 
-    <Box component={'div'} display={'flex'} sx={{justifyItems:'center'}} >
-    <Button text={'Log in'} variant={'text'} href={'/admin'}/>
-    
+                <img src='/assets/images/logo.jpg' height={75} width={75}/>
 
-    <Box  component={'span'} className='flex'>
-
-    <LightModeIcon />
-
-    <Switch />
-
-    <DarkModeIcon />
-    </Box>
+            <Box component={'nav'} display={'flex'} sx={{ display:'inline-block'}} >
 
 
-    </Box>
+            <BasicButton text={'home'} href={'/'}/>
+            <BasicButton text={'Log in'} variant={'text'} />
+            
 
-</header>
-    <Divider/>
+        
+
+            </Box>
+
+            <Box  component={'span'} className='flex'>
+
+            <LightModeIcon />
+
+            <Switch  color='primary' />
+
+            <DarkModeIcon color='text.primary'/>
+            </Box>
+
+        </Box>
+            <Divider/>
         </>
     )
 }
