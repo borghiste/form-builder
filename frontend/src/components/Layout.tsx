@@ -4,13 +4,14 @@ import { Box } from '@mui/material';
 
 // COMPONENTS
 import Header from './UI/Header';
+import Footer from './UI/Footer';
 export default function Layout({children}){
 
     return(
         <Box   sx={{bgcolor: 'background.default', height:'100svh'}}>
         <Header/>
         {children}
-        <footer/>
+        <Footer/>
         </Box>
     )
 }
