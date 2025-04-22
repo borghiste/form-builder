@@ -7,8 +7,8 @@ export const themeSlice = createSlice({
         value: false,
     },
     reducers: {
-        switchToDarkMode: (state) => {state.value = true},
-        switchtoLightMode: (state) => {state.value = false},
+        switchToDarkMode: (state, action) => {state.value = action.payload},
+       
     },
 
 })

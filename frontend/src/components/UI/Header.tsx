@@ -8,7 +8,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 
 // REDUX
 
-import { switchToDarkMode, switchtoLightMode } from '../../features/themeSlice';
+import { switchToDarkMode } from '../../features/themeSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectMode } from '../../features/themeSlice';
 
@@ -41,11 +41,11 @@ export default function Header(){
 
             <Box  component={'span'} className='flex'>
 
-            <LightModeIcon color={darkModeIsOn ? 'text.primary' : 'cyan.main'} />
+            <LightModeIcon sx={{color: darkModeIsOn ? 'text.primary' : 'cyan.main' } } />
 
-            <Switch  color='primary' />
+            <Switch  color='primary' onChange={()=> {dispatch(switchToDarkMode(!darkModeIsOn))}} />
 
-            <DarkModeIcon color='text.primary'/>
+            <DarkModeIcon color='primary'/>
             </Box>
             </Box>
 
@@ -53,7 +53,7 @@ export default function Header(){
 
 <Button onClick={()=> { setMenuIconisClicked(!menuIconisClicked)}}>
 
-<MenuIcon sx={{display: {xs:'inline-block', sm:'none'} }} />
+<MenuIcon sx={{display: {md:'inline-block', sm:'none'} }} />
 
 </Button>
         </Box>
