@@ -53,7 +53,7 @@ export default function Header(){
 
 <Button onClick={()=> { setMenuIconisClicked(!menuIconisClicked)}}>
 
-<MenuIcon sx={{display: {md:'inline-block', sm:'none'} }} />
+<MenuIcon sx={{display: {xs:'inline-block', sm:'none'} }} />
 
 </Button>
         </Box>
