@@ -6,9 +6,9 @@ import BasicButton from "../components/UI/BasicButton";
 export default function Home(){
 
     return(
-        <Box className="h-max w-full"
+        <Box
         sx={{minHeight:'100vh', display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center'}}>
-           <br />
+          
       <Typography variant="h1" sx={{color:'text.primary'}}>
         home
       </Typography>

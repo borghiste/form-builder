@@ -9,6 +9,7 @@ import {useSelector } from 'react-redux';
 
 // COMPONENTS
 import Home from '../src/routes/Home';
+import FormsList from './routes/ForList';
 
 export default function App(){
 
@@ -23,6 +24,9 @@ export default function App(){
 
          <Routes>
             <Route path='/' element={<Home/>}/>
+            <Route path='/login/forms' element={<FormsList/>}>
+
+            </Route>
          </Routes>
              </Layout>
          </BrowserRouter>

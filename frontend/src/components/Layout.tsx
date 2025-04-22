@@ -8,7 +8,7 @@ import Footer from './UI/Footer';
 export default function Layout({children}){
 
     return(
-        <Box   sx={{bgcolor: 'background.default', height:'100svh'}}>
+        <Box   sx={{bgcolor: 'background.default', height:'100'}}>
         <Header/>
         {children}
         <Footer/>
