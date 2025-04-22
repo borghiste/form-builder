@@ -9,7 +9,7 @@ import {useSelector } from 'react-redux';
 
 // COMPONENTS
 import Home from '../src/routes/Home';
-import FormsList from './routes/ForList';
+import FormsList from './routes/FormList';
 
 export default function App(){
 
