@@ -19,7 +19,7 @@ export default function Header(){
 
                 <img src='/assets/images/logo.jpg' height={75} width={75}/>
 
-            <Box component={'nav'}  className={`navigation ${menuIconisClicked ? `open` : '' }  items-center`}>
+            <Box component={'nav'}  className={`navigation ${menuIconisClicked ? `open-nav` : '' }  items-center`}>
 
 
             <BasicButton text={'home'} href={'/'}/>
