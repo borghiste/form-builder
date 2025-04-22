@@ -6,6 +6,10 @@ import { LightTheme, DarkTheme} from '../src/theme/theme';
 import { selectMode } from './features/themeSlice';
 import {useSelector } from 'react-redux';
 
+
+// COMPONENTS
+import Home from '../src/routes/Home';
+
 export default function App(){
 
     const themeState = useSelector(selectMode); 
@@ -18,7 +22,7 @@ export default function App(){
              <Layout>
 
          <Routes>
-
+            <Route path='/' element={<Home/>}/>
          </Routes>
              </Layout>
          </BrowserRouter>
