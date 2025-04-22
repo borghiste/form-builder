@@ -19,6 +19,53 @@
 
 
 
+/* HEADER */
+
+.navigation {
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+  
+    top: 0;
+    left: 0;
+   
+  background-color: none;
+    transform: scale(0);
+    transform-origin: top right;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  
+   
+    transition-property: transform, opacity;
+    transition-duration: .50s;
+
+
+
+  }
+
+  .open {
+   
+    transform: scale(1);
+  }
+
+@media (min-width:768px) {
+
+    .navigation {
+     position: relative;
+     z-index: auto;
+     width:auto;
+     height: 4rem;
+
+     transform: none;
+    background: none;
+    flex-direction: row;
+    
+    
+    }
+
+}
 
 
 
