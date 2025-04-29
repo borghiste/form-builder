@@ -34,7 +34,7 @@ export default function Header(){
 
 
             <BasicButton text={'home'} href={'/'}/>
-            <BasicButton text={'Log in'} variant={'text'} />
+            <BasicButton text={'Log in'} variant={'text'} href={'login'} />
             
 
         

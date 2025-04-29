@@ -1,21 +1,3 @@
-# FRONTEND
-
-# macOS
-.DS_Store
-
-# notes
-/notes.md
-
-
-# FRONTEND
-
-
-## Node modules 
-/frontend/node_modules/
-
-
-# BACKEND
-
 /.phpunit.cache
 /node_modules
 /public/build
@@ -39,5 +21,3 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
-
-

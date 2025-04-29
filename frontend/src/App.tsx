@@ -10,7 +10,7 @@ import {useSelector } from 'react-redux';
 // COMPONENTS
 import Home from '../src/routes/Home';
 import FormsList from './routes/FormList';
-import Login from './components/UI/LoginPage';
+import Login from '../src/routes/LoginPage';
 
 export default function App(){
 
@@ -26,10 +26,12 @@ export default function App(){
          <Routes>
             <Route path='/' element={<Home/>}/>
 
-            <Route path='/login' element={<Login/>}></Route>
-            <Route path='/login/forms' element={<FormsList/>}>
 
+            <Route path='/login' element={<Login/>}>
             </Route>
+            <Route path='/forms' element={<FormsList/>}>
+            </Route>
+           
          </Routes>
              </Layout>
          </BrowserRouter>

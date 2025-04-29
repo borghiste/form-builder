@@ -17,7 +17,7 @@ export default function Home(){
       </Typography>
 
       <Box component={'div'} sx={{display:'flex'}}>
-        <BasicButton text={'get started'} variant={'contained'} color={'cyan.main'} href={'/admin'}/>
+        <BasicButton text={'get started'} variant={'contained'} color={'cyan.main'} href={'/login'}/>
       </Box>
         
        
