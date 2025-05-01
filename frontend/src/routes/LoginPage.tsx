@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 
-import { Container, Paper, Box, Typography, TextField, InputLabel, FormControl, Button } from "@mui/material";
+import { Container, Paper, Box, Typography, TextField, InputLabel, FormControl, Button, FormHelperText } from "@mui/material";
 import BasicButton from "../components/UI/BasicButton";
 
 //THIS COMPONENT CONTAINS LOGIN PAGE AND ITS LOGIC
@@ -15,41 +15,50 @@ export default function LoginPage(){
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState({});
+ 
+  const [HelperText, setHelperText] = useState('');
+
   function handleSubmit(e) {
     e.preventDefault();
   
-    fetch('http://localhost:8000/api/login', {
-      method: 'POST', 
-    
-      headers: {
-        'Content-Type': 'application/json', 
-        'Accept': 'application/json',
-        
-      },
-     
-      body: JSON.stringify({ 
-        
-        email: email,
-        password: password
-      })
-    })
-    .then(res => {
-      if (res.ok) {
-
-        return res.json();
-        
-
-      } else {
-        throw new Error('Errore nella risposta: ' + res.status);
-      }
-    })
-    .then((data) => { setUser(data.user);
-      navigate('/forms')
-              
-  })
+     if (email === '' || password === '') {
+       setHelperText('email and password are required');
+       return;
+     }
   
-    .catch(error => console.error('Errore nella fetch', error));
+    fetch('http://localhost:8000/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({ email, password}),
+     
+    })
+   .then(res =>{ 
+    if(!res.ok){
+      return res.json().then(err => {throw new Error(err.message || 'login failed')})
+    }
+    return res.json()
+  })
+   .then(data => {
+   
+
+    if(data.user){
+    setUser(data.user);
+    navigate('forms');
+   }
+   else setHelperText(data.message)
+   
+   
+   }
+  
+  )
+  .catch(error => { setHelperText(error.message);
+
+  })
   }
+  
   
    
 
@@ -75,11 +84,11 @@ return(
   
 
   <BasicButton text='submit' variant="contained" fullWidth={true} type={'submit'}/>
-
-   
+  <FormHelperText sx={{color:'red'}}>{HelperText}</FormHelperText>
 </Box>
 
 </Paper>
+ 
 
 </Container>
   </>

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 
 
+
 class AuthController extends Controller
 {
     public function login( Request $request){
@@ -16,9 +17,13 @@ class AuthController extends Controller
             ]);
 
             if(Auth::attempt($credentials)){
-                    
-
-                    return response(['user'=> Auth::user()]);
+               Auth::attempt($credentials, true);
+                    $user = Auth::user();
+                   
+                    return response()->json(['user' => $user]);
+            }
+            else{
+                return response()->json(['message'=> 'unauthorized: email or password are invalid']);
             }
     }
 }
