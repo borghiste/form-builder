@@ -1,15 +1,15 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 //MUI
 import { Container, List,  ListItem, ListItemText, Divider, Box } from "@mui/material";
 //COMPONENTS
 import BasicButton from "../components/UI/BasicButton";
 export default function FormsList(){
-     
-    
 
-    
-    
+     const location = useLocation();
+
+    const isAdmin = location.state.role
+
     
     const forms =[ {name: 'form name1',
         fields: 5},
@@ -66,12 +66,24 @@ export default function FormsList(){
 
         <ListItemText primary='yyyy-mm-dd' sx={{display:'flex', justifyContent:'center'}}/>
         
-        
+      
         <Box sx={{display:'flex', justifyContent:'center'}}>
-         <BasicButton text={'edit'} color={''}  />
-        <BasicButton text={'delete'} color={'magenta.dark'} textColor={'black'} />   
+        
+        <BasicButton text={'view'}/>
+
+        { isAdmin  ? (
+            <>
+         <BasicButton text={'edit'}   />
+        <BasicButton text={'delete'} color={'magenta.dark'} textColor={'black'} />
+            </>
+        ) : null
+        }
         </Box>
        
+       
+       
+        
+
  
 </ListItem>
 
@@ -86,8 +98,6 @@ export default function FormsList(){
 
 </Container>
 <Outlet/>
-
-
 
 </>
 

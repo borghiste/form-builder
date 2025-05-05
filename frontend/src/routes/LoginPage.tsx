@@ -4,17 +4,21 @@ import { useNavigate } from 'react-router-dom';
 import { Container, Paper, Box, Typography, TextField, InputLabel, FormControl, Button, FormHelperText } from "@mui/material";
 import BasicButton from "../components/UI/BasicButton";
 
+import { Login } from "../features/UserSlice";
+import { useDispatch, UseDispatch, useSelector } from "react-redux";
+import { UserState, selectUser  } from "../features/UserSlice";
+
 //THIS COMPONENT CONTAINS LOGIN PAGE AND ITS LOGIC
 
 
 
 
 export default function LoginPage(){
-
+const dispatch = useDispatch();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [user, setUser] = useState({});
+  const User = useSelector(selectUser) ;
  
   const [HelperText, setHelperText] = useState('');
 
@@ -28,6 +32,7 @@ export default function LoginPage(){
   
     fetch('http://localhost:8000/api/login', {
       method: 'POST',
+      
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -45,12 +50,17 @@ export default function LoginPage(){
    
 
     if(data.user){
-    setUser(data.user);
-    navigate('forms');
+      dispatch(Login(data.user))
+   
+
+    
+    navigate('/forms', {state: {isAdmin: User.role == 'user' ? false : true } });
+    
+    
    }
    else setHelperText(data.message)
    
-   
+  
    }
   
   )
@@ -72,18 +82,18 @@ return(
 <Paper sx={{bgcolor:'background.default',p:4, mt:8}} elevation={8}>
 
 <Typography variant="h5" align="center" gutterBottom sx={{color:'text.primary'}}>Login</Typography>
-<Box component={'form'}  onSubmit={handleSubmit}>
+<Box component={'form'} role="form" onSubmit={handleSubmit}>
 
   
-<InputLabel>email:</InputLabel>
-<TextField label="email" fullWidth margin="normal" sx={{minHeight:'1rem'}} id="email" name="email" onChange={(e)=>{setEmail(e.target.value)}}/>
+<InputLabel >email:</InputLabel>
+<TextField label="email"  fullWidth margin="normal" sx={{minHeight:'1rem'}} id="email" name="email" role="email"  onChange={(e)=>{setEmail(e.target.value)}}  inputProps={{'data-testid': 'email-input'}}/>
 
 <InputLabel sx={{mt:4}}>Password:</InputLabel>
-<TextField label="password" fullWidth margin="normal" type="password" sx={{minHeight:'1rem'}} id="password" name="password" onChange={(e)=>{setPassword(e.target.value)}}/>
+<TextField label="password" fullWidth margin="normal" type="password" sx={{minHeight:'1rem'}} id="password" name="password" onChange={(e)=>{setPassword(e.target.value)}} inputProps={{'data-testid': 'password-input'}}/>
 
   
 
-  <BasicButton text='submit' variant="contained" fullWidth={true} type={'submit'}/>
+  <BasicButton text='submit' variant="contained" fullWidth={true} type={'submit'} />
   <FormHelperText sx={{color:'red'}}>{HelperText}</FormHelperText>
 </Box>
 

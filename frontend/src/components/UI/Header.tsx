@@ -11,6 +11,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { switchToDarkMode } from '../../features/themeSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectMode } from '../../features/themeSlice';
+import { selectUser, UserState } from '../../features/UserSlice';
+
 
 
 // COMPONENTS
@@ -22,6 +24,9 @@ export default function Header(){
     const darkModeIsOn= useSelector(selectMode)
 
     const dispatch = useDispatch(); 
+    const User = useSelector(selectUser); 
+    
+    
 
     return(
         <>
@@ -30,9 +35,10 @@ export default function Header(){
 
                 <img src='/assets/images/logo.jpg' height={75} width={75}/>
 
-            <Box component={'nav'}  className={`navigation ${menuIconisClicked ? `open-nav` : '' }  items-center`}>
+            <Box component={'nav'}  className={`navigation  ${menuIconisClicked ? `open-nav` : '' }  items-center`}>
+            { User.id !== null  ? <span>Welcome,{User.name}</span>  : null}
 
-
+        {/* #TODO fix login button when display is responsive */}
             <BasicButton text={'home'} href={'/'}/>
             <BasicButton text={'Log in'} variant={'text'} href={'login'} />
             
