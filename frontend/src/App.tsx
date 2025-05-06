@@ -11,10 +11,17 @@ import {useSelector } from 'react-redux';
 import Home from '../src/routes/Home';
 import FormsList from './routes/FormList';
 import Login from '../src/routes/LoginPage';
+import ProtectedRoute from './routes/ProtectedRoute';
+//REDUX
+import { selectUser } from './features/UserSlice';
 
 export default function App(){
 
     const themeState = useSelector(selectMode); 
+     const User = useSelector(selectUser); 
+    
+
+   
     return(
         
         <ThemeProvider theme={ themeState ? DarkTheme : LightTheme }>
@@ -27,9 +34,11 @@ export default function App(){
             <Route path='/' element={<Home/>}/>
 
 
-            <Route path='/login' element={<Login/>}>
+            <Route path='/login' element={ User.id !== null ? null : <Login/> }>
             </Route>
-            <Route path='/forms' element={<FormsList/>}>
+            <Route path='/forms' element={ <ProtectedRoute>
+                <FormsList/>  </ProtectedRoute>
+                }>
             </Route>
            
          </Routes>

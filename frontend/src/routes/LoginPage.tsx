@@ -5,8 +5,9 @@ import { Container, Paper, Box, Typography, TextField, InputLabel, FormControl, 
 import BasicButton from "../components/UI/BasicButton";
 
 import { Login } from "../features/UserSlice";
-import { useDispatch, UseDispatch, useSelector } from "react-redux";
+import { useDispatch, UseDispatch, useSelector, Provider } from "react-redux";
 import { UserState, selectUser  } from "../features/UserSlice";
+import { Store } from "@reduxjs/toolkit";
 
 //THIS COMPONENT CONTAINS LOGIN PAGE AND ITS LOGIC
 
@@ -22,15 +23,24 @@ const dispatch = useDispatch();
  
   const [HelperText, setHelperText] = useState('');
 
+
+
+
+
+  
+
+
   function handleSubmit(e) {
     e.preventDefault();
+   
+  
   
      if (email === '' || password === '') {
        setHelperText('email and password are required');
        return;
      }
   
-    fetch('http://localhost:8000/api/login', {
+    fetch(`http://localhost:8000/api/login`, {
       method: 'POST',
       
       headers: {
@@ -40,17 +50,20 @@ const dispatch = useDispatch();
       body: JSON.stringify({ email, password}),
      
     })
-   .then(res =>{ 
+   .then(res =>{
+    
     if(!res.ok){
-      return res.json().then(err => {throw new Error(err.message || 'login failed')})
+      return res.json().then(err => {throw new Error( err ||'login failed')})
     }
     return res.json()
   })
    .then(data => {
+    console.log(data)
    
 
     if(data.user){
       dispatch(Login(data.user))
+     sessionStorage.setItem('user', JSON.stringify(data.user))
    
 
     

@@ -5,6 +5,8 @@ export default defineConfig({
   plugins: [react()],
   test: {
     environment: 'jsdom',
-    globals: true, // opzionale, se vuoi usare `describe`, `it`, `expect` senza import
+    globals: true, 
   },
 })
+
+

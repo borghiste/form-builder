@@ -18,16 +18,21 @@ class AuthController extends Controller
 
             if(Auth::attempt($credentials)){
                 
-               Auth::attempt($credentials, true);
+               
                     $user = Auth::user();
                    
-                 
-                    
+           
                    
                     return response()->json(['user' => $user->only(['id', 'name', 'role'])]);
             }
             else{
                 return response()->json(['message'=> 'unauthorized: email or password are invalid']);
             }
+    }
+    public function logout(Request $request){
+        Auth::logout();
+        return response()->json(['message'=> 'log out successfully']);
+        }
+         
     }
 }

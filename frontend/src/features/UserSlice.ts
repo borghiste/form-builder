@@ -2,13 +2,15 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface UserState {
 id: number | null,
-name: String | null,
+name: string | null,
 role: string | null
 }
 
+const savedUser = sessionStorage.getItem('user')
+
 export const UserSlice = createSlice({
     name: 'User',
-    initialState: {
+    initialState: savedUser ? JSON.parse(savedUser) : {
            id: null,
                 name: null,
                     role: null
@@ -25,12 +27,18 @@ export const UserSlice = createSlice({
           
 
             },
+            Logout: (state) => {
+                state.id = null,
+                state.name = null,
+                state.role = null,
+                sessionStorage.removeItem('user')
+            }
         },
     
 })
 
 export const selectUser = (state) => state.User
 
-export const {Login} = UserSlice.actions
+export const {Login, Logout} = UserSlice.actions
 
 export default UserSlice.reducer

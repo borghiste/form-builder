@@ -20,10 +20,12 @@ class LoginTest extends TestCase
 
         $response = $this->postJson('/api/login', [
             'email' => 'test@example.com',
-            'password' => bcrypt('test'),
+            'password' =>'test'
         ]);
 
         $response->assertStatus(200);
 
     }
+
+ 
 }
