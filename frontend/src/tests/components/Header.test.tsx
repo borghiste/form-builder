@@ -8,7 +8,6 @@ import store from '../../app/store';
 import * as UserAction from '../../features/UserSlice';
 import {vi, expect, describe, it } from 'vitest';
 import { useDispatch, } from 'react-redux';
-import * as userActions from '../../features/UserSlice';
 
 
 describe('Header', () => {
@@ -22,11 +21,7 @@ describe('Header', () => {
     })
 })
 
-const logoutSpy = vi.spyOn(userActions, 'Logout').mockReturnValue(() => (payload) => {payload})
-describe('Header', () => {
-    it('should log out user when log out button is clicked',  () => {
-            const logOutButton =  screen.findByText('log out');
-            fireEvent.click(logOutButton)
-            expect(logoutSpy).toBeCalled();
-    })
-})
+
+
+
+

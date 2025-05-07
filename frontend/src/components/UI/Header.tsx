@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 //MUI
-import { Box, Switch, Divider, Button } from '@mui/material';
+import { Box, Switch, Divider, Button, Typography } from '@mui/material';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -54,12 +54,12 @@ export default function Header(){
 
     return(
         <>
-        <Box component={'header'} sx={{display:'flex', justifyContent:'space-between'}} className="flex items-center justify-between ">
+        <Box component={'header'} sx={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
     
 
                 <img src='/assets/images/logo.jpg' height={75} width={75}/>
 
-            { User.id !== null  ? <span>Welcome,{User.name}</span>  : null}
+            { User.id !== null  ? <Typography sx={{padding:0}}> Welcome,{User.name}</Typography>  : null}
             <Box component={'nav'}  className={`navigation  ${menuIconisClicked ? `open-nav` : '' }  items-center`}>
 
         {/* #TODO fix login button when display is responsive */}
