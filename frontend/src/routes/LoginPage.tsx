@@ -26,10 +26,6 @@ const dispatch = useDispatch();
 
 
 
-
-  
-
-
   function handleSubmit(e) {
     e.preventDefault();
    
@@ -53,14 +49,14 @@ const dispatch = useDispatch();
    .then(res =>{
     
     if(!res.ok){
-      return res.json().then(err => {throw new Error( err ||'login failed')})
+      return res.json().then(err => {
+        console.log(err)
+        throw new Error( err ||'login failed')})
     }
     return res.json()
   })
    .then(data => {
-    console.log(data)
    
-
     if(data.user){
       dispatch(Login(data.user))
      sessionStorage.setItem('user', JSON.stringify(data.user))
@@ -71,7 +67,8 @@ const dispatch = useDispatch();
     
     
    }
-   else setHelperText(data.message)
+   else 
+   setHelperText(data.message)
    
   
    }
