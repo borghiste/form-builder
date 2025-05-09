@@ -19,7 +19,7 @@ const dispatch = useDispatch();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const User = useSelector(selectUser) ;
+  const User = useSelector(selectUser);
  
   const [HelperText, setHelperText] = useState('');
 
@@ -59,11 +59,12 @@ const dispatch = useDispatch();
    
     if(data.user){
       dispatch(Login(data.user))
-     sessionStorage.setItem('user', JSON.stringify(data.user))
-   
-
+     sessionStorage.setItem('user', JSON.stringify(data.user));
+     
+     
+     
     
-    navigate('/forms', {state: {isAdmin: User.role == 'user' ? false : true } });
+    navigate('/forms', {state: {isAdmin: data.user.role == 'admin' ? true : false } });
     
     
    }

@@ -8,8 +8,9 @@ export default function FormsList(){
 
      const location = useLocation();
 
-    const isAdmin = location.state.role
-
+    const isAdmin = location.state.isAdmin
+    console.log(location.state)
+    console.log(isAdmin)
     
     const forms =[ {name: 'form name1',
         fields: 5},
@@ -46,6 +47,7 @@ export default function FormsList(){
 
 
         <ListItemText className='font-bold text-light-gray' sx={{font:'bold', display:'flex', justifyContent:'center'}} primary='updated time'/>
+       
        
        
         <BasicButton text={' + NEW FORM'} 

@@ -59,12 +59,12 @@ export default function Header(){
 
                 <img src='/assets/images/logo.jpg' height={75} width={75}/>
 
-            { User.id !== null  ? <Typography sx={{padding:0}}> Welcome,{User.name}</Typography>  : null}
+            { User.id !== null  ? <Typography sx={{padding:0}}> Welcome,{User?.name}</Typography>  : null}
             <Box component={'nav'}  className={`navigation  ${menuIconisClicked ? `open-nav` : '' }  items-center`}>
 
         {/* #TODO fix login button when display is responsive */}
             <BasicButton text={'home'} href={'/'}/>
-            <BasicButton text={ User.id !== null ? 'Log out' : 'Log in'} variant={'text'} href={ User.id !== null ? null : 'login'} onClick={User.id !== null ? handleLogout : null} />
+            <BasicButton text={User?.id !== null ? 'Log out' : 'Log in'} variant={'text'} href={ User.id !== null ? null : 'login'} onClick={User.id !== null ? handleLogout : null} />
             
 
         

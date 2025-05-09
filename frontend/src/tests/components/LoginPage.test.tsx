@@ -81,24 +81,3 @@ vi.mock('../../../store/UserSlice', () => {
 
 
   
-  
-  
-  
-  
-
-// describe('logout action', () => {
-//     it('should logout user', async () => {
-//       render(<Header/>); 
-
-//       const mockLogoutFunction = vi.fn();
-  
-//       const buttonLogout = screen.getByLabelText('logout');
-//       fireEvent.click(buttonLogout);
-  
-     
-//       expect(mockLogoutFunction).toHaveBeenCalled(); 
-//       // oppure se viene reindirizzato:
-//       expect(screen.getByText('You have been logged out')).toBeInTheDocument();
-//     });
-//   });
-  
