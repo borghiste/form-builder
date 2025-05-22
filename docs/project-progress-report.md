@@ -11,6 +11,7 @@
 
 ### Completed Features
 - User authentication 
+- Forms List loaded from db
 
 
 
@@ -18,7 +19,7 @@
 
 ### Work in Progress
 
-- updated 
+- updating minor UI incosistency
 - Testing and debugging of form submissions with error handling
 
 ### Open Issues

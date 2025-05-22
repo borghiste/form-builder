@@ -36,7 +36,8 @@ const dispatch = useDispatch();
        return;
      }
   
-    fetch(`http://localhost:8000/api/login`, {
+     console.log(import.meta.env)
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/login`, {
       method: 'POST',
       
       headers: {

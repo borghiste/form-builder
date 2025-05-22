@@ -19,7 +19,7 @@ export default function App(){
 
     const themeState = useSelector(selectMode); 
      const User = useSelector(selectUser); 
-    
+    console.log(import.meta.env.VITE_TEST)
 
    
     return(

@@ -2,35 +2,33 @@
 
 form-builder/
 │
-├── frontend/              # Applicazione React (Vite)
-│   ├── public/            # File statici
+├── frontend/              #  React App (Vite)
+│   ├── public/            
 │   ├── src/               
-│   │   ├── components/    # Componenti riutilizzabili React
-│   │   ├── pages/         # Pagine principali dell'app
+│   │   ├── components/   #  React components
+│   │   ├── routes/       # app pages
 │   │   ├── hooks/         # Custom React hooks
-│   │   ├── utils/         # Funzioni di utilità
-│   │   ├── services/      # Chiamate API (es. Axios)
-│   │   ├── App.tsx        # Componente principale
-│   │   └── main.tsx       # Punto di ingresso
-│   ├── vite.config.ts     # Configurazione Vite
-│   └── package.json       # Dipendenze e script NPM
+│   │   ├── utils/         # utilities functions
+│   │ 
+│   │   ├── App.tsx        # main component
+│   │   └── main.tsx       # entry point
+│   ├── vite.config.ts     #  Vite configuration
+│   └── package.json       # dependecies
 │
-├── backend/               # Applicazione Laravel
+├── backend/               # Laravel App
 │   ├── app/               
 │   │   ├── Http/
 │   │   │   ├── Controllers/  # Controller API
 │   │   │   └── Requests/     # Validazione delle richieste
-│   │   └── Models/          # Modelli Eloquent
+│   │   └── Models/          #Eloquent models
 │   ├── database/
-│   │   ├── migrations/      # Migrazioni DB
-│   │   └── seeders/         # Dati iniziali
+│   │   ├── migrations/      #  DB migrations
+│   │   └── seeders/         # data
 │   ├── routes/
-│   │   └── api.php          # Rotte API REST
-│   ├── config/              # Configurazioni Laravel
-│   ├── .env                 # Variabili d'ambiente
-│   └── composer.json        # Dipendenze PHP
+│   │   └── api.php          #  API REST routes
+│   ├── config/              #  Laravel configurations
+│   ├── .env                 # env variables
+│   └── composer.json        #  PHP dependecies
 │
-├── docker/                 # File per setup Docker (facoltativo)
-│   └── docker-compose.yml
 │
 └── README.md               # 

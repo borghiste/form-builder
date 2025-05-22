@@ -5,10 +5,11 @@ const initialState = {forms: [],
                         error: null
 }
 
+
 const fetchformsList = createAsyncThunk(
     'forms/fetchFormsList',
     async () => {
-         const res = await fetch('http://localhost:8000/api/formsList')
+         const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/formsList`)
          if(!res.ok){
             throw new Error('error loading forms list');
            

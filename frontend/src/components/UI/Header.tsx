@@ -30,7 +30,7 @@ export default function Header(){
     function handleLogout(){
         
 
-        fetch(`http://localhost:8000/api/logout`, {
+        fetch(`${import.meta.env.VITE_BACKEND_URL}/api/logout`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -62,14 +62,14 @@ export default function Header(){
             { User.id !== null  ? <Typography sx={{padding:0}}> Welcome,{User?.name}</Typography>  : null}
             <Box component={'nav'}  className={`navigation  ${menuIconisClicked ? `open-nav` : '' }  items-center`}>
 
-        {/* #TODO fix login button when display is responsive */}
+       
             <BasicButton text={'home'} href={'/'}/>
             <BasicButton text={User?.id !== null ? 'Log out' : 'Log in'} variant={'text'} href={ User.id !== null ? null : 'login'} onClick={User.id !== null ? handleLogout : null} />
             
 
         
 
-            <Box  component={'span'} className='flex'>
+            <Box  component={'span'} sx={{display:'flex'}}>
 
             <LightModeIcon sx={{color: darkModeIsOn ? 'text.primary' : 'cyan.main' } } />
 
