@@ -1,30 +1,73 @@
 import React from "react";
 import { Outlet, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 //MUI
 import { Container, List,  ListItem, ListItemText, Divider, Box } from "@mui/material";
 //COMPONENTS
 import BasicButton from "../components/UI/BasicButton";
-export default function FormsList(){
+//REDUX
+import selectUser from '../features/UserSlice';
+import { AppDispatch } from "../app/store";
+import {useSelector, useDispatch} from 'react-redux';
+import { fetchformsList } from '../features/formsListSlice';
+import { selectList } from "../features/formsListSlice";
+import { unwrapResult } from "@reduxjs/toolkit";
+import { RootState } from "../app/store";
+
+
+export default  function FormsList(){
 
      const location = useLocation();
+     const dispatch = useDispatch<AppDispatch>();
+     const isAdmin = location.state.isAdmin
+     const  {forms, error, status} = useSelector(selectList)
 
-    const isAdmin = location.state.isAdmin
-    console.log(location.state)
-    console.log(isAdmin)
+useEffect(() => {dispatch(fetchformsList())
+
+  
+
+}, [forms])
+
+
+
+
+   
+
+  
+
+
+
+
+ 
+
+   
+
     
-    const forms =[ {name: 'form name1',
-        fields: 5},
+
+
+   
+ 
+    
+    //  const forms =[ {name: 'form name1',
+    //      fields: 5},
         
-        {name: 'form2',
-            fields: 5},
+    //      {name: 'form2',
+    //          fields: 5},
             
-            {name: 'form3',
-                fields: 5},
-                {name:'form4'}
-            ]
+    //          {name: 'form3',
+    //              fields: 5},
+    //              {name:'form4'}
+    //          ]
             
 
-
+            // fetch('http://localhost:8000/api/formlist', {method:'GET',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //         'Accept': 'application/json',
+            //       }
+            // })
+            // .then(res => res.json())
+            // .then(data => console.log(data))
 
     
 
@@ -36,17 +79,18 @@ export default function FormsList(){
 <Container disableGutters={true} component={'div'} sx={{minHeight:'100vh'}}>
 
 <List className=' w-full ' sx={{zIndex:10}}>
-    <ListItem>
-        <ListItemText  sx={{font:'bold', display:'flex', justifyContent:'center'}} primary='Form Name'/>
+
+    <ListItem sx={{display:'flex', justifyContent:'center'}}>
+        <ListItemText  sx={{font:'bold'}} primary='Form Name'/>
             
 
 
-        <ListItemText className='font-bold' sx={{font:'bold', display:'flex', justifyContent:'center'}} primary='Created time'/>
+        <ListItemText primary='Created time'/>
          
         
 
 
-        <ListItemText className='font-bold text-light-gray' sx={{font:'bold', display:'flex', justifyContent:'center'}} primary='updated time'/>
+        <ListItemText className='font-bold text-light-gray' sx={{font:'bold'}} primary='updated time'/>
        
        
        
@@ -54,22 +98,27 @@ export default function FormsList(){
                     variant={'contained'} 
                     color={'gray.light'} 
                     textColor={'black'}
+                    width={200}
                     />
     </ListItem>
     <Divider/>
 
-    {forms.map((form)=> (
-        <ListItem key={form.name}className='w-full '>
-<ListItemText sx={{display:'flex', justifyContent:'center'}}>{form.name}</ListItemText>
+    {forms.map((form)=> {
 
-<ListItemText className='font-bold' sx={{font:'bold', display:'flex', justifyContent:'center'}} primary='yyyy-mm-dd'/>
+        const createdDate = new Date(form.created_at).toISOString().slice(0, 10);
+        const updatedDate = new Date(form.updated_at).toISOString().slice(0, 10);
+       return(
+        <ListItem key={form.name}>
+<ListItemText>{form.name}</ListItemText>
+
+<ListItemText primary={createdDate}/>
           
      
 
-        <ListItemText primary='yyyy-mm-dd' sx={{display:'flex', justifyContent:'center'}}/>
+        <ListItemText primary={updatedDate}/>
         
       
-        <Box sx={{display:'flex', justifyContent:'center'}}>
+        <Box>
         
         <BasicButton text={'view'}/>
 
@@ -90,6 +139,7 @@ export default function FormsList(){
 </ListItem>
 
 )
+}
 
 )
 }

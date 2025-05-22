@@ -8,16 +8,17 @@
 ---
 
 ## Current Status
+
 ### Completed Features
 - User authentication 
-- Form list with view.edit ad delete buttons
+
 
 
 
 
 ### Work in Progress
 
-- Customizable forms with type fields
+- updated 
 - Testing and debugging of form submissions with error handling
 
 ### Open Issues
@@ -27,15 +28,14 @@
 ---
 
 ## Upcoming Tasks
-### Next Steps
 
+### Next Steps
+- implement form list database and its api
 - implement form creation with form builder modal
 - Implement form export functionality 
 
 ### Timeline
-- **Real-time Collaboration**: By May 14th
-- **User Acceptance Testing**: By May 21st
-- **Form Export Feature**: By June 1st
+
 
 ---
 

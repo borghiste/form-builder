@@ -7,7 +7,7 @@ export default function BasicButton({text,
                                     color, 
                                     size, 
                                     variant, 
-                                    textColor, destination, 
+                                    textColor,
                                     width, 
                                     type, 
                                     fullWidth}){
@@ -20,13 +20,14 @@ export default function BasicButton({text,
                 startIcon={startIcon}
                 type={type} 
                 
-                sx={{ margin:'0.25rem', 
+                sx={{ 
                     backgroundColor:color, 
                     color:textColor, 
                     width:width, 
                     textAlign:'center', 
                     textWrap:'nowrap'}}
                     fullWidth={fullWidth}
+                    
                     href={href}
                     
        

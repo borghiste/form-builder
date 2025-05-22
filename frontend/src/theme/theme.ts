@@ -35,8 +35,21 @@ export const LightTheme = createTheme({
         }
       }
     },
+    MuiListItem: {
+      styleOverrides: {
+        root: {
+          display: 'flex',
+          justifyContent: 'space-between'
+        }
+      }
+    },
     MuiListItemText: {
       styleOverrides: {
+        root: {
+          display:'flex',
+          justifyContent:' center',
+          
+        },
         primary: {
           color:  '#3E3E42',
         }
