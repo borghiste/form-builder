@@ -12,6 +12,7 @@ import Home from '../src/routes/Home';
 import FormsList from './routes/FormList';
 import Login from '../src/routes/LoginPage';
 import ProtectedRoute from './routes/ProtectedRoute';
+import FormBuilder from './routes/FormBuilder';
 //REDUX
 import { selectUser } from './features/UserSlice';
 
@@ -19,7 +20,7 @@ export default function App(){
 
     const themeState = useSelector(selectMode); 
      const User = useSelector(selectUser); 
-    console.log(import.meta.env.VITE_TEST)
+    
 
    
     return(
@@ -39,7 +40,10 @@ export default function App(){
             <Route path='/forms' element={ <ProtectedRoute>
                 <FormsList/>  </ProtectedRoute>
                 }>
+               
             </Route>
+            
+         
            
          </Routes>
              </Layout>

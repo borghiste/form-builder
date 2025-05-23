@@ -1,6 +1,7 @@
 import React from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 //MUI
 import { Container, List,  ListItem, ListItemText, Divider, Box } from "@mui/material";
 //COMPONENTS
@@ -13,11 +14,13 @@ import { fetchformsList } from '../features/formsListSlice';
 import { selectList } from "../features/formsListSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { RootState } from "../app/store";
+import FormBuilder from "./FormBuilder";
 
 
 export default  function FormsList(){
 
      const location = useLocation();
+     const navigate = useNavigate();
      const dispatch = useDispatch<AppDispatch>();
      const isAdmin = location.state.isAdmin
      const  {forms, error, status} = useSelector(selectList)
@@ -28,52 +31,26 @@ useEffect(() => {dispatch(fetchformsList())
 
 }, [forms])
 
+const [modalOpen, setModalOpen] = React.useState(false);
+const handleOpen = () => {setModalOpen(true);
+                        navigate('/forms/new')
+}
+const handleClose = () =>{ setModalOpen(false);
+                            
+}
 
 
 
-   
-
-  
 
 
-
-
- 
-
-   
-
-    
-
-
-   
- 
-    
-    //  const forms =[ {name: 'form name1',
-    //      fields: 5},
         
-    //      {name: 'form2',
-    //          fields: 5},
-            
-    //          {name: 'form3',
-    //              fields: 5},
-    //              {name:'form4'}
-    //          ]
-            
-
-            // fetch('http://localhost:8000/api/formlist', {method:'GET',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //         'Accept': 'application/json',
-            //       }
-            // })
-            // .then(res => res.json())
-            // .then(data => console.log(data))
-
     
 
 
     return(
         <>
+        <FormBuilder modalIsOpen={modalOpen}
+                    handleModalClose={handleClose}/>
       
 
 <Container disableGutters={true} component={'div'} sx={{minHeight:'100vh'}}>
@@ -99,6 +76,7 @@ useEffect(() => {dispatch(fetchformsList())
                     color={'gray.light'} 
                     textColor={'black'}
                     width={200}
+                    onClick={setModalOpen}
                     />
     </ListItem>
     <Divider/>
