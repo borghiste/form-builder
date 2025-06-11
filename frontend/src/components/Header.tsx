@@ -8,16 +8,16 @@ import MenuIcon from '@mui/icons-material/Menu';
 
 // REDUX
 
-import { switchToDarkMode } from '../../features/themeSlice';
+import { switchToDarkMode } from '../features/themeSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectMode } from '../../features/themeSlice';
-import { selectUser, UserState } from '../../features/UserSlice';
-import { Logout } from '../../features/UserSlice';
+import { selectMode } from '../features/themeSlice';
+import { selectUser, UserState } from '../features/UserSlice';
+import { Logout } from '../features/UserSlice';
 
 
 
 // COMPONENTS
-import BasicButton from '../UI/BasicButton';
+import BasicButton from './UI/BasicButton';
 export default function Header(){
 
     const [menuIconisClicked, setMenuIconisClicked] = useState(false);

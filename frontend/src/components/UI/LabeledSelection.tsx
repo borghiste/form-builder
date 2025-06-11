@@ -28,7 +28,7 @@ export default function LabeledSelection({labelName, options, selection,
       <FormControl fullWidth>
         <InputLabel sx={{alignItems:'center', fontSize:14, padding:0}}>{labelName}</InputLabel>
         <Select
-         
+         label={labelName}
           value={selection}
           sx={{height:50, alignItems:'center', display:'flex' }}
           

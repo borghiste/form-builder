@@ -3,8 +3,8 @@ import { Box } from '@mui/material';
 
 
 // COMPONENTS
-import Header from './UI/Header';
-import Footer from './UI/Footer';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 export default function Layout({children}){
 
     return(

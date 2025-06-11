@@ -36,7 +36,6 @@ const dispatch = useDispatch();
        return;
      }
   
-     console.log(import.meta.env)
     fetch(`${import.meta.env.VITE_BACKEND_URL}/api/login`, {
       method: 'POST',
       
@@ -51,7 +50,7 @@ const dispatch = useDispatch();
     
     if(!res.ok){
       return res.json().then(err => {
-        console.log(err)
+        
         throw new Error( err ||'login failed')})
     }
     return res.json()

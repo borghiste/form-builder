@@ -15,6 +15,7 @@ import { selectList } from "../features/formsListSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { RootState } from "../app/store";
 import FormBuilder from "./FormBuilder";
+import { useState } from "react";
 
 
 export default  function FormsList(){
@@ -31,9 +32,9 @@ useEffect(() => {dispatch(fetchformsList())
 
 }, [forms])
 
-const [modalOpen, setModalOpen] = React.useState(false);
+const [modalOpen, setModalOpen] = useState(true);
 const handleOpen = () => {setModalOpen(true);
-                        navigate('/forms/new')
+                       
 }
 const handleClose = () =>{ setModalOpen(false);
                             
@@ -41,10 +42,6 @@ const handleClose = () =>{ setModalOpen(false);
 
 
 
-
-
-        
-    
 
 
     return(
@@ -55,7 +52,7 @@ const handleClose = () =>{ setModalOpen(false);
 
 <Container disableGutters={true} component={'div'} sx={{minHeight:'100vh'}}>
 
-<List className=' w-full ' sx={{zIndex:10}}>
+<List className=' w-full ' sx={{zIndex:0}}>
 
     <ListItem sx={{display:'flex', justifyContent:'center'}}>
         <ListItemText  sx={{font:'bold'}} primary='Form Name'/>
@@ -86,7 +83,7 @@ const handleClose = () =>{ setModalOpen(false);
         const createdDate = new Date(form.created_at).toISOString().slice(0, 10);
         const updatedDate = new Date(form.updated_at).toISOString().slice(0, 10);
        return(
-        <ListItem key={form.name}>
+        <ListItem key={form.id}>
 <ListItemText>{form.name}</ListItemText>
 
 <ListItemText primary={createdDate}/>
@@ -96,9 +93,9 @@ const handleClose = () =>{ setModalOpen(false);
         <ListItemText primary={updatedDate}/>
         
       
-        <Box>
+        <Box sx={{display:'flex'}}>
         
-        <BasicButton text={'view'}/>
+        <BasicButton text={'view'} color={'cyan.dark'} textColor={'white'}/>
 
         { isAdmin  ? (
             <>

@@ -77,6 +77,11 @@ export const DarkTheme = createTheme({
           dark: '#8C1B24'
         },
 
+        cyan: {
+          main: '#3D71D9',
+          dark: '#0540F2'
+        },
+
         gray: {
           main: '#1C2026',
         },

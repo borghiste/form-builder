@@ -2,9 +2,9 @@ import React, { useRef, useState } from "react";
 import { Stack, List, ListItem, ListItemIcon, TextField, Radio, InputLabel, Switch, Typography } from "@mui/material";
 
 // COMPONENTS
-import LabeledSelection from "./LabeledSelection";
-import BasicButton from "./BasicButton";
-import RadioGroupBuilder from "./RadioGroupBuilder";
+import LabeledSelection from "./UI/LabeledSelection";
+import BasicButton from "./UI/BasicButton";
+import RadioGroupBuilder from "./UI/RadioGroupBuilder";
 import { nanoid } from "@reduxjs/toolkit";
 
 // ICONS

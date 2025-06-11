@@ -26,7 +26,13 @@ const fetchformsList = createAsyncThunk(
 export const formsListSlice = createSlice({
     name:'forms',
     initialState,
-    reducers: {},
+    reducers: {addNewForm: (state, action) => {
+                const newForm = {name: action.payload.name,
+                                    description: 'des'
+                }
+                state.forms.push(newForm)
+    }
+},
     extraReducers: (builder) => {
         builder.addCase(fetchformsList.fulfilled, (state, action) => {
             
@@ -54,6 +60,7 @@ export const formsListSlice = createSlice({
 
 
 export default formsListSlice.reducer;
-export const selectList = (state) => state.forms
+export const selectList = (state) => state.forms;
+export const {addNewForm} = formsListSlice.actions
 
 export { fetchformsList }

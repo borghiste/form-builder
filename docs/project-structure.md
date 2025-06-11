@@ -5,7 +5,8 @@ form-builder/
 ├── frontend/              #  React App (Vite)
 │   ├── public/            
 │   ├── src/               
-│   │   ├── components/   #  React components
+│   │   ├── components/├── #  React components
+                       UI ├── reusable UI components 
 │   │   ├── routes/       # app pages
 │   │   ├── hooks/         # Custom React hooks
 │   │   ├── utils/         # utilities functions

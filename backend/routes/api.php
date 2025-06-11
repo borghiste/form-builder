@@ -15,3 +15,5 @@ Route::post('login', [AuthController::class, 'login']);
 Route::post('logout', [AuthController::class, 'logout']);
 
 Route::get('formsList', [FormListController::class, 'getFormList']);
+
+ Route::post('new', [FormListController::class, 'addNewForm']);

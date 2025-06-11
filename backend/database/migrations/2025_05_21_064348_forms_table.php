@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('forms', function ( Blueprint $table) {
-            $table->id()->primary();
+            $table->id();
             $table->string('name', 255);
-            $table->string('description')->nullable(false);
+            $table->string('description')->nullable(true);
             $table->date('created_at')->nullable(false);
             $table->timestamp('updated_at')->nullable(false);
 

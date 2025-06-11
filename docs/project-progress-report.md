@@ -25,15 +25,17 @@
 ### Open Issues
 
 - Minor UI inconsistency on mobile devices
+- correct date fotmat and date display on form list
 
 ---
 
 ## Upcoming Tasks
 
 ### Next Steps
-- implement form list database and its api
-- implement form creation with form builder modal
-- Implement form export functionality 
+
+-implement new form creation
+- project and design form builder modal
+- Implement customizable fields 
 
 ### Timeline
 
