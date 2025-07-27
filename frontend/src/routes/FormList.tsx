@@ -52,7 +52,7 @@ const handleClose = () =>{ setModalOpen(false);
 
 <Container disableGutters={true} component={'div'} sx={{minHeight:'100vh'}}>
 
-<List className=' w-full ' sx={{zIndex:0}}>
+<List className=' w-full ' sx={{zIndex:0, flexDirection:'column'}}>
 
     <ListItem>
         <ListItemText  sx={{font:'bold'}} primary='Form Name'/>

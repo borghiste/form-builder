@@ -21,14 +21,18 @@
 
 /* HEADER */
 
-ul {
-  justify-content:space-between;
+ul  {
+  justify-content:space-evenly;
+
   width:  14rem;
   max-height: 1rem;
 
   display:  flex;
   
   align-items: center;
+
+
+
  
  
 }
@@ -67,12 +71,13 @@ ul {
    
     transform: scale(1);
     z-index: 1;
-    flex-direction: column;
+
 
 
     ul {
       display: flex;
       flex-direction: column;
+
     }
     
 

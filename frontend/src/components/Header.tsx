@@ -93,7 +93,7 @@ export default function Header(){
 
 
             </Box>
-            { User.id !== null  ? <Typography sx={{padding:0}}> Welcome,{User?.name}</Typography>  : null}
+            { User.id !== null  ? <Typography sx={{padding:0, justifySelf:'baseline'}}> Welcome,{User?.name}</Typography>  : null}
 
 
 
