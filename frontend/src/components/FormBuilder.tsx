@@ -4,45 +4,52 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-import BasicButton from "../components/UI/BasicButton";
-import FieldOptions from "../components/FieldOptions";
-import LabeledTextField from "../components/UI/LabeledTextField";
+import BasicButton from "./UI/BasicButton";
+import FieldOptions from "./FieldOptions";
+import LabeledTextField from "./UI/LabeledTextField";
+import FormFieldsSection from "./FormFieldsSection";
+import FormPreview from "./FormPreview";
 //REDUX
 import { addNewForm } from "../features/formsListSlice";
 import { useDispatch, UseDispatch } from "react-redux";
 //MUI
-import { Stack, Divider } from "@mui/material";
+import { Divider } from "@mui/material";
 
 export default function FormBuilder({modalIsOpen, handleModalClose}){
   const dispatch = useDispatch();
 
-    const modalStyle = {
+  // MODAL STYLE
+
+  const modalStyle = {
       
-      position: 'absolute',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-      width: 400,
-      bgcolor: 'background.default',
-      border: '2px solid #000',
-      boxShadow: 24,
-      p: 4,
-     
+    position: 'absolute',
+    
+  
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    maxWidth: '100%',
+    bgcolor: 'background.default',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 0,
     };
 
-  
-  const [openAddField, setOpenAddField] = useState(true);
+
+// STATES
+
+  const [openAddField, setOpenAddField] = useState(false);
 
   const [formName, setFormName] = useState('');
-  const description = 'description'
 
-
+  const description = 'test descr';
+  
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpenAddField(newOpen);
   };
 
-  //fetch endpoint to add a new form
+  //ADD NEW FORM FUNCTION
   function insertNewForm(){
     fetch(`${import.meta.env.VITE_BACKEND_URL}/api/new`, 
       { method: 'POST',
@@ -79,23 +86,42 @@ export default function FormBuilder({modalIsOpen, handleModalClose}){
               <Modal
                 open={modalIsOpen}
                 onClose={handleModalClose}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
+                // aria-labelledby="modal-modal-title"
+                // aria-describedby="modal-modal-description"
                 sx={{zIndex:1}}
               >
                 <Box sx={modalStyle}>
-                  <LabeledTextField labelName={'insert form name:'}
-                                    variant={'standard'}
-                                    placeholder={'placeholder'}
-                                    onchange={(e) =>{setFormName(e.target.value)}}/>
-                  <Button onClick={toggleDrawer(true)}> + add field</Button>
+                  <Box sx={{display:'flex', justifyContent:'space-between'}}>
+
+                  <Typography variant="h5" sx={{p:0}}>Form Builder</Typography>
+                  <Button sx={{ p:0}}>X</Button>
+                  </Box>
+                <Divider/>
+
+                  <Box >
+                    <FormFieldsSection addFieldAction={() => toggleDrawer(true)}/>
+                    <Divider/>
+                    <FormPreview/> 
+
+
+                  </Box>
+
+
+                
+
+
+
+
+
+                 
                   <Divider/>
 
                   <Box sx={{display:'flex', justifyContent:'flex-end'}}>
 
 
-                  <BasicButton text={'delete'}
-                            color={'magenta.main'} onClick={() => {handleModalClose()}}
+                  <BasicButton text={'cancel'}
+                            color={'magenta.main'}
+                            textColor={'black'} onClick={() => {handleModalClose()}}
                             fullWidth={true}/>
                   <BasicButton text={'save'} 
                               color={'cyan.main'} 
@@ -103,7 +129,7 @@ export default function FormBuilder({modalIsOpen, handleModalClose}){
                               fullWidth={true}
                               onClick={() => { insertNewForm()}}/>
 
-                  </Box>
+                  </Box> 
 
 
                   
@@ -111,8 +137,8 @@ export default function FormBuilder({modalIsOpen, handleModalClose}){
                 </Box>
 
               </Modal>
-              {/* <FieldOptions open={openAddField}
-                           setOpen={setOpenAddField}/>  */}
+               {/* <FieldOptions open={openAddField}
+                           setOpen={setOpenAddField}/>   */}
             </>
           );
         }

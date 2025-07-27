@@ -12,7 +12,7 @@
 ### Completed Features
 - User authentication 
 - Forms List loaded from db
-
+- add new form feature from form builder modal
 
 
 
@@ -20,7 +20,7 @@
 ### Work in Progress
 
 - updating minor UI incosistency
-- Testing and debugging of form submissions with error handling
+- Testing and debugging on form submissions and  add new form feature backend and frontend 
 
 ### Open Issues
 
@@ -32,12 +32,16 @@
 ## Upcoming Tasks
 
 ### Next Steps
-
+- review and regenerate webapp design 
+- test frontend components
+- add description feature to form builder
+-fix errors handling on form builder and login feature
 -implement new form creation
 - project and design form builder modal
 - Implement customizable fields 
 
 ### Timeline
+
 
 
 ---

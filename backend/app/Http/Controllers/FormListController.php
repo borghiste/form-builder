@@ -19,6 +19,9 @@ class FormListController extends Controller
                     $newForm = Form::create($request->only(['name']));
                     return response()->json($newForm);
                         }
+
+    
+  
                         
                             
                         } 

@@ -1,7 +1,7 @@
-// Header.test.tsx
+
 import '@testing-library/jest-dom';
 import { render, screen, fireEvent } from '@testing-library/react';
-import Header from '../../components/UI/Header';
+import Header from '../../components/Header';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 vi.mock('react-redux', async () => {
@@ -21,9 +21,9 @@ describe('Header', () => {
   });
 
   it('renders the Header component with user data', () => {
-    // @ts-ignore
-    useSelector.mockReturnValue({ id: '123', name: 'Test User' });
-    // @ts-ignore
+
+    useSelector.mockReturnValue({  name: 'test User' });
+
     useDispatch.mockReturnValue(vi.fn());
 
     render(<Header />);
@@ -32,12 +32,14 @@ describe('Header', () => {
     expect(screen.getByText(/test user/i)).toBeInTheDocument();
   });
 
-  it('dispatches logout when logout button is clicked', () => {
-    // @ts-ignore
-    useSelector.mockReturnValue({ id: '123', name: 'Test User' });
+  it('dispatches logout action when logout button is clicked', () => {
+   
+    useSelector.mockReturnValue({ name: 'test User' });
     const mockDispatch = vi.fn();
-    // @ts-ignore
+    
     useDispatch.mockReturnValue(mockDispatch);
+
+    import.meta.env.VITE_BACKEND_URL = 'http://localhost:8000'
 
     render(<Header />);
 
@@ -49,50 +51,8 @@ describe('Header', () => {
 });
 
 
-// // Mocka `useDispatch` di `react-redux`
-// vi.mock('react-redux', () => ({
-//   useDispatch: vi.fn(), // mocka la funzione `useDispatch`
-// }));
-
-// // Mocka l'azione `logout`
-// vi.mock('../.. /authSlice', () => ({
-//   logout: vi.fn(() => ({ type: 'LOGOUT' })),
-// }));
-
-// test('dispatches logout action when button is clicked', () => {
-//   const mockDispatch = vi.fn();
-//   useDispatch.mockReturnValue(mockDispatch); // mocka useDispatch per restituire `mockDispatch`
-
-//   render(<LoginButton />);
-//   const button = screen.getByText('Log out');
-//   fireEvent.click(button);
-
-//   expect(mockDispatch).toHaveBeenCalledWith(logout()); // verifica che `logout` sia stato dispatchato
-// });
 
 
-
-
-// // Mocka `useDispatch` di `react-redux`
-// vi.mock('react-redux', () => ({
-//   useDispatch: vi.fn(),
-// }));
-
-// // Mocka l'azione `logout`
-// vi.mock('../store/authSlice', () => ({
-//   logout: vi.fn(() => ({ type: 'LOGOUT' })),
-// }));
-
-// test('dispatches logout action when button is clicked', () => {
-//   const mockDispatch = vi.fn();
-//   useDispatch.mockReturnValue(mockDispatch); // Mocka `useDispatch` per restituire il mock
-
-//   render(<Header />);
-//   const button = screen.getByText('Log out');
-//   fireEvent.click(button);
-
-//   expect(mockDispatch).toHaveBeenCalledWith(logout()); // Verifica che l'azione logout sia stata dispatchata
-// });
 
 
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { InputLabel, TextField } from "@mui/material";
+import { InputLabel, TextField, Box, FormControlLabel, Typography } from "@mui/material";
 
 export default function LabeledTextField({labelName, 
                                         variant,
@@ -7,11 +7,14 @@ export default function LabeledTextField({labelName,
                                         onchange}){
 
     return(
-        <>
-        <InputLabel>{labelName}</InputLabel>
+        <Box sx={{display:'flex', flexDirection:'column'}}>
+            <Typography variant="subtitle2">{labelName}</Typography>
         <TextField variant={variant}
                     size="small"
-                    placeholder={placeholder} onChange={onchange}/>
-        </>
+                    placeholder={placeholder} 
+                    onChange={onchange}
+                    label={placeholder} 
+                    fullWidth/>
+        </Box>
     )
 }

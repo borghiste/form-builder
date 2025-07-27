@@ -18,6 +18,7 @@ import { Logout } from '../features/UserSlice';
 
 // COMPONENTS
 import BasicButton from './UI/BasicButton';
+
 export default function Header(){
 
     const [menuIconisClicked, setMenuIconisClicked] = useState(false);
@@ -48,8 +49,7 @@ export default function Header(){
             
                 
         
-        
-    
+
     
 
     return(
@@ -57,33 +57,52 @@ export default function Header(){
         <Box component={'header'} sx={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
     
 
-                <img src='/assets/images/logo.jpg' height={75} width={75}/>
+                <img src='/assets/images/logo.png' height={49} width={167}/>
 
-            { User.id !== null  ? <Typography sx={{padding:0}}> Welcome,{User?.name}</Typography>  : null}
             <Box component={'nav'}  className={`navigation  ${menuIconisClicked ? `open-nav` : '' }  items-center`}>
 
        
-            <BasicButton text={'home'} href={'/'}/>
-            <BasicButton text={User?.id !== null ? 'Log out' : 'Log in'} variant={'text'} href={ User.id !== null ? null : 'login'} onClick={User.id !== null ? handleLogout : null} />
+            {/* <BasicButton text={'home'} href={'/'}/> */}
+
+            <ul>
+                <li>
+                    <a href="/">HOME</a>
+                </li>
+                <li>
+                    <a href={`${User.id !== null ? null : '/login'} ` }>{User.id !== null ? 'LOG OUT' : 'LOGIN'}</a>
+                </li>
+
+                <li>
+                    <a href="/about">ABOUT</a>
+                </li>
+            </ul>
+
             
 
         
 
+
             <Box  component={'span'} sx={{display:'flex'}}>
 
-            <LightModeIcon sx={{color: darkModeIsOn ? 'text.primary' : 'cyan.main' } } />
+            {/* <LightModeIcon sx={{color: darkModeIsOn ? 'text.primary' : 'cyan.main' } } /> */}
 
-            <Switch  color='primary' onChange={()=> {dispatch(switchToDarkMode(!darkModeIsOn))}} />
+            {/* <Switch  color='primary' onChange={()=> {dispatch(switchToDarkMode(!darkModeIsOn))}} /> */}
 
-            <DarkModeIcon color='primary'/>
+            {/* <DarkModeIcon color='primary'/> */}
             </Box>
+
+
             </Box>
+            { User.id !== null  ? <Typography sx={{padding:0}}> Welcome,{User?.name}</Typography>  : null}
 
 
 
 <Button onClick={()=> { setMenuIconisClicked(!menuIconisClicked)}}>
 
-<MenuIcon sx={{display: {xs:'inline-block', sm:'none'} }} />
+
+{/*  HAMBURGER ICON */}
+
+<MenuIcon sx={{display: {xs:'inline-block', sm:'none'}, zIndex:1 }} />
 
 </Button>
         </Box>

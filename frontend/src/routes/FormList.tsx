@@ -14,7 +14,7 @@ import { fetchformsList } from '../features/formsListSlice';
 import { selectList } from "../features/formsListSlice";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { RootState } from "../app/store";
-import FormBuilder from "./FormBuilder";
+import FormBuilder from '../components/FormBuilder';
 import { useState } from "react";
 
 
@@ -54,7 +54,7 @@ const handleClose = () =>{ setModalOpen(false);
 
 <List className=' w-full ' sx={{zIndex:0}}>
 
-    <ListItem sx={{display:'flex', justifyContent:'center'}}>
+    <ListItem>
         <ListItemText  sx={{font:'bold'}} primary='Form Name'/>
             
 
@@ -68,13 +68,14 @@ const handleClose = () =>{ setModalOpen(false);
        
        
        
-        <BasicButton text={' + NEW FORM'} 
+        {  isAdmin ? <BasicButton text={' + NEW FORM'} 
                     variant={'contained'} 
                     color={'gray.light'} 
                     textColor={'black'}
                     width={200}
                     onClick={setModalOpen}
-                    />
+                    /> : null }
+                    
     </ListItem>
     <Divider/>
 

@@ -5,7 +5,9 @@ import { Box, Typography } from "@mui/material";
 import BasicButton from "../components/UI/BasicButton";
 export default function Home(){
 
+
     return(
+      
         <Box
         sx={{minHeight:'100vh', display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center'}}>
           

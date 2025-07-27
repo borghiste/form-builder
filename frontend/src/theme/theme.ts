@@ -39,7 +39,7 @@ export const LightTheme = createTheme({
       styleOverrides: {
         root: {
           display: 'flex',
-          justifyContent: 'space-between'
+          justifyContent: 'stretch'
         }
       }
     },
@@ -47,7 +47,7 @@ export const LightTheme = createTheme({
       styleOverrides: {
         root: {
           display:'flex',
-          justifyContent:' center',
+          
           
         },
         primary: {
