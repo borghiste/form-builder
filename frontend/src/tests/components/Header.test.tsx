@@ -22,14 +22,14 @@ describe('Header', () => {
 
   it('renders the Header component with user data', () => {
 
-    useSelector.mockReturnValue({  name: 'test User' });
+    useSelector.mockReturnValue({  name: 'admin User' });
 
     useDispatch.mockReturnValue(vi.fn());
 
     render(<Header />);
 
     expect(screen.getByRole('img')).toBeInTheDocument();
-    expect(screen.getByText(/test user/i)).toBeInTheDocument();
+    expect(screen.getByText(/admin user/i)).toBeInTheDocument();
   });
 
   it('dispatches logout action when logout button is clicked', () => {
@@ -39,11 +39,11 @@ describe('Header', () => {
     
     useDispatch.mockReturnValue(mockDispatch);
 
-    import.meta.env.VITE_BACKEND_URL = 'http://localhost:8000'
+    import.meta.env.VITE_BACKEND_URL = 'http://localhost:8000';
 
     render(<Header />);
 
-    const logoutButton = screen.getByText('Log out');
+    const logoutButton = screen.getByText('LOG OUT');
     fireEvent.click(logoutButton);
 
     expect(mockDispatch).toHaveBeenCalled();

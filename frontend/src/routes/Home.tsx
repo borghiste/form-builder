@@ -11,7 +11,7 @@ export default function Home(){
         <Box
         sx={{minHeight:'100vh', display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center'}}>
           
-      <Typography variant="h1" sx={{color:'text.primary'}}>
+      <Typography variant="h1" sx={{color:'text.primary'}} >
         home
       </Typography>
       <Typography sx={{color:'text.primary', maxWidth:'30rem'}} >
@@ -19,7 +19,7 @@ export default function Home(){
       </Typography>
 
       <Box component={'div'} sx={{display:'flex'}}>
-        <BasicButton text={'get started'} variant={'contained'} color={'cyan.main'} href={'/login'}/>
+        <BasicButton text={'get started'} variant={'contained'} color={'cyan.dark'} href={'/login'}/>
       </Box>
         
        

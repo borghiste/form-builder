@@ -64,7 +64,8 @@ const dispatch = useDispatch();
      
      
     
-    navigate('/forms', {state: {isAdmin: data.user.role == 'admin' ? true : false } });
+    //  navigate('/forms', {state: {isAdmin: data.user.role == 'admin' ? true : false } });
+    navigate('/forms')
     
     
    }
@@ -104,7 +105,7 @@ return(
 
   
 
-  <BasicButton text='submit' variant="contained" fullWidth={true} type={'submit'} />
+  <BasicButton text='Log in' variant="contained" fullWidth={true} type={'submit'} />
   <FormHelperText sx={{color:'red'}}>{HelperText}</FormHelperText>
 </Box>
 

@@ -7,7 +7,7 @@ import Modal from '@mui/material/Modal';
 import BasicButton from "./UI/BasicButton";
 import FieldOptions from "./FieldOptions";
 import LabeledTextField from "./UI/LabeledTextField";
-import FormFieldsSection from "./FormFieldsSection";
+;
 import FormPreview from "./FormPreview";
 //REDUX
 import { addNewForm } from "../features/formsListSlice";
@@ -98,8 +98,9 @@ export default function FormBuilder({modalIsOpen, handleModalClose}){
                   </Box>
                 <Divider/>
 
-                  <Box >
-                    <FormFieldsSection addFieldAction={() => toggleDrawer(true)}/>
+                  <Box>
+                 
+                    {/* <FormFieldsSection addFieldAction={() => toggleDrawer(true)}/> */}
                     <Divider/>
                     <FormPreview/> 
 

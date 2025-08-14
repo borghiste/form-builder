@@ -7,12 +7,12 @@ import { Container, List,  ListItem, ListItemText, Divider, Box } from "@mui/mat
 //COMPONENTS
 import BasicButton from "../components/UI/BasicButton";
 //REDUX
-import selectUser from '../features/UserSlice';
+import {selectUser} from '../features/UserSlice';
 import { AppDispatch } from "../app/store";
 import {useSelector, useDispatch} from 'react-redux';
 import { fetchformsList } from '../features/formsListSlice';
 import { selectList } from "../features/formsListSlice";
-import { unwrapResult } from "@reduxjs/toolkit";
+
 import { RootState } from "../app/store";
 import FormBuilder from '../components/FormBuilder';
 import { useState } from "react";
@@ -23,8 +23,8 @@ export default  function FormsList(){
      const location = useLocation();
      const navigate = useNavigate();
      const dispatch = useDispatch<AppDispatch>();
-     const isAdmin = location.state.isAdmin
-     const  {forms, error, status} = useSelector(selectList)
+    const  {forms, error, status, } = useSelector(selectList)
+    const User = useSelector(selectUser)
 
 useEffect(() => {dispatch(fetchformsList())
 
@@ -52,7 +52,7 @@ const handleClose = () =>{ setModalOpen(false);
 
 <Container disableGutters={true} component={'div'} sx={{minHeight:'100vh'}}>
 
-<List className=' w-full ' sx={{zIndex:0, flexDirection:'column'}}>
+<List className=' w-full ' sx={{zIndex:0, display:'flex', flexDirection: 'column'}}>
 
     <ListItem>
         <ListItemText  sx={{font:'bold'}} primary='Form Name'/>
@@ -68,7 +68,7 @@ const handleClose = () =>{ setModalOpen(false);
        
        
        
-        {  isAdmin ? <BasicButton text={' + NEW FORM'} 
+        {  User.role ? <BasicButton text={' + NEW FORM'} 
                     variant={'contained'} 
                     color={'gray.light'} 
                     textColor={'black'}
@@ -98,7 +98,7 @@ const handleClose = () =>{ setModalOpen(false);
         
         <BasicButton text={'view'} color={'cyan.dark'} textColor={'white'}/>
 
-        { isAdmin  ? (
+        { User.role == 'admin'  ? (
             <>
          <BasicButton text={'edit'}   />
         <BasicButton text={'delete'} color={'magenta.dark'} textColor={'black'} />
