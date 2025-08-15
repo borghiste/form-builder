@@ -30,11 +30,13 @@ const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 export default function Header(){
   
   const userisLogged = useSelector(selectUser);
+  
   const [menuIconisClicked, setMenuIconisClicked] = useState(false);
   const dispatch = useDispatch(); 
   const User = useSelector(selectUser); 
   const darkModeIsOn= useSelector(selectMode);
-  const pages = [{name:'home', path: '/'}, ...(userisLogged ? [{name:'login', path:'/login', onClick: () =>{handleLogout()}}] : [{name:'login', path:'/login'}]), {name: 'forms', path: '/forms'}, {name:'about', path:'/about'}];
+
+  const pages = [{name:'home', path: '/'}, ...(userisLogged.id  ? [{name:'logout', path:'/login', onClick: () =>{handleLogout()}}] : [{name:'login', path:'/login'}]), {name: 'forms', path: '/forms'}, {name:'about', path:'/about'}];
 
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
@@ -84,7 +86,27 @@ export default function Header(){
     <AppBar position="static" sx={{bgcolor:'background.default'}}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-        <img src='/assets/images/logo.png' height={49} width={167} />
+        {/* <img src='/assets/images/logo.png' height={49} width={167} /> */}
+        <Typography
+            variant="h5"
+            noWrap
+            component="a"
+            href="#app-bar-with-responsive-menu"
+            sx={{
+              mr: 2,
+              display: { md: 'flex', xs: 'none' },
+              flexGrow: 1,
+              fontFamily: 'monospace',
+              fontWeight: 650,
+              letterSpacing: '.2rem',
+              color: 'text.primary',
+              textDecoration: 'none',
+              position: 'static',
+              
+            }}
+          >
+            FormBuilder
+          </Typography>
    
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -127,10 +149,15 @@ export default function Header(){
               <Button
                 key={page.name}
                 
-                onClick={page.onClick}
+                onClick={(e) =>{ if(page.onClick){e.preventDefault(); page.onClick()}}}
                 sx={{ my: 2, display: 'block'}}
+                
               >
-                <Link href={page.path} sx={{color:'text.primary', textDecoration:'none'}}>{page.name}</Link>
+                
+                <Link href={page.path} sx={{color:'text.primary', 
+                                        textDecoration:'none'}}>
+                                        {page.name}
+                </Link>
                
               </Button>
             ))}
@@ -176,3 +203,4 @@ export default function Header(){
         </Box>
     )
 }
+

@@ -26,7 +26,7 @@ const dispatch = useDispatch();
 
 
 
-  function handleSubmit(e) {
+function handleSubmit(e) {
     e.preventDefault();
    
   
@@ -36,7 +36,7 @@ const dispatch = useDispatch();
        return;
      }
   
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/login`, {
+    fetch(`http://localhost:8000/api/login`, {
       method: 'POST',
       
       headers: {
@@ -50,7 +50,7 @@ const dispatch = useDispatch();
     
     if(!res.ok){
       return res.json().then(err => {
-        
+        console.log(err)
         throw new Error( err ||'login failed')})
     }
     return res.json()
@@ -59,13 +59,11 @@ const dispatch = useDispatch();
    
     if(data.user){
       dispatch(Login(data.user))
-     sessionStorage.setItem('user', JSON.stringify(data.user));
-     
-     
-     
+     sessionStorage.setItem('user', JSON.stringify(data.user))
+   
+
     
-    //  navigate('/forms', {state: {isAdmin: data.user.role == 'admin' ? true : false } });
-    navigate('/forms')
+    navigate('/forms', {state: {isAdmin: User.role == 'user' ? false : true } });
     
     
    }
@@ -80,7 +78,6 @@ const dispatch = useDispatch();
 
   })
   }
-  
   
    
 

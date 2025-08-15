@@ -8,6 +8,7 @@ import BasicButton from "./UI/BasicButton";
 import FieldOptions from "./FieldOptions";
 import LabeledTextField from "./UI/LabeledTextField";
 ;
+import Drawer from './Drawer';
 import FormPreview from "./FormPreview";
 //REDUX
 import { addNewForm } from "../features/formsListSlice";
@@ -24,7 +25,7 @@ export default function FormBuilder({modalIsOpen, handleModalClose}){
       
     position: 'absolute',
     
-  
+ 
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
@@ -50,6 +51,7 @@ export default function FormBuilder({modalIsOpen, handleModalClose}){
   };
 
   //ADD NEW FORM FUNCTION
+
   function insertNewForm(){
     fetch(`${import.meta.env.VITE_BACKEND_URL}/api/new`, 
       { method: 'POST',
@@ -91,14 +93,16 @@ export default function FormBuilder({modalIsOpen, handleModalClose}){
                 sx={{zIndex:1}}
               >
                 <Box sx={modalStyle}>
-                  <Box sx={{display:'flex', justifyContent:'space-between'}}>
+                  <Box sx={{display:'flex', justifyContent:'space-between',maxHeight:'50%'}}>
 
-                  <Typography variant="h5" sx={{p:0}}>Form Builder</Typography>
+                  <Typography variant="h2" sx={{p:0}}>Form Builder</Typography>
                   <Button sx={{ p:0}}>X</Button>
                   </Box>
                 <Divider/>
 
                   <Box>
+                    <Drawer/>
+                    
                  
                     {/* <FormFieldsSection addFieldAction={() => toggleDrawer(true)}/> */}
                     <Divider/>
