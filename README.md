@@ -4,7 +4,7 @@
 
 ---
 
-## 🔹 Key Features
+##  Key Features
 
 - Create dynamic forms with custom fields(in progress).
 - Supports multiple field types: text, number, email, checkbox, radio, select(in progress).

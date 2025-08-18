@@ -14,7 +14,7 @@ import { fetchformsList } from '../features/formsListSlice';
 import { selectList } from "../features/formsListSlice";
 
 import { RootState } from "../app/store";
-import FormBuilder from '../components/FormBuilder';
+import FormBuilderModal from '../components/FormBuilderModal';
 import { useState } from "react";
 
 
@@ -46,7 +46,7 @@ const handleClose = () =>{ setModalOpen(false);
 
     return(
         <>
-        <FormBuilder modalIsOpen={modalOpen}
+        <FormBuilderModal modalIsOpen={modalOpen}
                     handleModalClose={handleClose}/>
       
 

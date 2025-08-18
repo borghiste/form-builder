@@ -1,43 +1,110 @@
 import React from "react";
-import { Typography, Box } from "@mui/material";
+import { useState } from "react";
+import {
+  TextField,
+  Button,
+  Box,
+  Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material";
 
-export default function FormPreview(){
+export default function SimpleForm() {
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    role: "",
+  });
 
-    return(
-        <>
-        <Typography variant="h6">
-            Form Preview
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>
+  ) => {
+    const { name, value } = e.target as HTMLInputElement;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const validate = () => {
+    let newErrors: { [key: string]: string } = {};
+    if (!form.name) newErrors.name = "Name is required";
+    if (!form.email) newErrors.email = "Email is required";
+    else if (!/\S+@\S+\.\S+/.test(form.email))
+      newErrors.email = "Invalid email format";
+    if (!form.role) newErrors.role = "Please select a role";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (validate()) {
+      console.log("Form submitted:", form);
+    }
+  };
+
+  return (
+    <Box
+
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{  maxWidth: '100%', maxHeight:'100%', bgcolor:'background.default' }}
+    >
+      <Typography variant="h5" mb={2}>
+        Registration Form
+      </Typography>
+
+      <TextField
+        label="Name"
+        name="name"
+        value={form.name}
+        onChange={handleChange}
+        fullWidth
+        margin="normal"
+        error={!!errors.name}
+        helperText={errors.name}
+      />
+
+      <TextField
+        label="Email"
+        name="email"
+        value={form.email}
+        onChange={handleChange}
+        fullWidth
+        margin="normal"
+        error={!!errors.email}
+        helperText={errors.email}
+      />
+
+      <FormControl fullWidth margin="normal" error={!!errors.role}>
+        <InputLabel>Role</InputLabel>
+        <Select
+          name="role"
+          value={form.role}
+          onChange={handleChange}
+          label="Role"
+        >
+          <MenuItem value="">-- Select Role --</MenuItem>
+          <MenuItem value="developer">Developer</MenuItem>
+          <MenuItem value="designer">Designer</MenuItem>
+          <MenuItem value="manager">Manager</MenuItem>
+        </Select>
+        <Typography variant="caption" color="error">
+          {errors.role}
         </Typography>
+      </FormControl>
 
-        <Box>
-            <Typography sx={{ marginBottom: 2, height:'3rem' }}>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                      tempor incididunt ut labore et dolore magna aliqua. Rhoncus dolor purus non
-                      enim praesent elementum facilisis leo vel. Risus at ultrices mi tempus
-                      imperdiet. Semper risus in hendrerit gravida rutrum quisque non tellus.
-                      Convallis convallis tellus id interdum velit laoreet id donec ultrices.
-                      Odio morbi quis commodo odio aenean sed adipiscing. Amet nisl suscipit
-                      adipiscing bibendum est ultricies integer quis. Cursus euismod quis viverra
-                      nibh cras. Metus vulputate eu scelerisque felis imperdiet proin fermentum
-                      leo. Mauris commodo quis imperdiet massa tincidunt. Cras tincidunt lobortis
-                      feugiat vivamus at augue. At augue eget arcu dictum varius duis at
-                      consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem donec massa
-                      sapien faucibus et molestie ac.
-                    </Typography>
-                    <Typography sx={{ marginBottom: 2 }}>
-                      Consequat mauris nunc congue nisi vitae suscipit. Fringilla est ullamcorper
-                      eget nulla facilisi etiam dignissim diam. Pulvinar elementum integer enim
-                      neque volutpat ac tincidunt. Ornare suspendisse sed nisi lacus sed viverra
-                      tellus. Purus sit amet volutpat consequat mauris. Elementum eu facilisis
-                      sed odio morbi. Euismod lacinia at quis risus sed vulputate odio. Morbi
-                      tincidunt ornare massa eget egestas purus viverra accumsan in. In hendrerit
-                      gravida rutrum quisque non tellus orci ac. Pellentesque nec nam aliquam sem
-                      et tortor. Habitant morbi tristique senectus et. Adipiscing elit duis
-                      tristique sollicitudin nibh sit. Ornare aenean euismod elementum nisi quis
-                      eleifend. Commodo viverra maecenas accumsan lacus vel facilisis. Nulla
-                      posuere sollicitudin aliquam ultrices sagittis orci a.
-                    </Typography>
-        </Box>
-        </>
-    )
+      <Button
+        type="submit"
+        variant="contained"
+        color="primary"
+        fullWidth
+        sx={{ mt: 2 }}
+      >
+        Submit
+      </Button>
+    </Box>
+  );
 }
