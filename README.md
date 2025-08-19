@@ -1,4 +1,4 @@
-# Form Based
+# Form Builder
 
 **Form Builder** is a full-stack web application that allows you to create, edit, and fill dynamic forms. The project provides an intuitive interface to add custom fields, configure options, and handle validations both on the client and server side via REST APIs.  
 
@@ -14,18 +14,18 @@
 - Modern and responsive user interface.
 - Easily extendable with new field types or validations.
 
----
 
-## 🔹 Tech Stack
 
-- **Front-end:** React, Material UI
+##  Tech Stack
+
+- **Front-end:** React, Material UI, Vite
 - **Back-end:** Laravel (REST API)
 - **Database:** MySQL/PostgreSQL (configurable)
 - **Other tools:** Docker for development environment
 
----
 
-## 🔹 Installation
+
+##  Installation
 
 ### Prerequisites
 
@@ -49,7 +49,7 @@ php artisan key:generate
 ```
 
 ### 3. Environment Configuration (.env)
-generate .env file
+generate .env file and application key
 ```bash
 
 cp .env.example .env
@@ -59,7 +59,7 @@ php artisan key:generate
 ### 4. Database Configuration
 Open .env and update the following fields:
 ```bash
-APP_NAME=Formuilder
+APP_NAME=FormBuilder
 APP_ENV=local
 APP_KEY=
 APP_DEBUG=true
@@ -68,9 +68,9 @@ APP_URL=http://localhost:8000
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=form_builder_database
-DB_USERNAME=root
-DB_PASSWORD=
+DB_DATABASE=your_database_name
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
 
 # Optional: API or JWT secrets
 # JWT_SECRET=your_jwt_secret_here
