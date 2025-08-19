@@ -27,10 +27,8 @@ export default function FormBuilderModal({modalIsOpen, handleModalClose}){
   const boxStyle = {
       
      position: 'absolute',
-    display:'flex', 
-    flexDirection:{xs:'column',md:'row'},
+    display:'grid',
     justifyContent:'center',
-    
      top: '50%',
      left: '50%',
      transform: 'translate(-50%, -50%)',
@@ -53,17 +51,21 @@ export default function FormBuilderModal({modalIsOpen, handleModalClose}){
                       
                       <Box sx={boxStyle}>
                         
-                        <Box sx={{display:'flex',
-                          position:'static',
-                          width:'100%', justifyContent:'space-between'}}>
+                        <Box sx={{display:'grid', gridAutoFlow:'column',
+                                  alignItems:'center',
+                          position:'sticky', gap:2,
+                           justifyContent:'space-between'}}>
                         <Typography variant="h5" >Form Builder </Typography>
                         <BasicButton text={'X'} textColor={'magenta.main'}
                         onClick={()=>{handleModalClose()}}/>
 
                         </Box>
                         <Divider/>
+                        <Box sx={{display:'flex', flexDirection:{xs:'column',md:'row'}}}>
+
                         <LeftDrawer/>
                         <FormPreview/>
+                        </Box>
                         
                       
                        

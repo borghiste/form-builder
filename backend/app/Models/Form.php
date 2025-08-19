@@ -9,5 +9,5 @@ class Form extends Model
 {
     use HasFactory;
     protected $table ='forms';
-    protected $fillable = ['name', 'description', 'created_at', 'updated_at'];
+    protected $fillable = ['name', 'description', 'created_at', 'updated_at', 'fields'];
 }

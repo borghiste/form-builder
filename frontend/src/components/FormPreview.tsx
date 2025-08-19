@@ -27,13 +27,12 @@ export default function FormPreview() {
 
    const  handleAddNewForm = async (e) => {
     e.preventDefault()
-    await dispatch(createNewForm({name:'new form', description: 'des2'}))
+    await dispatch(createNewForm({name:form.name}))
   }
 
   const [form, setForm] = useState({
     name: "",
-    email: "",
-    role: "",
+    description: ""
   });
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -58,10 +57,9 @@ export default function FormPreview() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (validate()) {
-      console.log("Form submitted:", form);
+  
     }
-  };
+ 
 
   return (
     <Box
@@ -71,7 +69,7 @@ export default function FormPreview() {
       sx={{  maxWidth: '100%', maxHeight:'100%', bgcolor:'background.default' }}
     >
       <Typography variant="h5" mb={2}>
-        Registration Form
+      Form name
       </Typography>
 
       <TextField
@@ -86,14 +84,13 @@ export default function FormPreview() {
       />
 
       <TextField
-        label="Email"
-        name="email"
-        value={form.email}
+        label="description"
+        name="description"
+        
         onChange={handleChange}
         fullWidth
         margin="normal"
-        error={!!errors.email}
-        helperText={errors.email}
+      
       />
 
       <FormControl fullWidth margin="normal" error={!!errors.role}>
@@ -113,7 +110,7 @@ export default function FormPreview() {
           {errors.role}
         </Typography>
       </FormControl>
-      <Box sx={{display:'flex'}}>
+      <Box sx={{display:'flex', justifyContent:'center'}}>
         <BasicButton text={'save'} 
                     color={'cyan.main'} 
                     textColor={'white'}
@@ -121,15 +118,7 @@ export default function FormPreview() {
         <BasicButton text={'delete'} color={'magenta.dark'} textColor={'white'}/>
       </Box>
 
-      {/* <Button
-        type="submit"
-        variant="contained"
-        color="primary"
-        fullWidth
-        sx={{ mt: 2 }}
-      >
-        Submit
-      </Button> */}
+  
     </Box>
   );
 }
