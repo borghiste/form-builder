@@ -84,7 +84,8 @@ const handleClose = () =>{ setModalOpen(false);
         const createdDate = new Date(form.created_at).toISOString().slice(0, 10);
         const updatedDate = new Date(form.updated_at).toISOString().slice(0, 10);
        return(
-        <ListItem key={form.id}>
+        <div key={form.id}>
+        <ListItem >
 <ListItemText>{form.name}</ListItemText>
 
 <ListItemText primary={createdDate}/>
@@ -104,7 +105,7 @@ const handleClose = () =>{ setModalOpen(false);
         <BasicButton text={'delete'} color={'magenta.dark'} textColor={'black'} />
             </>
         ) : null
-        }
+    }
         </Box>
        
        
@@ -113,6 +114,7 @@ const handleClose = () =>{ setModalOpen(false);
 
  
 </ListItem>
+    </div>
 
 )
 }

@@ -1,5 +1,12 @@
 import React from "react";
 import { useState } from "react";
+//COMPONENTS
+import BasicButton from '../components/UI/BasicButton';
+//REDUX
+import {createNewForm} from '../features/formsListSlice';
+import { useDispatch, useSelector } from "react-redux";
+import { selectList } from "../features/formsListSlice";
+
 import {
   TextField,
   Button,
@@ -11,7 +18,18 @@ import {
   MenuItem,
 } from "@mui/material";
 
-export default function SimpleForm() {
+
+export default function FormPreview() {
+
+  const dispatch = useDispatch();
+
+  const state = useSelector(selectList);
+
+   const  handleAddNewForm = async (e) => {
+    e.preventDefault()
+    await dispatch(createNewForm({name:'new form', description: 'des2'}))
+  }
+
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -95,8 +113,15 @@ export default function SimpleForm() {
           {errors.role}
         </Typography>
       </FormControl>
+      <Box sx={{display:'flex'}}>
+        <BasicButton text={'save'} 
+                    color={'cyan.main'} 
+                    textColor={'white'}
+                    onClick={handleAddNewForm} />
+        <BasicButton text={'delete'} color={'magenta.dark'} textColor={'white'}/>
+      </Box>
 
-      <Button
+      {/* <Button
         type="submit"
         variant="contained"
         color="primary"
@@ -104,7 +129,7 @@ export default function SimpleForm() {
         sx={{ mt: 2 }}
       >
         Submit
-      </Button>
+      </Button> */}
     </Box>
   );
 }

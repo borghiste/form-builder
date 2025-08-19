@@ -15,9 +15,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('login', [AuthController::class, 'login']);
 Route::post('logout', [AuthController::class, 'logout']);
 
-Route::get('formsList', [FormListController::class, 'getFormList']);
+Route::get('forms', [FormListController::class, 'getFormList']);
 
 // forms action routes
- Route::post('new', [FormListController::class, 'addNewForm']);
+ Route::post('forms', [FormListController::class, 'addNewForm']);
 //  Route::delete('delpost', [FormListController::class, 'deletepost'])
 
