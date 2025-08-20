@@ -31,7 +31,11 @@ const createNewForm = createAsyncThunk(
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(newFormData)
             }
+            
         )
+        if(!re.error){
+            throw new Error('error creating new form')
+        }
         return await res.json()
     }
 )
@@ -93,4 +97,4 @@ export const selectList = (state) => state.forms;
 export const selectForms = (state) => state.forms.forms;
 export const selectFormsStatus = (state) => state.forms.status;
 export const selectFormsError = (state) => state.forms.error;
-export { fetchformsList, createNewForm }; // esporti i thunk
+export { fetchformsList, createNewForm }; 

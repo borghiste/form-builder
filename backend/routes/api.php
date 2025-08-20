@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FormController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\Form;
@@ -19,5 +20,8 @@ Route::get('forms', [FormListController::class, 'getFormList']);
 
 // forms action routes
  Route::post('forms', [FormListController::class, 'addNewForm']);
+
 //  Route::delete('delpost', [FormListController::class, 'deletepost'])
+
+ Route::get('forms/{id}', [FormController::class, 'getForm']);
 

@@ -83,8 +83,7 @@ export default function RightSideDrawer() {
         sx={{
             width: drawerWidth,
             bgcolor:'background.default',
-            flexShrink: 0,
-            width:900,
+            flexShrink: 0
          
         }}
         variant="persistent"

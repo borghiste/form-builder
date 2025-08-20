@@ -12,6 +12,7 @@ import { AppDispatch } from "../app/store";
 import {useSelector, useDispatch} from 'react-redux';
 import { fetchformsList } from '../features/formsListSlice';
 import { selectList } from "../features/formsListSlice";
+import getForm from "../features/FormSlice";
 
 import { RootState } from "../app/store";
 import FormBuilderModal from '../components/FormBuilderModal';
@@ -41,7 +42,9 @@ const handleClose = () =>{ setModalOpen(false);
 }
 
 
-
+const handlegetForm = (selectedForm) => {
+    dispatch(getForm(selectedForm.id))
+}
 
 
     return(
@@ -80,6 +83,7 @@ const handleClose = () =>{ setModalOpen(false);
     <Divider/>
 
     {forms.map((form)=> {
+       
 
         const createdDate = new Date(form.created_at).toISOString().slice(0, 10);
         const updatedDate = new Date(form.updated_at).toISOString().slice(0, 10);
@@ -97,11 +101,12 @@ const handleClose = () =>{ setModalOpen(false);
       
         <Box sx={{display:'flex'}}>
         
-        <BasicButton text={'view'} color={'cyan.dark'} textColor={'white'}/>
+        <BasicButton text={'view'} color={'cyan.dark'} textColor={'white'}
+                        onClick={(e)=>{dispatch(getForm(form.id))}}/>
 
-        { User.role == 'admin'  ? (
+        { User.role == 'admin' ? (
             <>
-         <BasicButton text={'edit'}   />
+         <BasicButton text={'edit'}/>
         <BasicButton text={'delete'} color={'magenta.dark'} textColor={'black'} />
             </>
         ) : null

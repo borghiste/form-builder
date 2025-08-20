@@ -10,7 +10,8 @@ export default function BasicButton({text,
                                     textColor,
                                     width, 
                                     type, 
-                                    fullWidth}){
+                                    fullWidth,
+                                    }){
 
     return(
         
@@ -19,6 +20,8 @@ export default function BasicButton({text,
                 onClick={onClick} 
                 startIcon={startIcon}
                 type={type}
+                
+               
                  
                 
                 sx={{ 

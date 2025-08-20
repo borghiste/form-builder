@@ -48,17 +48,17 @@ export default function LeftSideBar() {
  
 
   return (
-    <div>
+   
     
 
       <Box
          component={'aside'}
         sx={{
-          sx: {  bgcolor:'background.default', display:'flex', justifyContent:'center', flexDirection:{ xs: 'row', sm:'column'}, width:250, height:'100%', zIndex:0 }
+             bgcolor:'background.default', display:'flex', justifyContent:'start', alignItems:'start', flexDirection:{xs:'row',sm:'column'}, height:'100%', zIndex:0 
         }}>
       
         
-          <Typography variant="h6">Builder</Typography>
+          <Typography variant="h6">Form Fields</Typography>
          {fieldTypes.map((field, index) => {
             const IconComponent = field.icon;
             
@@ -66,7 +66,7 @@ export default function LeftSideBar() {
           })}
         
       </Box>
-    </div>
+    
   );
 }
 

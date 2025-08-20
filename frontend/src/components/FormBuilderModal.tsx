@@ -10,7 +10,7 @@
  import LabeledTextField from "./UI/LabeledTextField";
  import RightSideDrawer from "./RightSideDrawer";
  ;
- import LeftDrawer from './LeftSideBar';
+ import LeftDrawer from './FormFieldsLeftSideBar';
  import FormPreview from "./FormPreview";
  //REDUX
  import { addNewForm } from "../features/formsListSlice";
@@ -37,9 +37,9 @@ export default function FormBuilderModal({modalIsOpen, handleModalClose}){
      bgcolor: 'background.default',
      border: '1px solid #000',
      boxShadow: 24,
-     
      p: 0
   }
+
   return(
     <>
     <Modal
