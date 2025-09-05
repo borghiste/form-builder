@@ -16,7 +16,7 @@ import {getForm} from "../features/formSlice";
 import { selectForm } from "../features/formSlice";
 
 import { RootState } from "../app/store";
-import FormBuilderModal from '../components/Modal';
+import Modal from '../components/Modal';
 import { useState } from "react";
 
 
@@ -27,6 +27,7 @@ export default  function FormsList(){
      const dispatch = useDispatch<AppDispatch>();
     const  {forms, error, status, } = useSelector(selectList)
     const User = useSelector(selectUser)
+    const [NewFormButton, NewFormIsClicked] = useState(false)
 
 
 
@@ -37,24 +38,27 @@ useEffect(() => {dispatch(fetchformsList())
 }, [forms])
 
 const [modalOpen, setModalOpen] = useState(false);
-const handleOpen = () => {setModalOpen(true);
-                       
+const handleModalOpen = () => {setModalOpen(true);}
+const handleModalClose = () =>{ setModalOpen(false); }
+
+const handleNewFormButtonisClicked = () => {NewFormIsClicked(true)
+                                    setModalOpen(!modalOpen)
 }
-const handleClose = () =>{ setModalOpen(false); }
 
 const handleViewForm = (formId) => {dispatch(getForm(formId));
+    console.log('new form is clicked:',NewFormButton)
                                     setModalOpen(true)
+                                    
 
 }
-
-
 
 
 
     return(
         <>
-        <FormBuilderModal modalIsOpen={modalOpen}
-                    handleModalClose={handleClose}/>
+        <Modal modalIsOpen={modalOpen}
+                    handleModalClose={handleModalClose}
+                    newFormIsClicked={NewFormButton}/>
       
 
 <Container disableGutters={true} component={'div'} sx={{minHeight:'100vh'}}>
@@ -66,22 +70,21 @@ const handleViewForm = (formId) => {dispatch(getForm(formId));
             
 
 
-        <ListItemText primary='Created time'/>
+        <ListItemText primary='Created time' />
          
         
 
 
-        <ListItemText className='font-bold text-light-gray' sx={{font:'bold'}} primary='updated time'/>
+        <ListItemText className='font-bold ' sx={{font:'bold'}} primary='updated time'/>
        
-       
-       
+
         { 
          User.role === 'admin' ? <BasicButton text={' + NEW FORM'} 
                     variant={'contained'} 
                     color={'gray.light'} 
                     textColor={'black'}
                     width={200}
-                    onClick={setModalOpen}
+                    onClick={()=>{handleNewFormButtonisClicked(!NewFormButton)}}
                     /> : null }
                     
     </ListItem>

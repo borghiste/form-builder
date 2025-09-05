@@ -11,7 +11,7 @@
  import RightSideDrawer from "./RightSideDrawer";
  import BuilderWindow from "./BuilderWindow";
  ;
- import LeftDrawer from './FormFieldsLeftSideBar';
+ import LeftSideBar from './LeftSideBar';
  import FormView from "../components/FormView";
  //REDUX
  import { selectForm } from '../features/formSlice';
@@ -21,7 +21,7 @@
 // //MUI
  import { colors, Divider, Stack } from "@mui/material";
 
-export default function FormBuilderModal({modalIsOpen, handleModalClose}){
+export default function FormBuilderModal({modalIsOpen, handleModalClose, newFormIsClicked}){
 
   const form = useSelector(selectForm);
 
@@ -60,8 +60,8 @@ export default function FormBuilderModal({modalIsOpen, handleModalClose}){
 
                         
                         {
-                          form ? <FormView/> : <BuilderWindow handleModalClose={handleModalClose}/>
-
+                          newFormIsClicked ? <BuilderWindow handleModalClose={handleModalClose}/> 
+                            : <FormView/>
                           }
                         
                         </Box>

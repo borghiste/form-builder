@@ -6,7 +6,7 @@ export default function BasicButton({text,
                                     startIcon, 
                                     color, 
                                     size, 
-                                    variant, 
+                                    variant,  // contained, outlined
                                     textColor,
                                     width, 
                                     type, 
