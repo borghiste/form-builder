@@ -12,10 +12,11 @@ import { AppDispatch } from "../app/store";
 import {useSelector, useDispatch} from 'react-redux';
 import { fetchformsList } from '../features/formsListSlice';
 import { selectList } from "../features/formsListSlice";
-import getForm from "../features/FormSlice";
+import {getForm} from "../features/formSlice";
+import { selectForm } from "../features/formSlice";
 
 import { RootState } from "../app/store";
-import FormBuilderModal from '../components/FormBuilderModal';
+import FormBuilderModal from '../components/Modal';
 import { useState } from "react";
 
 
@@ -27,24 +28,27 @@ export default  function FormsList(){
     const  {forms, error, status, } = useSelector(selectList)
     const User = useSelector(selectUser)
 
+
+
 useEffect(() => {dispatch(fetchformsList())
 
   
 
 }, [forms])
 
-const [modalOpen, setModalOpen] = useState(true);
+const [modalOpen, setModalOpen] = useState(false);
 const handleOpen = () => {setModalOpen(true);
                        
 }
-const handleClose = () =>{ setModalOpen(false);
-                            
+const handleClose = () =>{ setModalOpen(false); }
+
+const handleViewForm = (formId) => {dispatch(getForm(formId));
+                                    setModalOpen(true)
+
 }
 
 
-const handlegetForm = (selectedForm) => {
-    dispatch(getForm(selectedForm.id))
-}
+
 
 
     return(
@@ -71,7 +75,8 @@ const handlegetForm = (selectedForm) => {
        
        
        
-        {  User.role ? <BasicButton text={' + NEW FORM'} 
+        { 
+         User.role === 'admin' ? <BasicButton text={' + NEW FORM'} 
                     variant={'contained'} 
                     color={'gray.light'} 
                     textColor={'black'}
@@ -102,7 +107,7 @@ const handlegetForm = (selectedForm) => {
         <Box sx={{display:'flex'}}>
         
         <BasicButton text={'view'} color={'cyan.dark'} textColor={'white'}
-                        onClick={(e)=>{dispatch(getForm(form.id))}}/>
+                        onClick={()=>{handleViewForm(form.id)}}/>
 
         { User.role == 'admin' ? (
             <>
@@ -114,8 +119,6 @@ const handlegetForm = (selectedForm) => {
         </Box>
        
        
-       
-        
 
  
 </ListItem>

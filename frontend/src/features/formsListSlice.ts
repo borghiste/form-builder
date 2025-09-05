@@ -33,7 +33,7 @@ const createNewForm = createAsyncThunk(
             }
             
         )
-        if(!re.error){
+        if(!res.error){
             throw new Error('error creating new form')
         }
         return await res.json()

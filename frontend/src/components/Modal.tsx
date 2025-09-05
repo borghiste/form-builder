@@ -9,18 +9,21 @@
  import FieldOptions from "./FieldOptions";
  import LabeledTextField from "./UI/LabeledTextField";
  import RightSideDrawer from "./RightSideDrawer";
+ import BuilderWindow from "./BuilderWindow";
  ;
  import LeftDrawer from './FormFieldsLeftSideBar';
- import FormPreview from "./FormPreview";
+ import FormView from "../components/FormView";
  //REDUX
- import { addNewForm } from "../features/formsListSlice";
- import { useDispatch, UseDispatch } from "react-redux";
+ import { selectForm } from '../features/formSlice';
+
+ import { useDispatch, useSelector } from "react-redux";
+
 // //MUI
  import { colors, Divider, Stack } from "@mui/material";
 
 export default function FormBuilderModal({modalIsOpen, handleModalClose}){
 
-
+  const form = useSelector(selectForm);
 
 //   // MODAL STYLE
 
@@ -50,21 +53,17 @@ export default function FormBuilderModal({modalIsOpen, handleModalClose}){
                      sx={{zIndex:1}}>
                       
                       <Box sx={boxStyle}>
-                        
-                        <Box sx={{display:'grid', gridAutoFlow:'column',
-                                  alignItems:'center',
-                          position:'sticky', gap:2,
-                           justifyContent:'space-between'}}>
-                        <Typography variant="h5" >Form Builder </Typography>
-                        <BasicButton text={'X'} textColor={'magenta.main'}
-                        onClick={()=>{handleModalClose()}}/>
-
-                        </Box>
+                      
+                       
                         <Divider/>
                         <Box sx={{display:'flex', flexDirection:{xs:'column',md:'row'}}}>
 
-                        <LeftDrawer/>
-                        <FormPreview/>
+                        
+                        {
+                          form ? <FormView/> : <BuilderWindow handleModalClose={handleModalClose}/>
+
+                          }
+                        
                         </Box>
                         
                       
@@ -72,7 +71,7 @@ export default function FormBuilderModal({modalIsOpen, handleModalClose}){
                         
                       </Box>
                      </Modal>
-                        <RightSideDrawer/>
+                        {/* <RightSideDrawer/> */}
                        </>
   )
 

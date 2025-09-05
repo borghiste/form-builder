@@ -22,9 +22,9 @@ const initialState: formState = {status:'idle', // 'succeeded | 'loading | 'fail
                                 form: null
                                 }
 
-const getForm = createAsyncThunk<formData, number>(
+const getForm = createAsyncThunk<formData, string>(
     'forms/getForm',
-    async (formId: number) => {
+    async (formId: string) => {
         const res  = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/forms/${formId}`,
             {method:'GET',
                 headers: {'Content-Type': 'application/json'},
@@ -32,7 +32,9 @@ const getForm = createAsyncThunk<formData, number>(
             }
         )
         
+       
         return await res.json() as formData
+
     }
 )
 
@@ -42,9 +44,11 @@ const formSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(getForm.fulfilled, (state, action) => {
-            state.status = 'succeeded';
             
-            state.form = action.payload;
+
+            state.status = 'succeeded';
+            state.form = action.payload
+         
         })
 
         builder.addCase(getForm.pending, (state) => {state.status = 'loading'})
@@ -56,7 +60,11 @@ const formSlice = createSlice({
     })
 
     export default formSlice.reducer;
-export const selectForm = (state: RootState) => state.form;
+
+    export const selectForm = (state: RootState) => state.form.form;
+    export const selectStatus = (state: RootState) => state.form.status;
+
+export {getForm};
 
 
 

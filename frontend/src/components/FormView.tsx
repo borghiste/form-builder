@@ -1,12 +1,13 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 //COMPONENTS
-import BasicButton from '../components/UI/BasicButton';
+import BasicButton from './UI/BasicButton';
 //REDUX
 import {createNewForm} from '../features/formsListSlice';
 import { useDispatch, useSelector } from "react-redux";
 import { selectList } from "../features/formsListSlice";
-import {selectForm} from '../features/formSlice';
+import { selectForm } from '../features/formSlice';
+import { selectStatus } from "../features/formSlice";
 
 import {
   TextField,
@@ -21,16 +22,16 @@ import {
 import { RootState } from "../app/store";
 
 
-export default function FormPreview() {
+export default function FormView() {
 
   const dispatch = useDispatch();
 
-  const {form, error, status} = useSelector(selectForm);
+  const form = useSelector(selectForm);
+  const status = useSelector(selectStatus)
+  
+  
+  
 
-  useEffect(() => {
-
-    console.log(form)
-  }, [form])
   
   
 
@@ -73,7 +74,72 @@ export default function FormPreview() {
   return (
 
 
-  <></>
+  <>
+ 
+  <Box
+
+component="form"
+
+sx={{  maxWidth: '100%', maxHeight:'100%', bgcolor:'background.default' }}
+>
+<Typography variant="h5" mb={2}>
+  {form?.name}
+</Typography>
+
+<TextField
+  label="Name"
+  name="name"
+  // value={form.name}
+  // onChange={handleChange}
+  fullWidth
+  margin="normal"
+  // error={!!errors.name}
+  // helperText={errors.name}
+/>
+
+<TextField
+  label="Email"
+  name="email"
+  // value={form.email}
+  // onChange={handleChange}
+  fullWidth
+  margin="normal"
+ /*  error={!!errors.email}
+  helperText={errors.email} */
+/>
+
+<FormControl fullWidth margin="normal">
+  <InputLabel>Role</InputLabel>
+  <Select
+    name="role"
+    // value={form.role}
+    // onChange={handleChange}
+    label="Role"
+  >
+    <MenuItem value="">-- Select Role --</MenuItem>
+    <MenuItem value="developer">Developer</MenuItem>
+    <MenuItem value="designer">Designer</MenuItem>
+    <MenuItem value="manager">Manager</MenuItem>
+  </Select>
+  <Typography variant="caption" color="error">
+    
+  </Typography>
+</FormControl>
+
+<Button
+  type="submit"
+  variant="contained"
+  color="primary"
+  fullWidth
+  sx={{ mt: 2 }}
+>
+  Submit
+</Button>
+</Box>
+
+
+
+  </>
 
   )
 }
