@@ -10,13 +10,13 @@ import LeftSideBar from '../components/LeftSideBar';
 import FormPreview from "./FormPreview";
 import BuilderSection from "./BuilderSection";
 
-export default function BuilderModal({handleModalClose}){
+export default function BuilderModal(){
 
 
-    const [openFieldOptions, setOpenFieldOptions] = useState(true);
+    
     const [preview, switchToPreview] = useState(false);
 
-    const buttonNames = ['save', 'cancel'];
+  
 
     return(
         <Box sx={{display:'flex', flexDirection:'column'}}>
@@ -26,8 +26,7 @@ export default function BuilderModal({handleModalClose}){
             position:'sticky', gap:2,
             justifyContent:'space-between'}}>
   <Typography variant="h5" >Form Builder</Typography>
-  <BasicButton text={'X'} textColor={'magenta.main'}
-  onClick={()=> {handleModalClose}}/>
+  <BasicButton text={'X'} textColor={'magenta.main'}/>
 
 
   </Box>
@@ -41,10 +40,10 @@ export default function BuilderModal({handleModalClose}){
                         onClick={()=>{switchToPreview(false)}}
                         textColor={'black'}
                         variant={preview ? '' : 'contained'}
-                        
+                        onclick={() => {handleModalClose()}}
                             />
             <BasicButton text={'preview'} onClick={()=>{switchToPreview(true)}}
-            ù                              variant={ !preview ? '' : 'contained'}
+                                          variant={ !preview ? '' : 'contained'}
                                              />
 
 

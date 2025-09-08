@@ -76,66 +76,7 @@ export default function FormView() {
 
   <>
  
-  <Box
-
-component="form"
-
-sx={{  maxWidth: '100%', maxHeight:'100%', bgcolor:'background.default' }}
->
-<Typography variant="h5" mb={2}>
-  {form?.name}
-</Typography>
-
-<TextField
-  label="Name"
-  name="name"
-  // value={form.name}
-  // onChange={handleChange}
-  fullWidth
-  margin="normal"
-  // error={!!errors.name}
-  // helperText={errors.name}
-/>
-
-<TextField
-  label="Email"
-  name="email"
-  // value={form.email}
-  // onChange={handleChange}
-  fullWidth
-  margin="normal"
- /*  error={!!errors.email}
-  helperText={errors.email} */
-/>
-
-<FormControl fullWidth margin="normal">
-  <InputLabel>Role</InputLabel>
-  <Select
-    name="role"
-    // value={form.role}
-    // onChange={handleChange}
-    label="Role"
-  >
-    <MenuItem value="">-- Select Role --</MenuItem>
-    <MenuItem value="developer">Developer</MenuItem>
-    <MenuItem value="designer">Designer</MenuItem>
-    <MenuItem value="manager">Manager</MenuItem>
-  </Select>
-  <Typography variant="caption" color="error">
-    
-  </Typography>
-</FormControl>
-
-<Button
-  type="submit"
-  variant="contained"
-  color="primary"
-  fullWidth
-  sx={{ mt: 2 }}
->
-  Submit
-</Button>
-</Box>
+<p>view</p>
 
 
 

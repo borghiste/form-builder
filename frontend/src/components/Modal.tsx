@@ -1,10 +1,13 @@
- import React, { useRef, useState } from "react";
+ import React, { useRef, useState, useContext } from "react";
+  import  {modalContext }  from '../App';  
+
+//MUI
 
  import Box from '@mui/material/Box';
  import Button from '@mui/material/Button';
  import Typography from '@mui/material/Typography';
- import Modal from '@mui/material/Modal';
  //COMPONENTS
+ import Modal from '@mui/material/Modal';
  import BasicButton from "./UI/BasicButton";
  import FieldOptions from "./FieldOptions";
  import LabeledTextField from "./UI/LabeledTextField";
@@ -16,14 +19,15 @@
  //REDUX
  import { selectForm } from '../features/formSlice';
 
+
  import { useDispatch, useSelector } from "react-redux";
 
 // //MUI
  import { colors, Divider, Stack } from "@mui/material";
 
-export default function FormBuilderModal({modalIsOpen, handleModalClose, newFormIsClicked}){
+export default function FormBuilderModal({modalIsOpen, handleModalClose }){
+  const {newFormClick, setNewFormClick} = useContext(modalContext);
 
-  const form = useSelector(selectForm);
 
 //   // MODAL STYLE
 
@@ -60,7 +64,7 @@ export default function FormBuilderModal({modalIsOpen, handleModalClose, newForm
 
                         
                         {
-                          newFormIsClicked ? <BuilderWindow handleModalClose={handleModalClose}/> 
+                          newFormClick ? <BuilderWindow /> 
                             : <FormView/>
                           }
                         

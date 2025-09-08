@@ -2,6 +2,7 @@ import React from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { createContext } from "react";
 //MUI
 import { Container, List,  ListItem, ListItemText, Divider, Box } from "@mui/material";
 //COMPONENTS
@@ -17,7 +18,8 @@ import { selectForm } from "../features/formSlice";
 
 import { RootState } from "../app/store";
 import Modal from '../components/Modal';
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { modalContext } from "../App";
 
 
 export default  function FormsList(){
@@ -25,9 +27,12 @@ export default  function FormsList(){
      const location = useLocation();
      const navigate = useNavigate();
      const dispatch = useDispatch<AppDispatch>();
+
     const  {forms, error, status, } = useSelector(selectList)
     const User = useSelector(selectUser)
-    const [NewFormButton, NewFormIsClicked] = useState(false)
+    const {newFormClick,setNewFormClick} = useContext(modalContext); 
+    const newFormContext = createContext<any>(null);
+   
 
 
 
@@ -39,15 +44,23 @@ useEffect(() => {dispatch(fetchformsList())
 
 const [modalOpen, setModalOpen] = useState(false);
 const handleModalOpen = () => {setModalOpen(true);}
-const handleModalClose = () =>{ setModalOpen(false); }
+const handleModalClose = () => { setModalOpen(false);
+    setNewFormClick(false)
+    
+ }
 
-const handleNewFormButtonisClicked = () => {NewFormIsClicked(true)
-                                    setModalOpen(!modalOpen)
-}
+
+ const handleNewFormisClicked = () => {
+    setNewFormClick(true);
+    setModalOpen(true);
+    
+  }
+  
 
 const handleViewForm = (formId) => {dispatch(getForm(formId));
-    console.log('new form is clicked:',NewFormButton)
-                                    setModalOpen(true)
+   
+                                    setModalOpen(true);
+                                    setNewFormClick(false)
                                     
 
 }
@@ -55,10 +68,15 @@ const handleViewForm = (formId) => {dispatch(getForm(formId));
 
 
     return(
+       
+
         <>
-        <Modal modalIsOpen={modalOpen}
-                    handleModalClose={handleModalClose}
-                    newFormIsClicked={NewFormButton}/>
+     
+
+
+        <Modal modalIsOpen={modalOpen} handleModalClose={handleModalClose} />
+        
+        
       
 
 <Container disableGutters={true} component={'div'} sx={{minHeight:'100vh'}}>
@@ -80,23 +98,23 @@ const handleViewForm = (formId) => {dispatch(getForm(formId));
 
         { 
          User.role === 'admin' ? <BasicButton text={' + NEW FORM'} 
-                    variant={'contained'} 
-                    color={'gray.light'} 
-                    textColor={'black'}
-                    width={200}
-                    onClick={()=>{handleNewFormButtonisClicked(!NewFormButton)}}
-                    /> : null }
+         variant={'contained'} 
+         color={'gray.light'} 
+         textColor={'black'}
+         width={200}
+         onClick={()=>{handleNewFormisClicked()}}
+         /> : null }
                     
     </ListItem>
     <Divider/>
 
     {forms.map((form)=> {
-       
-
+        
+        
         const createdDate = new Date(form.created_at).toISOString().slice(0, 10);
         const updatedDate = new Date(form.updated_at).toISOString().slice(0, 10);
-       return(
-        <div key={form.id}>
+        return(
+            <div key={form.id}>
         <ListItem >
 <ListItemText>{form.name}</ListItemText>
 
@@ -141,6 +159,7 @@ const handleViewForm = (formId) => {dispatch(getForm(formId));
 <Outlet/>
 
 </>
+
 
   )
 }
