@@ -54,16 +54,18 @@ const handleModalClose = () => { setModalOpen(false);
     setNewFormClick(true);
     setModalOpen(true);
     
+    
   }
   
 
 const handleViewForm = (formId) => {dispatch(getForm(formId));
    
                                     setModalOpen(true);
-                                    setNewFormClick(false)
+                                    setNewFormClick (false)
                                     
 
 }
+
 
 
 
@@ -97,7 +99,7 @@ const handleViewForm = (formId) => {dispatch(getForm(formId));
        
 
         { 
-         User.role === 'admin' ? <BasicButton text={' + NEW FORM'} 
+         User.role === 'admin' ? <BasicButton text={'+ NEW FORM'} 
          variant={'contained'} 
          color={'gray.light'} 
          textColor={'black'}

@@ -29,22 +29,34 @@
  import TextFieldsIcon from '@mui/icons-material/TextFields';
  import ListIcon from '@mui/icons-material/List';
 
- import { useTheme } from '@emotion/react';
+ //redux
+ import { useDispatch } from 'react-redux';
 
-export default function LeftSideBar() {
 
-             const fieldTypes = [
-              { id: 'text', name: 'Text', icon: TextFieldsIcon, description: 'Single line Text Field' },
-              { id: 'textarea', name: 'Text Area', icon: NotesIcon, description: 'Multi-line text Area' },
-              { id: 'email', name: 'Email', icon: EmailIcon, description: 'email Field' },
-              { id: 'number', name: 'Number', icon: PinIcon, description: 'Numeric Field' },
-              { id: 'phone', name: 'Telephone', icon: LocalPhoneIcon, description: 'phone Number' },
-              { id: 'date', name: 'Date', icon: DateRangeIcon, description: 'Date Sellector' },
-              { id: 'time', name: 'Time', icon: AccessTimeIcon, description: 'Selettore di ora' },
-              { id: 'select', name: 'Drop down Menu', icon: ListIcon, description: 'Lista di opzioni' },
-              { id: 'radio', name: 'Single Choice', icon: RadioButtonUncheckedIcon, description: 'Radio buttons' },
-              { id: 'checkbox', name: 'Multiple', icon: ChecklistRtlIcon, description: 'Checkboxes' }
-            ];
+
+ export const fieldTypes = [
+  { id: 'text', name: 'Text', icon: TextFieldsIcon, description: 'Single line Text Field' },
+  { id: 'textarea', name: 'Text Area', icon: NotesIcon, description: 'Multi-line text Area' },
+  { id: 'email', name: 'Email', icon: EmailIcon, description: 'email Field' },
+  { id: 'number', name: 'Number', icon: PinIcon, description: 'Numeric Field' },
+  { id: 'phone', name: 'Telephone', icon: LocalPhoneIcon, description: 'phone Number' },
+  { id: 'date', name: 'Date', icon: DateRangeIcon, description: 'Date Selector' },
+  { id: 'time', name: 'Time', icon: AccessTimeIcon, description: 'hour Selector ' },
+  { id: 'select', name: 'Select List', icon: ListIcon, description: 'options list' },
+  { id: 'radio', name: 'Single Choice', icon: RadioButtonUncheckedIcon, description: 'Radio buttons' },
+  { id: 'checkbox', name: 'Multiple', icon: ChecklistRtlIcon, description: 'Checkboxes' }
+];
+export default function LeftSideBar({setValidationsDrawer}) {
+
+  const dispatch = useDispatch();
+
+  const handleFieldButtonClick = (fieldType) => {
+    setValidationsDrawer(true);
+   
+
+  }
+
+
  
 
   return (
@@ -54,19 +66,23 @@ export default function LeftSideBar() {
       <Box
          component={'aside'}
         sx={{
-             bgcolor:'background.default', display:'flex', justifyContent:'start', alignItems:'start', flexDirection:{xs:'row',sm:'column'}, height:'100%', zIndex:0 
+             bgcolor:'background.default',
+             position:'relative',
+              display:'flex', justifyContent:'start', alignItems:'start', flexDirection:{xs:'column',sm:'column'}, height:'100%',
+              zIndex:0 
         }}>
       
         
-          <Typography variant="h6">Form Fields</Typography>
+          <Typography variant="h6" >Form Fields</Typography>
          {fieldTypes.map((field, index) => {
             const IconComponent = field.icon;
             
             return( 
                   <BasicButton text={field.name}
-                                size={'large'} 
-                                startIcon={<IconComponent/>}
-                                key={index} textColor={'text.primary'}/>)
+                                size={'small'}
+                                startIcon={<IconComponent />}
+                                key={index} textColor={'text.primary'}
+                                onClick={() => {handleFieldButtonClick(field.name)}}/>)
           })}
         
       </Box>

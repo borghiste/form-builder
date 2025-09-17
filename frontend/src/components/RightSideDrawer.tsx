@@ -18,84 +18,81 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
+import { useMediaQuery } from '@mui/material';
+import BasicButton from './UI/BasicButton';
 
-const drawerWidth = 240;
-
-const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
-  open?: boolean;
-}>(({ theme }) => ({
-  flexGrow: 1,
-  padding: theme.spacing(3),
-  transition: theme.transitions.create('margin', {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  marginLeft: `-${drawerWidth}px`,
-  variants: [
-    {
-      props: ({ open }) => open,
-      style: {
-        transition: theme.transitions.create('margin', {
-          easing: theme.transitions.easing.easeOut,
-          duration: theme.transitions.duration.enteringScreen,
-        }),
-        marginLeft: 0,
-      },
-    },
-  ],
-}));
-
-interface AppBarProps extends MuiAppBarProps {
-  open?: boolean;
-}
-
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== 'open',
-})<AppBarProps>(({ theme }) => ({
-  transition: theme.transitions.create(['margin', 'width'], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  variants: [
-    {
-      props: ({ open }) => open,
-      style: {
-        width: `calc(100% - ${drawerWidth}px)`,
-        marginLeft: `${drawerWidth}px`,
-        transition: theme.transitions.create(['margin', 'width'], {
-          easing: theme.transitions.easing.easeOut,
-          duration: theme.transitions.duration.enteringScreen,
-        }),
-      },
-    },
-  ],
-}));
+//redux
+import { useDispatch, useSelector } from 'react-redux';
+import { addField, selectForm } from '../features/formSlice';
 
 
-export default function RightSideDrawer() {
+//data
+import { fieldTypes } from './LeftSideBar';
 
+
+
+
+export default function RightSideDrawer({openDrawer, setOpenDrawer}) {
+  const theme = useTheme()
+  const dispatch = useDispatch();
+  const form = useSelector(selectForm);
+ 
+
+  const isMobile =useMediaQuery(theme.breakpoints.down('sm'))
+
+  const handleAddField = () => {
+    dispatch(addField({type:'text', label:'new field'}))
+    
+  }
 
   return (
     <>
-      <CssBaseline />
+  
 
       <Drawer
         sx={{
-            width: drawerWidth,
-            bgcolor:'background.default',
-            flexShrink: 0
+            position:'relative'
          
         }}
+        
+      
         variant="persistent"
-        anchor="right"
-        open={true}
+        hideBackdrop
+        ModalProps={{keepMounted: true}}
+        PaperProps={{
+          sx: {
+            position:'relative',
+            bgcolor:'background.default',
+           
+          
+          }
+        }}
+        anchor={isMobile ? 'bottom' :"right"}
+        
+        open={openDrawer}
         >
+          <Box sx={{display:'flex', justifyContent:'end', zIndex:1}}>
+          <BasicButton text={'x'} onClick={() => {setOpenDrawer(!openDrawer)}}
+          textColor={'magenta.main'}/>
+          </Box>
        
         
         
         <Divider />
+        
+   
+            
+
             <Typography>validations</Typography>
+            <Typography>validations</Typography>
+            <Typography>validations</Typography>
+            <Typography>validations</Typography>
+            <Typography>validations</Typography>
+
+
         <Divider />
+        <BasicButton text={'+ add field'} size={'small'}
+        onClick={() => {handleAddField()}}/>
       
       </Drawer>
      

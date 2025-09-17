@@ -12,14 +12,14 @@ name: string,
 description: string,
 created_at: string,
 updated_at: string,
-field:formField[]
+fields:formField[]
 }
 
 type formState = {status: string, form:formData | null, error: string
 }
 
 const initialState: formState = {status:'idle', // 'succeeded | 'loading | 'failed
-                                form: null
+                                form: {id:'', name:'', description:'', created_at:'', updated_at:'', fields:[]},
                                 }
 
 const getForm = createAsyncThunk<formData, string>(
@@ -41,7 +41,15 @@ const getForm = createAsyncThunk<formData, string>(
 const formSlice = createSlice({
     name:'form',
     initialState,
-    reducers: {},
+    reducers: {
+        addField: (state, action) => {
+
+            if(state.form){
+           
+            state.form?.fields.push(action.payload);
+            }
+        }
+    },
     extraReducers: (builder) => {
         builder.addCase(getForm.fulfilled, (state, action) => {
             
@@ -65,6 +73,7 @@ const formSlice = createSlice({
     export const selectStatus = (state: RootState) => state.form.status;
 
 export {getForm};
+export const {addField} = formSlice.actions
 
 
 

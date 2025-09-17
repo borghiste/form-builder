@@ -40,43 +40,19 @@ export default function FormView() {
     await dispatch(createNewForm({name:Form.name}))
   }
 
-  // const [form, setForm] = useState({
-  //   name: "",
-  //   description: ""
-  // });
 
-  // const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
-  // const handleChange = (
-  //   e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>
-  // ) => {
-  //   const { name, value } = e.target as HTMLInputElement;
-  //   setForm((prev) => ({ ...prev, [name]: value }));
-  // };
-
-  // const validate = () => {
-  //   let newErrors: { [key: string]: string } = {};
-  //   if (!form.name) newErrors.name = "Name is required";
-  //   if (!form.email) newErrors.email = "Email is required";
-  //   else if (!/\S+@\S+\.\S+/.test(form.email))
-  //     newErrors.email = "Invalid email format";
-  //   if (!form.role) newErrors.role = "Please select a role";
-  //   setErrors(newErrors);
-  //   return Object.keys(newErrors).length === 0;
-  // };
-
-  // const handleSubmit = (e: React.FormEvent) => {
-  //   e.preventDefault();
-  
-    
- 
 
   return (
 
 
   <>
- 
+  <Box sx={{position:'relative'
+
+  }}>
+
 <p>view</p>
+  </Box>
+ 
 
 
 

@@ -9,9 +9,9 @@
  //COMPONENTS
  import Modal from '@mui/material/Modal';
  import BasicButton from "./UI/BasicButton";
- import FieldOptions from "./FieldOptions";
+
  import LabeledTextField from "./UI/LabeledTextField";
- import RightSideDrawer from "./RightSideDrawer";
+ import RightSideDrawer from "./RightSideBar";
  import BuilderWindow from "./BuilderWindow";
  ;
  import LeftSideBar from './LeftSideBar';
@@ -44,7 +44,8 @@ export default function FormBuilderModal({modalIsOpen, handleModalClose }){
      bgcolor: 'background.default',
      border: '1px solid #000',
      boxShadow: 24,
-     p: 0
+     p: 0,
+     
   }
 
   return(
@@ -54,7 +55,7 @@ export default function FormBuilderModal({modalIsOpen, handleModalClose }){
                      onClose={handleModalClose}
                      // aria-labelledby="modal-modal-title"
                      // aria-describedby="modal-modal-description"
-                     sx={{zIndex:1}}>
+                     sx={{zIndex:1, overflow:'scroll'}}>
                       
                       <Box sx={boxStyle}>
                       
@@ -64,7 +65,7 @@ export default function FormBuilderModal({modalIsOpen, handleModalClose }){
 
                         
                         {
-                          newFormClick ? <BuilderWindow /> 
+                          newFormClick ? <BuilderWindow handleModalClose={handleModalClose} /> 
                             : <FormView/>
                           }
                         
@@ -75,7 +76,7 @@ export default function FormBuilderModal({modalIsOpen, handleModalClose }){
                         
                       </Box>
                      </Modal>
-                        {/* <RightSideDrawer/> */}
+                         
                        </>
   )
 

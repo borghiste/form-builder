@@ -4,12 +4,15 @@ import UserReducer from '../features/UserSlice';
 import formsReducer from '../features/formsListSlice';
 import formReducer from '../features/formSlice';
 
+
 export default configureStore({
   reducer: {
     theme: themeReducer,
     User: UserReducer,
     forms: formsReducer,
     form: formReducer,
+    
+    
   },
 })
 

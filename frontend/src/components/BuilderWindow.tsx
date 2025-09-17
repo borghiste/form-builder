@@ -9,12 +9,13 @@ import DynamicButtonGroup from "./UI/DynamicButtonGroup";
 import LeftSideBar from '../components/LeftSideBar';
 import FormPreview from "./FormPreview";
 import BuilderSection from "./BuilderSection";
+import RightSideDrawer from './RightSideDrawer'
 
-export default function BuilderModal(){
+export default function BuilderModal({handleModalClose}){
 
 
-    
     const [preview, switchToPreview] = useState(false);
+ 
 
   
 
@@ -26,14 +27,18 @@ export default function BuilderModal(){
             position:'sticky', gap:2,
             justifyContent:'space-between'}}>
   <Typography variant="h5" >Form Builder</Typography>
-  <BasicButton text={'X'} textColor={'magenta.main'}/>
+  <BasicButton text={'X'} textColor={'magenta.main'}
+                onClick={()=> {handleModalClose(false)}}/>
 
 
   </Box>
 
-            <Box sx={{display:'flex', justifyContent:'center', flexDirection:'row'}}>
+            <Box sx={{display:'flex', 
+                    justifyContent:'center', 
+                    flexDirection:{ xs:'column',sm:'row'}, overflowY:'hidden',
+                    position:'relative'}}>
 
-     <LeftSideBar/> 
+      
      <Box>
         <ButtonGroup sx={{width:'100%'}}>
             <BasicButton text={'builder'} 
@@ -43,7 +48,8 @@ export default function BuilderModal(){
                         onclick={() => {handleModalClose()}}
                             />
             <BasicButton text={'preview'} onClick={()=>{switchToPreview(true)}}
-                                          variant={ !preview ? '' : 'contained'}
+                                          variant={ !preview ? 'text' : 'contained'}
+                                            textColor={ !preview ? 'text.primary' : 'black'}
                                              />
 
 
@@ -52,7 +58,16 @@ export default function BuilderModal(){
         {/* switch from builder to preview */}
 
             { preview ?
-                <FormPreview/> : <BuilderSection/>
+    
+                <FormPreview/> 
+                : 
+
+                <BuilderSection/>
+               
+               
+        
+                
+             
 
             }
      </Box>

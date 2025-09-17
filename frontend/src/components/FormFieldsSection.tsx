@@ -1,41 +1,29 @@
-// import { Typography, Box, Button } from "@mui/material";
-// import React from "react";
-// import LabeledTextField from "./UI/LabeledTextField";
-// import DeleteButton from "./UI/DeleteButton";
-// import EditButton from "./UI/EditButton";
-// export default function FormFieldsSection({addFieldAction}) {
-//     return (
-//         <>
-//             <Typography variant="h6">
-//                 Form Fields
-//             </Typography>
+import { Typography, Box, Button, FormControl } from "@mui/material";
+import React from "react";
+//UI
+import LabeledTextField from "./UI/LabeledTextField";
+import DeleteButton from "./UI/DeleteButton";
+import EditButton from "./UI/EditButton";
+import BlockField from '../components/UI/BlockField';
+//REDUX
+import { useSelector } from "react-redux";
+import { selectForm } from "../features/formSlice";
 
-//             <Box sx={{display:'flex', justifyContent:'space-between',
-//             alignItems:'center'
-//             }}>
+export default function FormFieldsSection() {
 
-//         <LabeledTextField labelName={'form name'}             placeholder={'insert form name'}/>
-//         <EditButton variant={''}
-//                     size={'small'}
-//                     color={'background.default'}
-//                     onClick={() => { console.log('log')}}/>
-//             </Box>
-        
-        
-//             <Box sx={{display:'flex', justifyContent:'space-between',
-//             alignItems:'center'
-//             }}>
+    const form = useSelector(selectForm);
+    const fields = form?.fields;
+    return (
+        <>
+       <Box sx={{display:'flex', flexDirection:'column'}}>
+      
+       
 
-
-//         <LabeledTextField labelName={'form description'} placeholder={'insert brief description'}/>
-//         <EditButton variant={''}
-//                     size={'small'}
-//                     color={'background.default'}
-//                     onClick={() => { console.log('log')}}/>
-
-        
-//         </Box>
-//         <Button onClick={addFieldAction}> + add field</Button>
-//         </>
-//     )
-// }
+        {fields?.map((field, index) => (
+            <BlockField key={index} field={field}/>
+        ))}
+       
+       </Box>
+        </>
+    )
+}
