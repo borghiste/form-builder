@@ -1,10 +1,14 @@
 import React from "react";
-import { Typography, FormControl, Divider } from "@mui/material";
+import { Typography, FormControl, Divider, Card } from "@mui/material";
 
 export default function BlockField({field}) {
     return (
         
-        <FormControl sx={{border:2, margin:2, width:'100%', position:'relative', padding:1}}>
+        <Card sx={{border:2, margin:2, width:'100%', position:'relative', padding:1,
+            cursor:'grabbing',
+            draggable:'true',
+            
+        }}>
         <Typography component={'p'} fontSize={10}
                     color="text.primary">Type:{field.type}</Typography>
 
@@ -16,6 +20,6 @@ export default function BlockField({field}) {
 
        
 
-    </FormControl>
+    </Card>
     )
 }

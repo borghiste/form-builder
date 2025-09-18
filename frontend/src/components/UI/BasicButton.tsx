@@ -11,6 +11,8 @@ export default function BasicButton({text,
                                     width, 
                                     type, 
                                     fullWidth,
+                                    fontSize
+                                    
                                     }){
 
     return(
@@ -33,6 +35,7 @@ export default function BasicButton({text,
                     margin:0.5, 
                     textWrap:'nowrap'}}
                     fullWidth={fullWidth}
+                    fontSize={fontSize}
                     
                     href={href}
                     

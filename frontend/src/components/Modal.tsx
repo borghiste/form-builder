@@ -12,7 +12,7 @@
 
  import LabeledTextField from "./UI/LabeledTextField";
  import RightSideDrawer from "./RightSideBar";
- import BuilderWindow from "./BuilderWindow";
+ import BuilderWindow from "../components/BuilderWindow/BuilderWindow";
  ;
  import LeftSideBar from './LeftSideBar';
  import FormView from "../components/FormView";
