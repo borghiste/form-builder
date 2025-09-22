@@ -34,6 +34,7 @@
  //redux
  import { useDispatch } from 'react-redux';
  import { setvalidationsField } from '../../features/validationDrawerSlice';
+ import {setFieldType} from '../../features/FieldSlice';
 
 
 
@@ -135,11 +136,16 @@ const FieldButton = ({ label, icon, onClick }) => (
   
 );
 
-export default function Sidebar({setValidationsDrawer}) {
+export default function Sidebar({setValidationsDrawer}) { // prop that open the validations drawer
+
+  const dispatch = useDispatch();
+
 
   const handleFieldButtonClick = (fieldType) => {
          setValidationsDrawer(true);
          dispatch(setvalidationsField(fieldType));
+         dispatch(setFieldType(fieldType));
+         console.log('field type set to:', fieldType);
   }
 
 

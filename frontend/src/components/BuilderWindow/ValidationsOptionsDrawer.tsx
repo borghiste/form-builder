@@ -1,15 +1,18 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import ValidationOptions from "../ValidationsOptions";
 //redux
 import { useSelector, useDispatch } from "react-redux";
+import {addValidations, setFieldLabel, setFieldType} from "../../features/FieldSlice";
 
 import { selectvalidationDrawer } from "../../features/validationDrawerSlice";
 import { addField } from "../../features/formSlice";
 //COMPONENTS
 import BasicButton from "../UI/BasicButton";
 //MUI
-import { Box, Drawer, useMediaQuery } from "@mui/material";
+import { Box, Drawer, TextField, useMediaQuery } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
+import { selectField, setField } from "../../features/FieldSlice";
+import { nanoid } from "@reduxjs/toolkit";
 
 
 
@@ -20,14 +23,36 @@ setOpenDrawer}) {
 const dispatch = useDispatch();
 const theme = useTheme();
   const fieldType = useSelector(selectvalidationDrawer);
+  const field = useSelector(selectField);
+ 
+  
+  
 
 
   const [validations, setValidations] = useState<Record<string, any>>({});
   const isMobile =useMediaQuery(theme.breakpoints.down('sm'))
+  const labelRef = useRef('');
+  
 
-  const handleaddField = () => {
-    dispatch(addField({ type: fieldType, validations }));
-  }
+  const handleAddField = () => {
+    if (!fieldType || !labelRef.current.value) return;
+  
+    const newField = {
+      id: nanoid(),
+      type: fieldType,
+      label: labelRef.current.value,
+      validations: { ...validations }, // cloniamo per sicurezza
+    };
+  
+    dispatch(addField(newField));
+    console.log('Field added:', newField);
+  
+    // reset campi locali
+    labelRef.current.value = '';
+    setValidations({});
+    setField(null); // se vuoi resettare il field selezionato
+  };
+  
 
   const handleValidationChange = (name: string, value: any) => {
     setValidations((prev) => ({ ...prev, [name]: value }));
@@ -59,6 +84,10 @@ const theme = useTheme();
            <BasicButton text={''} size={'large'} onClick={() => {setOpenDrawer(!openDrawer)}}
            textColor={'magenta.main'}/>
            </Box>
+            {/* input field label */}
+            {/* change field label on redux */}
+  
+           <TextField size="small" inputRef={labelRef} label="inset label field name"/>
       <h3>Field Type: {fieldType}</h3>
       {/* render options based on field type  */}
       <ValidationOptions
@@ -71,7 +100,7 @@ const theme = useTheme();
       <pre>{JSON.stringify(validations, null, 2)}</pre>
       <Box>
         <BasicButton text={'add field'}
-        onClick={() =>{handleaddField()}}/>
+        onClick={() =>{handleAddField()}}/>
       </Box>
     </Drawer>
   );

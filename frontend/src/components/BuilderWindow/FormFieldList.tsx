@@ -10,15 +10,24 @@ import {
   CardContent,
 } from "@mui/material";
 
-const initialFields = [
-  { id: "1", type: "text", label: "Nome" },
-  { id: "2", type: "email", label: "Email" },
-  { id: "3", type: "checkbox", label: "Accetto i termini" },
-];
+//COMPONENTS
+import DraggableCard from "../UI/DraggableCard";
+import { useSelector } from "react-redux";
 
-export default function FormFieldList() {
-  const [fields, setFields] = useState(initialFields);
-  const [draggedIndex, setDraggedIndex] = useState(null);
+//REDUX
+import { selectForm } from "../../features/formSlice";
+
+import { useDispatch } from "react-redux";
+import {setFields} from "../../features/formSlice";
+
+  
+  
+  export default function FormFieldList() {
+    
+    const [draggedIndex, setDraggedIndex] = useState(null);
+    const dispatch = useDispatch();
+    const fields = useSelector(selectForm)?.fields 
+    
 
   const handleDragStart = (index) => {
     setDraggedIndex(index);
@@ -31,7 +40,8 @@ export default function FormFieldList() {
     const [moved] = newFields.splice(draggedIndex, 1);
     newFields.splice(index, 0, moved);
 
-    setFields(newFields);
+
+   dispatch(setFields(newFields));
     setDraggedIndex(null);
   };
 
@@ -41,26 +51,32 @@ export default function FormFieldList() {
     <div style={{ width: 400 }}>
     <Typography>form field list</Typography>
       {fields.map((field, index) => (
-          <Card
+        <DraggableCard
           key={field.id}
-          draggable
+          index={index}
           onDragStart={() => handleDragStart(index)}
           onDragOver={(e) => e.preventDefault()}
-          onDrop={() => handleDrop(index)}
-          sx={{ mb: 2, cursor: "grab" }}
-          >
-          <CardContent>
-            {field.type === "text" && (
-                <TextField fullWidth label={field.label} />
-            )}
-            {field.type === "email" && (
-                <TextField fullWidth type="email" label={field.label} />
-            )}
-            {field.type === "checkbox" && (
-                <FormControlLabel control={<Checkbox />} label={field.label} />
-            )}
-          </CardContent>
-        </Card>
+          onDrop={() => handleDrop(index)}/>
+        //   <Card
+        //   key={field.id}
+        //   draggable
+        //   onDragStart={() => handleDragStart(index)}
+        //   onDragOver={(e) => e.preventDefault()}
+        //   onDrop={() => handleDrop(index)}
+        //   sx={{ mb: 2, cursor: "grab" }}
+        //   >
+        //   <CardContent>
+        //     {field.type === "text" && (
+        //         <TextField fullWidth label={field.label} />
+        //     )}
+        //     {field.type === "email" && (
+        //         <TextField fullWidth type="email" label={field.label} />
+        //     )}
+        //     {field.type === "checkbox" && (
+        //         <FormControlLabel control={<Checkbox />} label={field.label} />
+        //     )}
+        //   </CardContent>
+        // </Card>
         
       ))}
 
@@ -78,7 +94,7 @@ export default function FormFieldList() {
         onDragOver={(e) => e.preventDefault()}
         onDrop={() => handleDrop(fields.length)}
       >
-        Drop qui per ultimo
+        
       </div>
     </div>
       </>

@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../app/store";
+import { setField } from "./FieldSlice";
 
 type formField = {
     id: string,
@@ -42,6 +43,9 @@ const formSlice = createSlice({
     name:'form',
     initialState,
     reducers: {
+        setFields(state, action) {
+            state.form.fields = action.payload;
+        },
         addField: (state, action) => {
 
             if(state.form){
@@ -73,7 +77,7 @@ const formSlice = createSlice({
     export const selectStatus = (state: RootState) => state.form.status;
 
 export {getForm};
-export const {addField} = formSlice.actions
+export const {addField, setFields} = formSlice.actions
 
 
 
