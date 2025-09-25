@@ -70,10 +70,12 @@ export const DarkTheme = createTheme({
   },
   components: {
    
-    MuiTypography: {
-        styleOverrides: {
-          
-        }
-      }
+   MuiListItemText: {
+    styleOverrides: {
+      root: ({theme}) => ({
+      color: theme.palette.text.primary
+    })
+  }
+   }
     }
   });

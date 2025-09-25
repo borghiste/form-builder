@@ -6,11 +6,14 @@ export default function BasicButton({text,
                                     startIcon, 
                                     color, 
                                     size, 
-                                    variant, 
+                                    variant,  // contained, outlined
                                     textColor,
                                     width, 
                                     type, 
-                                    fullWidth}){
+                                    fullWidth,
+                                    fontSize
+                                    
+                                    }){
 
     return(
         
@@ -19,6 +22,9 @@ export default function BasicButton({text,
                 onClick={onClick} 
                 startIcon={startIcon}
                 type={type}
+                
+                
+               
                  
                 
                 sx={{ 
@@ -29,6 +35,7 @@ export default function BasicButton({text,
                     margin:0.5, 
                     textWrap:'nowrap'}}
                     fullWidth={fullWidth}
+                    fontSize={fontSize}
                     
                     href={href}
                     

@@ -1,25 +1,32 @@
- import React, { useRef, useState } from "react";
+ import React, { useRef, useState, useContext } from "react";
+  import  {modalContext }  from '../App';  
+
+//MUI
 
  import Box from '@mui/material/Box';
  import Button from '@mui/material/Button';
  import Typography from '@mui/material/Typography';
- import Modal from '@mui/material/Modal';
  //COMPONENTS
+ import Modal from '@mui/material/Modal';
  import BasicButton from "./UI/BasicButton";
- import FieldOptions from "./FieldOptions";
+
  import LabeledTextField from "./UI/LabeledTextField";
- import RightSideDrawer from "./RightSideDrawer";
+ import RightSideDrawer from "./RightSideBar";
+ import BuilderWindow from "../components/BuilderWindow/BuilderWindow";
  ;
- import LeftDrawer from './LeftSideBar';
- import FormPreview from "./FormPreview";
+ import LeftSideBar from './LeftSideBar';
+ import FormView from "../components/FormView";
  //REDUX
- import { addNewForm } from "../features/formsListSlice";
- import { useDispatch, UseDispatch } from "react-redux";
+ import { selectForm } from '../features/formSlice';
+
+
+ import { useDispatch, useSelector } from "react-redux";
+
 // //MUI
  import { colors, Divider, Stack } from "@mui/material";
 
-export default function FormBuilderModal({modalIsOpen, handleModalClose}){
-
+export default function FormBuilderModal({modalIsOpen, handleModalClose }){
+  const {newFormClick, setNewFormClick} = useContext(modalContext);
 
 
 //   // MODAL STYLE
@@ -27,10 +34,8 @@ export default function FormBuilderModal({modalIsOpen, handleModalClose}){
   const boxStyle = {
       
      position: 'absolute',
-    display:'flex', 
-    flexDirection:{xs:'column',md:'row'},
+    display:'grid',
     justifyContent:'center',
-    
      top: '50%',
      left: '50%',
      transform: 'translate(-50%, -50%)',
@@ -39,9 +44,10 @@ export default function FormBuilderModal({modalIsOpen, handleModalClose}){
      bgcolor: 'background.default',
      border: '1px solid #000',
      boxShadow: 24,
+     p: 0,
      
-     p: 0
   }
+
   return(
     <>
     <Modal
@@ -49,28 +55,28 @@ export default function FormBuilderModal({modalIsOpen, handleModalClose}){
                      onClose={handleModalClose}
                      // aria-labelledby="modal-modal-title"
                      // aria-describedby="modal-modal-description"
-                     sx={{zIndex:1}}>
+                     sx={{zIndex:1, overflow:'scroll'}}>
                       
                       <Box sx={boxStyle}>
-                        
-                        <Box sx={{display:'flex',
-                          position:'static',
-                          width:'100%', justifyContent:'space-between'}}>
-                        <Typography variant="h5" >Form Builder </Typography>
-                        <BasicButton text={'X'} textColor={'magenta.main'}
-                        onClick={()=>{handleModalClose()}}/>
-
-                        </Box>
+                      
+                       
                         <Divider/>
-                        <LeftDrawer/>
-                        <FormPreview/>
+                        <Box sx={{display:'flex', flexDirection:{xs:'column',md:'row'}}}>
+
+                        
+                        {
+                          newFormClick ? <BuilderWindow handleModalClose={handleModalClose} /> 
+                            : <FormView/>
+                          }
+                        
+                        </Box>
                         
                       
                        
                         
                       </Box>
                      </Modal>
-                        <RightSideDrawer/>
+                         
                        </>
   )
 
