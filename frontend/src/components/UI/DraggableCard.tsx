@@ -1,4 +1,5 @@
 import React from "react";
+import BasicButton from "../UI/BasicButton";
 //MUI
 import {
     TextField,
@@ -14,11 +15,11 @@ import { selectForm } from "../../features/formSlice";
 
 
 export default function DraggableCard({onDragStart, 
-                                        onDrop, 
-                                        index, 
-                                        handleDragStart, 
-                                        handleDrop,
-                                        onDragOver}) {
+onDrop, 
+index, 
+handleDragStart, 
+handleDrop,
+onDragOver}) {
 
     const field = useSelector(selectForm)?.fields[index];
     
@@ -34,12 +35,19 @@ export default function DraggableCard({onDragStart,
      sx={{ mb: 2, cursor: "grab" }}
      >
           <CardContent>
-            {field.type === "text" && (
-                <TextField fullWidth label={field.label} size="small"/>
+            { ["text", "number", "email", "telephone"].includes(field.type) && (
+                <TextField fullWidth type={field.type} label={field.label} size="small"/>
             )}
-            {field.type === "email" && (
+            {field.type === "button" && (
+                <BasicButton variant="contained" size="small" text={field.label}/>
+            )}
+
+            {/* {field.type === "email" && (
                 <TextField fullWidth type="email" label={field.label} />
             )}
+            {field.type === "number" && (
+                <TextField fullWidth type="number" label={field.label} /> */}
+            {/* )} */}
             {field.type === "checkbox" && (
                 <FormControlLabel control={<Checkbox />} label={field.label} />
             )}

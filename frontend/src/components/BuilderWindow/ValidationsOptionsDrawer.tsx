@@ -41,16 +41,16 @@ const theme = useTheme();
       id: nanoid(),
       type: fieldType,
       label: labelRef.current.value,
-      validations: { ...validations }, // cloniamo per sicurezza
+      validations: { ...validations }, 
     };
   
     dispatch(addField(newField));
     console.log('Field added:', newField);
   
-    // reset campi locali
+   
     labelRef.current.value = '';
     setValidations({});
-    setField(null); // se vuoi resettare il field selezionato
+    setField(null); 
   };
   
 
@@ -96,8 +96,9 @@ const theme = useTheme();
         onChange={handleValidationChange}
       />
 
-      <h4>choose validations:</h4>
-      <pre>{JSON.stringify(validations, null, 2)}</pre>
+      <h4>chose validations:</h4>
+      <p>
+      {JSON.stringify(validations, null, 2)}</p>
       <Box>
         <BasicButton text={'add field'}
         onClick={() =>{handleAddField()}}/>

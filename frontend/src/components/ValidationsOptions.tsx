@@ -1,7 +1,8 @@
 import React from "react";
-import { TextField, Checkbox, FormControlLabel, Box } from "@mui/material";
+import { TextField, Checkbox, FormControlLabel, Box, FormControl,
+  FormLabel, Input } from "@mui/material";
 
-type FieldType = "text" | "number" | "email" | "password" | "select" | "checkbox" | "radio";
+type FieldType = "text" | "number" | "email" | "password" | "telephone" | "select" | "checkbox" | "radio"; 
 
 interface ValidationOptionsProps {
   fieldType: FieldType;
@@ -9,11 +10,11 @@ interface ValidationOptionsProps {
   onChange: (name: string, value: any) => void;
 }
 
-const ValidationOptions: React.FC<ValidationOptionsProps> = ({
+export default function ValidationOptions({
   fieldType,
   validations,
   onChange,
-}) => {
+}):ValidationOptionsProps{
   return (
     <Box display="flex" flexDirection="column" gap={2}>
       {/* Opzione comune a tutti i campi */}
@@ -30,46 +31,61 @@ const ValidationOptions: React.FC<ValidationOptionsProps> = ({
       {/* Opzioni per campi di testo */}
       {(fieldType === "text" ||
         fieldType === "password" ||
-        fieldType === "email") && (
+        fieldType === "email" ||
+        fieldType === "text Area" ||
+        fieldType === "telephone") && (
+
         <>
-          <TextField
-            label="Min Length"
-            type="number"
-            value={validations.minLength || ""}
-            onChange={(e) => onChange("minLength", Number(e.target.value))}
-          />
-          <TextField
-            label="Max Length"
-            type="number"
-            value={validations.maxLength || ""}
-            onChange={(e) => onChange("maxLength", Number(e.target.value))}
-          />
-          {fieldType === "text" && (
-            <TextField
-              label="Pattern (RegExp)"
-              value={validations.pattern || ""}
-              onChange={(e) => onChange("pattern", e.target.value)}
-            />
-          )}
+        <FormControl sx={{display:'flex', justifyContent:'space-between', flexDirection:'row', alignItems:'center', maxWidth:'16rem'}}>
+          <FormLabel>Length:</FormLabel>
+          <Box sx={{display:'flex', 
+                    justifyContent:'center'}}>
+         <TextField variant="outlined" size="small"
+                    label="Min"  
+                    type="number" 
+                    value={validations.minLength || ""}
+                    onChange={(e) => onChange("Min", Number(e.target.value))}
+                    sx={{maxWidth:'8rem', mr:1}}/>
+                    
+         <TextField variant="outlined" 
+         size="small"  
+         label="Max "
+         type="number" sx={{maxWidth:'8rem'}}
+         value={validations.maxLength}
+         onChange={(e) => onChange("maxLength", Number(e.target.value))}/>
+
+          </Box>
+
+        </FormControl>
         </>
+
       )}
 
-      {/* Opzioni per numeri */}
+      {/* numbers options */}
       {fieldType === "number" && (
-        <>
-          <TextField
-            label="Min"
-            type="number"
-            value={validations.min || ""}
-            onChange={(e) => onChange("min", Number(e.target.value))}
-          />
-          <TextField
-            label="Max"
-            type="number"
-            value={validations.max || ""}
-            onChange={(e) => onChange("max", Number(e.target.value))}
-          />
-        </>
+           <>
+           <FormControl sx={{display:'flex', justifyContent:'space-between', flexDirection:'row', alignItems:'center'}}>
+             
+             <Box sx={{display:'flex', 
+                       justifyContent:'center'}}>
+            <TextField variant="outlined" size="small"
+                       label="Min"  
+                       type="number" 
+                       value={validations.minLength || ""}
+                       onChange={(e) => onChange("Min", Number(e.target.value))}
+                       sx={{maxWidth:'8rem', mr:1}}/>
+                       
+            <TextField variant="outlined" 
+            size="small"  
+            label="Max "
+            type="number" sx={{maxWidth:'8rem'}}
+            value={validations.maxLength}
+            onChange={(e) => onChange("maxLength", Number(e.target.value))}/>
+   
+             </Box>
+   
+           </FormControl>
+           </>
       )}
 
       {/* Opzioni per Select */}
@@ -116,4 +132,4 @@ const ValidationOptions: React.FC<ValidationOptionsProps> = ({
   );
 };
 
-export default ValidationOptions;
+

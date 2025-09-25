@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 
 //MUI
-import { Box, ButtonGroup } from "@mui/material";
+import { Box, ButtonGroup, TextField } from "@mui/material";
 
 //COMPONENTS
 import ValidationsOptionsDrawer from "./ValidationsOptionsDrawer";
@@ -15,12 +15,25 @@ import FormPreview from "../FormPreview";
 
 //REDUX
 import { selectForm } from "../../features/formSlice";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import FormFieldList from '../BuilderWindow/FormFieldList';
+import {createForm, setFormName} from "../../features/formSlice";
+import { AppDispatch } from "../../app/store";
+
 export default function BuilderSection(){
 
     const [validationsDrawer, setValidationsDrawer] = useState(false)
     const form = useSelector(selectForm);
+    console.log(form)
+    const dispatch = useDispatch<AppDispatch>();
+    
+    const handleSaveForm = () => {
+        console.log('handling save form')
+        if (!form) { console.log('form is undefined'); return;}
+
+        console.log('dispatching action')
+        dispatch(createForm(form));
+    }
 
 
  
@@ -40,6 +53,7 @@ export default function BuilderSection(){
        
 
        {/* <FormFieldsSection fields={form?.fields}/> */}
+       <TextField onChange={(e) => {dispatch(setFormName(e.target.value)); console.log(form.name)}}/>
        <FormFieldList/>
        
        
@@ -49,7 +63,8 @@ export default function BuilderSection(){
 
         </Box>
         <ButtonGroup>
-            <BasicButton text={'save'} />
+            <BasicButton text={'save'} 
+            onClick={() => {handleSaveForm()}}/>
             <BasicButton text={'cancel'} />
 
         </ButtonGroup>

@@ -11,4 +11,13 @@ class FormController extends Controller
         $form = Form::findOrFail($formId);
         return response()->json($form);
     }
+
+
+    public function saveForm(Request $request){
+    
+    
+        $form = Form::create(['name'=> $request->name]);
+        return response()->json($form);}
+    
+
 }

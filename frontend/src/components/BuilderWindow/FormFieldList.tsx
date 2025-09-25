@@ -26,6 +26,7 @@ import {setFields} from "../../features/formSlice";
     
     const [draggedIndex, setDraggedIndex] = useState(null);
     const dispatch = useDispatch();
+    const form = useSelector(selectForm);
     const fields = useSelector(selectForm)?.fields 
     
 
@@ -49,6 +50,10 @@ import {setFields} from "../../features/formSlice";
     <>
 
     <div style={{ width: 400 }}>
+      <Typography>
+        {/* {form.name} */}
+      </Typography>
+
     <Typography>form field list</Typography>
       {fields.map((field, index) => (
         <DraggableCard
@@ -79,6 +84,7 @@ import {setFields} from "../../features/formSlice";
         // </Card>
         
       ))}
+    
 
       {/* Spazio vuoto per droppare in fondo */}
       <div

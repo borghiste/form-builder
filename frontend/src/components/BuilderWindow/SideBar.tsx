@@ -41,12 +41,12 @@
  export const fieldTypes = [
   { id: 'text', name: 'text', icon: TextFieldsIcon, description: 'Single line Text Field' },
   { id: 'textarea', name: 'text Area', icon: NotesIcon, description: 'Multi-line text Area' },
-  { id: 'email', name: 'Email', icon: EmailIcon, description: 'email Field' },
-  { id: 'number', name: 'Number', icon: PinIcon, description: 'Numeric Field' },
-  { id: 'phone', name: 'Telephone', icon: LocalPhoneIcon, description: 'phone Number' },
-  { id: 'date', name: 'Date', icon: DateRangeIcon, description: 'Date Selector' },
-  { id: 'time', name: 'Time', icon: AccessTimeIcon, description: 'hour Selector ' },
-  { id: 'select', name: 'Select List', icon: ListIcon, description: 'options list' },
+  { id: 'email', name: 'email', icon: EmailIcon, description: 'email Field' },
+  { id: 'number', name: 'number', icon: PinIcon, description: 'Numeric Field' },
+  { id: 'phone', name: 'telephone', icon: LocalPhoneIcon, description: 'phone Number' },
+  { id: 'date', name: 'date', icon: DateRangeIcon, description: 'Date Selector' },
+  { id: 'time', name: 'time', icon: AccessTimeIcon, description: 'hour Selector ' },
+  { id: 'select', name: 'select List', icon: ListIcon, description: 'options list' },
   
   { id: 'checkbox', name: 'checkbox', icon: ChecklistRtlIcon, description: 'Checkboxes' }
 

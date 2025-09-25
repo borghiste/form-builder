@@ -1,6 +1,6 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, nanoid } from "@reduxjs/toolkit";
 import { RootState } from "../app/store";
-import { setField } from "./FieldSlice";
+
 
 type formField = {
     id: string,
@@ -20,7 +20,7 @@ type formState = {status: string, form:formData | null, error: string
 }
 
 const initialState: formState = {status:'idle', // 'succeeded | 'loading | 'failed
-                                form: {id:'', name:'', description:'', created_at:'', updated_at:'', fields:[]},
+                                form: {id:nanoid(), name:'', description:'', created_at:'', updated_at:'', fields:[{id:nanoid(), label:'submit', type:'button'}]},
                                 }
 
 const getForm = createAsyncThunk<formData, string>(
@@ -39,6 +39,23 @@ const getForm = createAsyncThunk<formData, string>(
     }
 )
 
+const createForm = createAsyncThunk<formState, formData>(
+    'forms/createForm',
+    async (form) => {
+        const res  = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/forms`,
+            {method:'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(form)
+                
+            }
+        )
+        if(res.ok){
+        return res.json() as Promise<formData>;
+        }
+
+    })
+
+
 const formSlice = createSlice({
     name:'form',
     initialState,
@@ -51,6 +68,11 @@ const formSlice = createSlice({
             if(state.form){
            
             state.form?.fields.push(action.payload);
+            }
+        },
+        setFormName(state, action) {
+            if(state.form){
+            state.form.name = action.payload;
             }
         }
     },
@@ -67,6 +89,16 @@ const formSlice = createSlice({
         builder.addCase(getForm.rejected, (state) => {
             state.status= 'failed';
         })
+
+        /* create form cases */
+        builder.addCase(createForm.fulfilled, (state, action) => {
+            state.status = 'succeeded';
+            confirm.log('action',action)
+            
+        })
+        builder.addCase(createForm.pending, (state) => {state.status = 'loading'
+            console.log('loading...')
+        })
     }
         
     })
@@ -76,8 +108,8 @@ const formSlice = createSlice({
     export const selectForm = (state: RootState) => state.form.form;
     export const selectStatus = (state: RootState) => state.form.status;
 
-export {getForm};
-export const {addField, setFields} = formSlice.actions
+export {getForm, createForm};
+export const {addField, setFields, setFormName} = formSlice.actions
 
 
 
