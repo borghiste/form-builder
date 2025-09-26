@@ -17,21 +17,22 @@ import FormPreview from "../FormPreview";
 import { selectForm } from "../../features/formSlice";
 import { useSelector, useDispatch } from "react-redux";
 import FormFieldList from '../BuilderWindow/FormFieldList';
-import {createForm, setFormName} from "../../features/formSlice";
+import {createForm, setFormName, setFields} from "../../features/formSlice";
 import { AppDispatch } from "../../app/store";
 
 export default function BuilderSection(){
 
     const [validationsDrawer, setValidationsDrawer] = useState(false)
     const form = useSelector(selectForm);
-    console.log(form)
+   
     const dispatch = useDispatch<AppDispatch>();
     
     const handleSaveForm = () => {
-        console.log('handling save form')
-        if (!form) { console.log('form is undefined'); return;}
+        dispatch(setFields(form.fields))
+        
+        if (!form) return;
 
-        console.log('dispatching action')
+       
         dispatch(createForm(form));
     }
 

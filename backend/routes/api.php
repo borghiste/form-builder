@@ -24,7 +24,13 @@ Route::get('forms', [FormListController::class, 'getFormList']);
 //  Route::delete('delpost', [FormListController::class, 'deletepost'])
 
 // single form action routes
+
+//get form 
  Route::get('forms/{id}', [FormController::class, 'getForm']);
 
+ // create form
  Route::post('forms', [FormController::class, 'saveForm']);
 
+// delete form
+
+Route::delete('forms/{id}', [FormListController::class, 'deleteForm']);

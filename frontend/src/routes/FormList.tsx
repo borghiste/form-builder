@@ -11,7 +11,7 @@ import BasicButton from "../components/UI/BasicButton";
 import {selectUser} from '../features/UserSlice';
 import { AppDispatch } from "../app/store";
 import {useSelector, useDispatch} from 'react-redux';
-import { fetchformsList } from '../features/formsListSlice';
+import { fetchformsList, deleteForm } from '../features/formsListSlice';
 import { selectList } from "../features/formsListSlice";
 import {getForm} from "../features/formSlice";
 import { selectForm } from "../features/formSlice";
@@ -25,7 +25,7 @@ import { modalContext } from "../App";
 export default  function FormsList(){
 
      const location = useLocation();
-     const navigate = useNavigate();
+
      const dispatch = useDispatch<AppDispatch>();
 
     const  {forms, error, status, } = useSelector(selectList)
@@ -37,9 +37,7 @@ export default  function FormsList(){
 
 
 useEffect(() => {dispatch(fetchformsList())
-
-  
-
+    
 }, [forms])
 
 const [modalOpen, setModalOpen] = useState(false);
@@ -83,7 +81,7 @@ const handleViewForm = (formId) => {dispatch(getForm(formId));
 
 <Container disableGutters={true} component={'div'} sx={{minHeight:'100vh'}}>
 
-<List className=' w-full ' sx={{zIndex:0, display:'flex', flexDirection: 'column'}}>
+<List className=' w-full' sx={{zIndex:0, display:'flex', flexDirection: 'column'}}>
 
     <ListItem>
         <ListItemText  sx={{font:'bold'}} primary='Form Name'/>
@@ -111,8 +109,7 @@ const handleViewForm = (formId) => {dispatch(getForm(formId));
     <Divider/>
 
     {forms.map((form)=> {
-        
-        
+    
         const createdDate = new Date(form.created_at).toISOString().slice(0, 10);
         const updatedDate = new Date(form.updated_at).toISOString().slice(0, 10);
         return(
@@ -135,7 +132,11 @@ const handleViewForm = (formId) => {dispatch(getForm(formId));
         { User.role == 'admin' ? (
             <>
          <BasicButton text={'edit'}/>
-        <BasicButton text={'delete'} color={'magenta.dark'} textColor={'black'} />
+        <BasicButton text={'delete'} 
+        color={'magenta.dark'} 
+            textColor={'black'}
+            onClick={() => {dispatch(deleteForm(form.id))}} 
+             />
             </>
         ) : null
     }

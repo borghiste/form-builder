@@ -55,6 +55,10 @@ const createForm = createAsyncThunk<formState, formData>(
 
     })
 
+  
+
+ 
+
 
 const formSlice = createSlice({
     name:'form',
@@ -91,17 +95,21 @@ const formSlice = createSlice({
         })
 
         /* create form cases */
-        builder.addCase(createForm.fulfilled, (state, action) => {
+        builder.addCase(createForm.fulfilled, (state) => {
             state.status = 'succeeded';
-            confirm.log('action',action)
+            
             
         })
         builder.addCase(createForm.pending, (state) => {state.status = 'loading'
-            console.log('loading...')
+            
         })
-    }
+
         
-    })
+        builder.addCase(createForm.rejected, (state)=> {
+            state.status = 'failed';
+        })
+
+    }})
 
     export default formSlice.reducer;
 

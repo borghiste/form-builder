@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import ValidationOptions from "../ValidationsOptions";
+import ValidationOptions from "./ValidationsOptions";
 //redux
 import { useSelector, useDispatch } from "react-redux";
 import {addValidations, setFieldLabel, setFieldType} from "../../features/FieldSlice";

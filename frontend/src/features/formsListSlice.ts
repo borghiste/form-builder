@@ -40,24 +40,35 @@ const createNewForm = createAsyncThunk(
     }
 )
 
+const deleteForm = createAsyncThunk<FormData, string>(
+    'forms/deleteForm',
+    async (formId) => {
+        fetch(`${import.meta.env.VITE_BACKEND_URL}/api/forms/${formId}`,
+            {method:'DELETE',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(formId)
+            }
+        )
+
+        if(res.ok){
+            console.log(res)
+            return await res.json();
+            
+        }
+    }
+)
+
 export const formsListSlice = createSlice({
     name:'forms',
     initialState,
     reducers: {
-    //     addNewForm: (state, action) => {
-    //             const {name, description, created_at, updated_at} = action.payload
-    //             const newForm = {name: 'test',
-    //                             description: 'des2',
-    //                             created_at: '2025-01-01',
-    //                             updated_at: '2025-02-02'
-    //             }
-    //             state.forms.push(newForm)
-    // }
+      
 },
     extraReducers: (builder) => {
         builder.addCase(fetchformsList.fulfilled, (state, action) => {
             
             state.status = 'succeeded';
+           
             const list = action.payload;
 
 
@@ -71,23 +82,30 @@ export const formsListSlice = createSlice({
         })
 
         builder.addCase(fetchformsList.rejected, (state) => {
+            
             state.status = 'failed';
         })
 
+        builder.addCase(deleteForm.fulfilled, (state) => {
+            state.status = 'succeeded';
+        })
         builder.addCase(createNewForm.fulfilled, (state, action) => {state.status = 'succeeded'
                                                             state.forms.push(action.payload)
         })
-
+    
+        
+        
+        
         builder.addCase(createNewForm.pending, (state) => {state.status ='loading'})
-
+        
         builder.addCase(createNewForm.rejected, (state) => {state.status ='failed';
-                                                                
+            
         })
+    }})
 
 
     
-}
-})
+
 
 
 export default formsListSlice.reducer;
@@ -97,4 +115,4 @@ export const selectList = (state) => state.forms;
 export const selectForms = (state) => state.forms.forms;
 export const selectFormsStatus = (state) => state.forms.status;
 export const selectFormsError = (state) => state.forms.error;
-export { fetchformsList, createNewForm }; 
+export { fetchformsList, createNewForm, deleteForm }; 

@@ -50,7 +50,8 @@ export default function FormView() {
 
   }}>
 
-<p>view</p>
+<p>{form.name}</p>
+{console.log('fields',form.fields)}
   </Box>
  
 
