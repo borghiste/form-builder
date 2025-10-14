@@ -8,6 +8,7 @@ import { selectvalidationDrawer } from "../../features/validationDrawerSlice";
 import { addField } from "../../features/formSlice";
 //COMPONENTS
 import BasicButton from "../UI/BasicButton";
+import CustomizableDrawer from "../UI/CustomizableDrawer";
 //MUI
 import { Box, Drawer, TextField, useMediaQuery } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
@@ -59,29 +60,14 @@ const theme = useTheme();
   };
 
   return (
-    <Drawer
-    sx={{position:'relative'}}
-            
-
-             variant="persistent"
-             hideBackdrop
-             ModalProps={{keepMounted: true}}
-             PaperProps={{
-               sx: {
-                 position:'relative',
-                 bgcolor:'background.default',
-              
-               
-              
-               }
-             }}
-              // set anchor based on viewport
-             anchor={isMobile ? 'bottom' :"right"}
-            
-             open={openDrawer}
-             >
-                   <Box sx={{display:'flex', justifyContent:'end', zIndex:1}}>
-           <BasicButton text={''} size={'large'} onClick={() => {setOpenDrawer(!openDrawer)}}
+    <CustomizableDrawer
+    variant={'persistent'}
+    anchor={ isMobile ? 'bottom': 'right'}
+    openDrawer={openDrawer} 
+    content={
+      <>
+      <Box component={'header'} sx={{display:'flex', justifyContent:'end', overflow:'auto'}}>
+            <BasicButton text={'X'} size={'small'} onClick={() => {setOpenDrawer(!openDrawer)}}
            textColor={'magenta.main'}/>
            </Box>
             {/* input field label */}
@@ -94,7 +80,7 @@ const theme = useTheme();
         fieldType={fieldType}
         validations={validations}
         onChange={handleValidationChange}
-      />
+        />
 
       <h4>chose validations:</h4>
       <p>
@@ -103,6 +89,52 @@ const theme = useTheme();
         <BasicButton text={'add field'}
         onClick={() =>{handleAddField()}}/>
       </Box>
-    </Drawer>
+        </>
+    }/>
+    // <Drawer
+    // sx={{position:'relative'}}
+            
+
+    //          variant="persistent"
+    //          hideBackdrop
+    //          ModalProps={{keepMounted: true}}
+    //          PaperProps={{
+    //            sx: {
+    //              position:'relative',
+    //              bgcolor:'background.default',
+              
+               
+              
+    //            }
+    //          }}
+    //           // set anchor based on viewport
+    //          anchor={isMobile ? 'bottom' :"right"}
+            
+    //          open={openDrawer}
+    //          >
+    //                <Box sx={{display:'flex', justifyContent:'end', zIndex:1}}>
+    //        <BasicButton text={''} size={'large'} onClick={() => {setOpenDrawer(!openDrawer)}}
+    //        textColor={'magenta.main'}/>
+    //        </Box>
+    //         {/* input field label */}
+    //         {/* change field label on redux */}
+  
+    //        <TextField size="small" inputRef={labelRef} label="inset label field name"/>
+    //   <h3>Field Type: {fieldType}</h3>
+    //   {/* render options based on field type  */}
+    //   <ValidationOptions
+    //     fieldType={fieldType}
+    //     validations={validations}
+    //     onChange={handleValidationChange}
+    //   />
+
+    //   <h4>chose validations:</h4>
+    //   <p>
+    //   {JSON.stringify(validations, null, 2)}</p>
+    //   <Box>
+    //     <BasicButton text={'add field'}
+    //     onClick={() =>{handleAddField()}}/>
+    //   </Box>
+    
   );
 }

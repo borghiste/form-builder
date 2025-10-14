@@ -62,26 +62,7 @@ import {setFields} from "../../features/formSlice";
           onDragStart={() => handleDragStart(index)}
           onDragOver={(e) => e.preventDefault()}
           onDrop={() => handleDrop(index)}/>
-        //   <Card
-        //   key={field.id}
-        //   draggable
-        //   onDragStart={() => handleDragStart(index)}
-        //   onDragOver={(e) => e.preventDefault()}
-        //   onDrop={() => handleDrop(index)}
-        //   sx={{ mb: 2, cursor: "grab" }}
-        //   >
-        //   <CardContent>
-        //     {field.type === "text" && (
-        //         <TextField fullWidth label={field.label} />
-        //     )}
-        //     {field.type === "email" && (
-        //         <TextField fullWidth type="email" label={field.label} />
-        //     )}
-        //     {field.type === "checkbox" && (
-        //         <FormControlLabel control={<Checkbox />} label={field.label} />
-        //     )}
-        //   </CardContent>
-        // </Card>
+   
         
       ))}
     

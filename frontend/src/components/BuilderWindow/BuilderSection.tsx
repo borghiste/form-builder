@@ -1,12 +1,14 @@
 import React, {useState} from "react";
 
 //MUI
-import { Box, ButtonGroup, TextField } from "@mui/material";
+import { Box, ButtonGroup, Typography } from "@mui/material";
+
 
 //COMPONENTS
 import ValidationsOptionsDrawer from "./ValidationsOptionsDrawer";
-import SideBar from './SideBar';
+
 import FormView from "../FormView";
+import FieldTypesDrawer from "./FieldTypesDrawer";
 
 import BasicButton from "../UI/BasicButton";
 import FormPreview from "../FormPreview";
@@ -19,6 +21,8 @@ import { useSelector, useDispatch } from "react-redux";
 import FormFieldList from '../BuilderWindow/FormFieldList';
 import {createForm, setFormName, setFields} from "../../features/formSlice";
 import { AppDispatch } from "../../app/store";
+
+;
 
 export default function BuilderSection(){
 
@@ -40,21 +44,27 @@ export default function BuilderSection(){
  
     return(
         <>
-        <Box sx={{display:'flex', 
+        
+         
+        <Box sx={{display:'flex',
+        
                 position:'relative',
                 minWidth:'100%',
-                justifyContent:'center', alignItems:'start', 
+                justifyContent:{xs:'center', alignItems:'start'
+                }, 
                 flexDirection:{xs:'column', sm: 'row'}, 
                 overflow:'hidden'}}>
 
 
         {/* form fields options */}
 
-        <SideBar setValidationsDrawer={setValidationsDrawer}/>
+        <FieldTypesDrawer setValidationsDrawer={setValidationsDrawer} />
+
+        
        
 
        {/* <FormFieldsSection fields={form?.fields}/> */}
-       <TextField onChange={(e) => {dispatch(setFormName(e.target.value)); console.log(form.name)}}/>
+       {/* <TextField onChange={(e) => {dispatch(setFormName(e.target.value)); console.log(form.name)}}/> */}
        <FormFieldList/>
        
        
