@@ -9,8 +9,7 @@ export default function FieldButton({ label, icon, onClick}){
     size="small"
     fullWidth
     text={label}
-    onClick={onClick}
-    fullWidth={false}/>
+    onClick={onClick}/>
   
 )
 }

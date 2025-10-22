@@ -15,12 +15,12 @@ class FormListController extends Controller
     }
 
     // insert new form into database
-    public function addNewForm(Request $request){
+    public function createNewForm(Request $request){
 
                         $request->validate(['name' => 'string|max:255']);
                     $newForm = Form::create($request->only(['name']));
                     return response()->json($newForm);
-                        }
+            }
 
 
     // delete new form from database

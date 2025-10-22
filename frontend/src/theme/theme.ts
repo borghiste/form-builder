@@ -73,7 +73,10 @@ export const DarkTheme = createTheme({
    MuiListItemText: {
     styleOverrides: {
       root: ({theme}) => ({
-      color: theme.palette.text.primary
+      color: theme.palette.text.primary,
+     
+      
+      
     })
   }
    }

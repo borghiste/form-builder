@@ -2,7 +2,7 @@ import React from "react";
 import { TextField, Checkbox, FormControlLabel, Box, FormControl,
   FormLabel, Input } from "@mui/material";
 
-type FieldType = "text" | "number" | "email" | "password" | "telephone" | "select" | "checkbox" | "radio"; 
+type FieldType = "text" | "number" | "email" | "password" | "telephone" | "select" | "checkbox" ; 
 
 interface ValidationOptionsProps {
   fieldType: FieldType;
@@ -30,9 +30,10 @@ export default function ValidationOptions({
 
       {/* Opzioni per campi di testo */}
       {(fieldType === "text" ||
-        fieldType === "password" ||
-        fieldType === "email" ||
         fieldType === "text Area" ||
+        fieldType === "email" ||
+        fieldType === "number" ||                 
+        fieldType === "password" ||
         fieldType === "telephone") && (
 
         <>
@@ -88,7 +89,7 @@ export default function ValidationOptions({
            </>
       )}
 
-      {/* Opzioni per Select */}
+      {/* Options for Select */}
       {fieldType === "select" && (
         <>
           <TextField

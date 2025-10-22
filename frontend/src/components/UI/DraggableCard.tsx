@@ -32,22 +32,17 @@ onDragOver}) {
      onDragStart={onDragStart}
      onDragOver={onDragOver}
      onDrop={onDrop}
-     sx={{ mb: 2, cursor: "grab" }}
+     sx={{cursor: "grab", marginBottom:1, width:'100%', display:'flex', justifyContent:'center' }}
      >
           <CardContent>
             { ["text", "number", "email", "telephone"].includes(field.type) && (
                 <TextField fullWidth type={field.type} label={field.label} size="small"/>
             )}
             {field.type === "button" && (
-                <BasicButton variant="contained" size="small" text={field.label}/>
+                <BasicButton variant="contained" size="medium" text={field.label}/>
             )}
 
-            {/* {field.type === "email" && (
-                <TextField fullWidth type="email" label={field.label} />
-            )}
-            {field.type === "number" && (
-                <TextField fullWidth type="number" label={field.label} /> */}
-            {/* )} */}
+       
             {field.type === "checkbox" && (
                 <FormControlLabel control={<Checkbox />} label={field.label} />
             )}

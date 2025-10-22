@@ -3,7 +3,7 @@ import { useState } from "react";
 //COMPONENTS
 import BasicButton from './UI/BasicButton';
 //REDUX
-import {createNewForm} from '../features/formsListSlice';
+
 import { useDispatch, useSelector } from "react-redux";
 import { selectList } from "../features/formsListSlice";
 import { selectForm } from '../features/formSlice';
@@ -30,28 +30,17 @@ export default function FormView() {
   const status = useSelector(selectStatus)
   
   
-  
-
-  
-  
-
-   const  handleAddNewForm = async (e) => {
-    e.preventDefault()
-    await dispatch(createNewForm({name:Form.name}))
-  }
-
-
 
   return (
 
 
   <>
-  <Box sx={{position:'relative'
+  <Box component={'form'}>
+    <p>test</p>
 
-  }}>
 
 <p>{form.name}</p>
-{console.log('fields',form.fields)}
+
   </Box>
  
 

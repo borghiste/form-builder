@@ -1,18 +1,28 @@
-import React, {useState} from "react";
+import React, {use, useEffect, useRef, useState} from "react";
 
 //MUI
-import { Box, ButtonGroup, Typography } from "@mui/material";
 
+import {
+  Box,
+  Button,
+  TextField,
+  Checkbox,
 
+  Typography,
+  Divider,
+  Grid,
+  Paper,
+  Tabs,
+  Tab,
+  ButtonGroup,
+} from "@mui/material";
 //COMPONENTS
-import ValidationsOptionsDrawer from "./ValidationsOptionsDrawer";
+import ValidationsOptionsBox from "./ValidationsOptionsBox";
 
 import FormView from "../FormView";
 import FieldTypesDrawer from "./FieldTypesDrawer";
 
 import BasicButton from "../UI/BasicButton";
-import FormPreview from "../FormPreview";
-
 
 
 //REDUX
@@ -20,65 +30,88 @@ import { selectForm } from "../../features/formSlice";
 import { useSelector, useDispatch } from "react-redux";
 import FormFieldList from '../BuilderWindow/FormFieldList';
 import {createForm, setFormName, setFields} from "../../features/formSlice";
+import {createNewForm} from "../../features/formsListSlice";
 import { AppDispatch } from "../../app/store";
+import { nanoid } from "@reduxjs/toolkit";
 
-;
 
-export default function BuilderSection(){
 
-    const [validationsDrawer, setValidationsDrawer] = useState(false)
-    const form = useSelector(selectForm);
-   
-    const dispatch = useDispatch<AppDispatch>();
+
+export default function BuilderSection() {
+  const [validationsDrawer, setValidationsDrawer] = useState(false);
+  const form = useSelector(selectForm);
+  const dispatch = useDispatch<AppDispatch>();
+  const formNameRef = useRef<HTMLInputElement | null>(null);
+ 
+
+  function handleCreateNewForm(){
+    if(!form) return;
     
-    const handleSaveForm = () => {
-        dispatch(setFields(form.fields))
+    dispatch(createNewForm({
+      id:nanoid(),
+      name: form.name,
+      fields: form.fields
+    }));
+    
+  }
+  
+
+  return (
+    <Box component={'main'} >
+      
+      <Paper elevation={3} sx={{ backgroundColor: 'background.default'
+       }}>
         
-        if (!form) return;
+        <TextField
+          label="insert Form Name"
+           onChange={(e) => {
 
-       
-        dispatch(createForm(form));
-    }
+               e.preventDefault(); 
+               
+               dispatch(setFormName(formNameRef.current?.value));
+               }}
 
-
- 
-    return(
-        <>
-        
-         
-        <Box sx={{display:'flex',
-        
-                position:'relative',
-                minWidth:'100%',
-                justifyContent:{xs:'center', alignItems:'start'
-                }, 
-                flexDirection:{xs:'column', sm: 'row'}, 
-                overflow:'hidden'}}>
+           defaultValue={form?.name}
+          inputRef={formNameRef}
+          
+          margin="normal"
+          fullWidth/>
+          
+          <Typography >Form name:
+  {form?.name}
+</Typography>
 
 
-        {/* form fields options */}
-
-        <FieldTypesDrawer setValidationsDrawer={setValidationsDrawer} />
+          
+        <Divider sx={{ my: 2 }} />
 
         
        
+        
+        
 
-       {/* <FormFieldsSection fields={form?.fields}/> */}
-       {/* <TextField onChange={(e) => {dispatch(setFormName(e.target.value)); console.log(form.name)}}/> */}
-       <FormFieldList/>
-       
-       
- 
+        <Box sx={{display:'flex', justifyContent:'center', alignItems:'center',
+        
+        
+      }}>
+          <Grid container sx={{flexDirection:{xs:'column', md:'row'}}}>
+            {/*left  Sidebar  */}
+            <FieldTypesDrawer setValidationsDrawer={setValidationsDrawer}/>
 
-        <ValidationsOptionsDrawer openDrawer={validationsDrawer} setOpenDrawer={setValidationsDrawer}/>
+            {/*  central area */}
+            <FormFieldList/>
+           
 
+            {/* Right Pannel */}
+            <ValidationsOptionsBox openDrawer={validationsDrawer} setOpenDrawer={setValidationsDrawer}/>
+          </Grid>
         </Box>
-        <ButtonGroup>
-            <BasicButton text={'save'} 
-            onClick={() => {handleSaveForm()}}/>
-            <BasicButton text={'cancel'} />
-
-        </ButtonGroup>
-                    </>
-    )
+          <ButtonGroup>
+            <Button onClick={() => {handleCreateNewForm()}}>save</Button>
+          </ButtonGroup>
+      </Paper>
+    </Box>
+  );
 }
+
+

@@ -11,67 +11,73 @@ import BasicButton from "../components/UI/BasicButton";
 import {selectUser} from '../features/UserSlice';
 import { AppDispatch } from "../app/store";
 import {useSelector, useDispatch} from 'react-redux';
-import { fetchformsList, deleteForm } from '../features/formsListSlice';
-import { selectList } from "../features/formsListSlice";
-import {getForm} from "../features/formSlice";
-import { selectForm } from "../features/formSlice";
-
-import { RootState } from "../app/store";
+import { fetchFormsList, deleteForm, getForm } from '../features/formsListSlice';
+import { selectForms } from "../features/formsListSlice";
 import Modal from '../components/Modal';
 import { useState, useContext } from "react";
 import { modalContext } from "../App";
+import setForm from "../features/formSlice";
 
 
 export default  function FormsList(){
 
-     const location = useLocation();
+    
 
      const dispatch = useDispatch<AppDispatch>();
 
-    const  {forms, error, status, } = useSelector(selectList)
-    const User = useSelector(selectUser)
-    const {newFormClick,setNewFormClick} = useContext(modalContext); 
+    const  forms = useSelector(selectForms) //get the form list state from redux
+    const User = useSelector(selectUser) //get the user state from redux
+    const {newFormClick,setNewFormClick} = useContext(modalContext);  //context to manage if the modal is for new form or view form
     
    
 
 
 
-useEffect(() => {dispatch(fetchformsList())
+useEffect(() => {dispatch(fetchFormsList()) //fetch the forms list on component mount
     
-}, [forms])
+}
+, [forms])
 
-const [modalOpen, setModalOpen] = useState(false);
-const handleModalOpen = () => {setModalOpen(true);}
-const handleModalClose = () => { setModalOpen(false);
-    setNewFormClick(false)
+const [modalOpen, setModalOpen] = useState(false); //state to manage modal open/close
+
+const handleModalClose = () => { setModalOpen(false); //function to close the modal
+    setNewFormClick(false) //reset the new form click context
     
  }
 
 
  const handleNewFormisClicked = () => {
+    // 
     setNewFormClick(true);
     setModalOpen(true);
     
     
   }
+
+
+
+  const handleViewForm = async (formId) => {
+    const result = await dispatch(getForm(formId));
+  
+    if (getForm.fulfilled.match(result)) {
+      dispatch(setForm(result.payload)); // usa i dati caricati
+      setModalOpen(true);
+      setNewFormClick(false);
+    } else {
+      console.error("Error loading forms");
+    }
+  };
   
 
-const handleViewForm = (formId) => {dispatch(getForm(formId));
-   
+const handleEditForm = (formId) => {dispatch(getForm(formId));
                                     setModalOpen(true);
-                                    setNewFormClick (false)
-                                    
-
+                                    setNewFormClick (true)
 }
 
 
 
-
     return(
-       
-
         <>
-     
 
 
         <Modal modalIsOpen={modalOpen} handleModalClose={handleModalClose} />
@@ -85,17 +91,11 @@ const handleViewForm = (formId) => {dispatch(getForm(formId));
 
     <ListItem>
         <ListItemText  sx={{font:'bold'}} primary='Form Name'/>
-            
-
-
         <ListItemText primary='Created time' />
          
-        
 
-
-        <ListItemText className='font-bold ' sx={{font:'bold'}} primary='updated time'/>
+        <ListItemText className='font-bold' sx={{font:'bold'}} primary='updated time'/>
        
-
         { 
          User.role === 'admin' ? <BasicButton text={'+ NEW FORM'} 
          variant={'contained'} 
@@ -103,21 +103,22 @@ const handleViewForm = (formId) => {dispatch(getForm(formId));
          textColor={'black'}
          width={200}
          onClick={()=>{handleNewFormisClicked()}}
+        //   set the modal to create a new form
          /> : null }
                     
     </ListItem>
     <Divider/>
 
-    {forms.map((form)=> {
+    {forms?.map((form)=> {
     
         const createdDate = new Date(form.created_at).toISOString().slice(0, 10);
         const updatedDate = new Date(form.updated_at).toISOString().slice(0, 10);
         return(
             <div key={form.id}>
-        <ListItem >
-<ListItemText>{form.name}</ListItemText>
+        <ListItem>
+<ListItemText >{form.name}</ListItemText>
 
-<ListItemText primary={createdDate}/>
+<ListItemText  primary={createdDate}/>
           
      
 
@@ -132,7 +133,8 @@ const handleViewForm = (formId) => {dispatch(getForm(formId));
         { User.role == 'admin' ? (
             <>
          <BasicButton text={'edit'}/>
-        <BasicButton text={'delete'} 
+        <BasicButton text={'delete'}
+          onclick={() => {dispatch(deleteForm(form.id))} } 
         color={'magenta.dark'} 
             textColor={'black'}
             onClick={() => {dispatch(deleteForm(form.id))}} 

@@ -5,39 +5,24 @@ import { useDispatch } from 'react-redux';
 import { setvalidationsField } from '../../features/validationDrawerSlice';
 import {setFieldType} from '../../features/FieldSlice';
 //MUI
-import { Box, Divider } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 
 // //ICONS
 
-
-import CssBaseline from '@mui/material/CssBaseline';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import NotesIcon from '@mui/icons-material/Notes';
 import EmailIcon from '@mui/icons-material/Email';
 import PinIcon from '@mui/icons-material/Pin';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
-import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
-import Divider from '@mui/material/Divider';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import TextFieldsIcon from '@mui/icons-material/TextFields';
 import ListIcon from '@mui/icons-material/List';
-import CheckIcon from '@mui/icons-material/Check';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 
 //COMPONENTS
 import BasicButton from "../UI/BasicButton";
-import CustomizableDrawer from "../UI/CustomizableDrawer";
+import FieldButton from '../UI/FieldButton';
 
 // DATA TYPES
 export const fieldTypes = [
@@ -49,28 +34,14 @@ export const fieldTypes = [
     { id: 'date', name: 'date', icon: DateRangeIcon, description: 'Date Selector' },
     { id: 'time', name: 'time', icon: AccessTimeIcon, description: 'hour Selector ' },
     { id: 'select', name: 'select List', icon: ListIcon, description: 'options list' },
-    
-    { id: 'checkbox', name: 'checkbox', icon: ChecklistRtlIcon, description: 'Checkboxes' }
+
+    { id: 'checkbox', name: 'checkbox', icon: CheckBoxIcon, description: 'Checkbox' }
   
   ];
 
 
 
-const FieldButton = ({ label, icon, onClick }) => (
-  <BasicButton
-    variant="outlined"
-    startIcon={icon}
-   
-    size="small"
-    
-    text={label}
-    sx={{ justifyContent: "flex-start", mb: 0.5 }}
-    onClick={onClick}/>
-  
-);
-
-
-export default function FieldTypesDrawer({setValidationsDrawer}){
+export default function FieldTypesDrawer({setValidationsDrawer, openDrawer}){
   const dispatch = useDispatch();
   
   const handleFieldButtonClick = (fieldType) => {
@@ -80,51 +51,37 @@ export default function FieldTypesDrawer({setValidationsDrawer}){
          console.log('field type set to:', fieldType);
   }
 
-    return(
-      <>
-      
-      <CustomizableDrawer openDrawer={true} variant={'persistent'} setOpenDrawer={setValidationsDrawer}
-      /* Field types list */
-      
-          content={
-          
-        fieldTypes.map((field) =>{
-          const IconComponent = field.icon;
+  return(
+
+    <Grid container direction={'column'} alignItems={'center'} >
+    <nav>
+      <Typography variant="subtitle1" fontWeight="bold" mb={1} color="text.primary">
+        Select a Field Type
+      </Typography>
+      <Box display="flex" flexDirection="column"  justifyContent={'center'}  >
+        {fieldTypes.map((field) =>{
+           const IconComponent = field.icon;
        
-          return (
+           return (
 
              
 
-            <FieldButton
-            key={field.id}
+             <FieldButton
+             key={field.id}
             
-            label={field.name}
-            icon={<IconComponent/>}
+             label={field.name}
+             icon={<IconComponent/>}
             onClick={() => handleFieldButtonClick(field.name)}/>
-          )
-        })}/>
-       
-      
-         
-            
-
-        
-          
-          
-    
-           <Divider sx={{ mb: 2 }} />
-    
-           
-        
-    
-       
-             
-             
-             
-       
-            </>
            )
-           }
+         })}
+      
+      </Box>
+    </nav>
+
+    
+  </Grid>
+  )
+ }
          
     
     
