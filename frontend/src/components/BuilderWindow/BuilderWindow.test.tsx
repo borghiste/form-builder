@@ -2,16 +2,9 @@ import React, { useState } from 'react';
 
 // COMPONENTS
 import DeleteButton from '../UI/DeleteButton';
-import FieldTypesColumn from './FieldTypesColumn';
+import DraggableField from '../UI/DraggableField';
 
-// MUI
-import { Box } from '@mui/material';
-//
-
-
-import BasicButton from '../UI/BasicButton';
-
- export default function BuilderWindow () {
+const FormBuilder = () => {
   const [formFields, setFormFields] = useState([]);
   const [selectedField, setSelectedField] = useState(null);
   const [formName, setFormName] = useState('');
@@ -26,17 +19,17 @@ import BasicButton from '../UI/BasicButton';
     customValidation: '',
   });
 
-//   const fieldTypes = [
-//     { type: 'text', label: 'Text', icon: '📝' },
-//     { type: 'textarea', label: 'Text Area', icon: '📄' },
-//     { type: 'email', label: 'Email', icon: '✉️' },
-//     { type: 'number', label: 'Number', icon: '🔢' },
-//     { type: 'telephone', label: 'Telephone', icon: '📞' },
-//     { type: 'date', label: 'Date', icon: '📅' },
-//     { type: 'time', label: 'Time', icon: '⏰' },
-//     { type: 'select', label: 'Select List', icon: '📋' },
-//     { type: 'checkbox', label: 'Checkbox', icon: '☑️' },
-//   ];
+  const fieldTypes = [
+    { type: 'text', label: 'Text', icon: '📝' },
+    { type: 'textarea', label: 'Text Area', icon: '📄' },
+    { type: 'email', label: 'Email', icon: '✉️' },
+    { type: 'number', label: 'Number', icon: '🔢' },
+    { type: 'telephone', label: 'Telephone', icon: '📞' },
+    { type: 'date', label: 'Date', icon: '📅' },
+    { type: 'time', label: 'Time', icon: '⏰' },
+    { type: 'select', label: 'Select List', icon: '📋' },
+    { type: 'checkbox', label: 'Checkbox', icon: '☑️' },
+  ];
 
   // Drag and Drop Handlers
   const handleDragStart = (e, field) => {
@@ -183,19 +176,16 @@ import BasicButton from '../UI/BasicButton';
           </div>
 
           {/* Three Column Layout */}
-          <Box component={'div'} sx={{ display: 'grid', gridTemplateColumns:{ md:'1fr 2fr 1fr'}, gap: '1.5rem', overflow:'auto' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 1fr', gap: '1.5rem' }}>
             {/* Left Column - Form Fields */}
-            <FieldTypesColumn/>
-            
-
-            {/* <div>
+            <div>
               <h2 style={{ fontSize: '1.125rem', fontWeight: 600, color: theme.text, marginBottom: '1rem' }}>
                 Form Fields
               </h2>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                 {fieldTypes.map((field) => (
                   <>
-                 
+                  <DraggableField icon={field.icon} field={field}/>
                   <div
                     key={field.type}
                     draggable
@@ -220,7 +210,7 @@ import BasicButton from '../UI/BasicButton';
                     </>
                 ))}
               </div>
-            </div> */}
+            </div>
 
             {/* Center Column - Drop Zone */}
             <div
@@ -447,11 +437,80 @@ import BasicButton from '../UI/BasicButton';
                 </p>
               )}
             </div>
-          </Box>
+          </div>
         </div>
       </main>
     </div>
   );
 };
 
-;
+export default FormBuilder;
+
+// import React, { useState } from "react";
+
+// // MUI
+// import { Box, ButtonGroup, Divider, Typography } from "@mui/material";
+
+// // COMPONENTS
+// import BasicButton from "../UI/BasicButton";
+
+// import FormPreview from "../BuilderWindow/FormPreview";
+// import BuilderSection from "./BuilderSection";
+
+
+
+// export default function BuilderWindow({handleModalClose}: {handleModalClose: () => void}) {
+//   // state to switch from builder to preview
+//   const [preview, switchToPreview] = useState(false);
+
+//   return(
+//   <Box sx={{display:'flex', flexDirection:'column'}}>
+
+//       {/* window header */}
+//      <Box component={'header'} sx={{display:'flex', justifyContent:'space-between'}}>
+//       <Typography variant="h5" fontWeight="bold" gutterBottom>
+//                   Form Builder
+//                 </Typography>
+      
+//       <BasicButton text={'X'} onClick={() => {handleModalClose()}}
+//       textColor="magenta.dark"/>
+     
+
+
+//      </Box>
+//      <ButtonGroup>
+//      <BasicButton
+//                text={"build"}
+//                onClick={() => {
+//                  switchToPreview(false);
+//                }}
+//                textColor={"black"}
+//                variant={preview ? "" : "contained"}
+//                onclick={() => {
+//                  handleModalClose();
+//                }}/>
+//       <BasicButton
+//                text={"preview"}
+//                onClick={() => {
+//                  switchToPreview(true);
+//                }}
+//                variant={!preview ? "text" : "contained"}
+//                textColor={!preview ? "text.primary" : "black"}
+//                size={"small"}/>
+
+//      </ButtonGroup>
+
+//      <Divider/>
+
+//      <Box>
+
+//                {/* switch from builder to preview */}
+//            {preview ? <FormPreview /> : <BuilderSection />} 
+          
+//      </Box>
+
+
+//   </Box>
+//   )
+
+// }

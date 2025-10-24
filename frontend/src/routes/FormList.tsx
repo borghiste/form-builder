@@ -16,7 +16,7 @@ import { selectForms } from "../features/formsListSlice";
 import Modal from '../components/Modal';
 import { useState, useContext } from "react";
 import { modalContext } from "../App";
-import setForm from "../features/formSlice";
+import { setForm } from "../features/formSlice";
 
 
 export default  function FormsList(){
@@ -55,23 +55,24 @@ const handleModalClose = () => { setModalOpen(false); //function to close the mo
   }
 
 
-
   const handleViewForm = async (formId) => {
-    const result = await dispatch(getForm(formId));
-  
-    if (getForm.fulfilled.match(result)) {
-      dispatch(setForm(result.payload)); // usa i dati caricati
+
+    const selectedForm = await dispatch(getForm(formId)).unwrap();
+    console.log('selected form:', selectedForm);
+    dispatch(setForm({...selectedForm})); 
+
+       
       setModalOpen(true);
       setNewFormClick(false);
-    } else {
-      console.error("Error loading forms");
+    
     }
-  };
+  
   
 
-const handleEditForm = (formId) => {dispatch(getForm(formId));
+const handleEditForm = (formId) => {
+  dispatch(getForm(formId));
                                     setModalOpen(true);
-                                    setNewFormClick (true)
+                                    setNewFormClick(true);
 }
 
 

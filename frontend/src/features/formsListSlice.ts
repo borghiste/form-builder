@@ -53,7 +53,7 @@ export const createNewForm = createAsyncThunk<FormData, FormData>(
     });
 
     if (!res.ok) throw new Error("Error creating new form");
-
+    console.log(res)
     return (await res.json()) as FormData;
   }
 );
@@ -68,8 +68,9 @@ export const deleteForm = createAsyncThunk<string, string>(
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: formId }),
-      }
-    );
+      });
+      console.log('status', res.status)
+      
 
     if (!res.ok) throw new Error("Error deleting form");
 
@@ -89,7 +90,7 @@ export const getForm = createAsyncThunk<FormData, string>(
       }
     );
 
-    if (!res.ok) throw new Error("Error fetching form");
+    if (!res.ok) throw new Error("Error Loading form");
 
     return (await res.json()) as FormData;
   }
@@ -145,11 +146,12 @@ export const formsListSlice = createSlice({
 
     // --- GET FORM ---
     builder
-      .addCase(getForm.pending, (state) => {
+      .addCase(getForm.pending, (state,) => {
         state.status = "loading";
       })
       .addCase(getForm.fulfilled, (state) => {
         state.status = "succeeded";
+
       })
       .addCase(getForm.rejected, (state, action) => {
         state.status = "failed";

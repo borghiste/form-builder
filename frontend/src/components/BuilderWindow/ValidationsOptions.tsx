@@ -1,6 +1,6 @@
 import React from "react";
 import { TextField, Checkbox, FormControlLabel, Box, FormControl,
-  FormLabel, Input } from "@mui/material";
+  FormLabel } from "@mui/material";
 
 type FieldType = "text" | "number" | "email" | "password" | "telephone" | "select" | "checkbox" ; 
 
@@ -17,7 +17,7 @@ export default function ValidationOptions({
 }):ValidationOptionsProps{
   return (
     <Box display="flex" flexDirection="column" gap={2}>
-      {/* Opzione comune a tutti i campi */}
+      {/* common fields options */}
       <FormControlLabel
         control={
           <Checkbox
@@ -28,7 +28,7 @@ export default function ValidationOptions({
         label="Required"
       />
 
-      {/* Opzioni per campi di testo */}
+      {/* "text" | "text Area" | "email" | "number" | "password" | "telephone"  options */}
       {(fieldType === "text" ||
         fieldType === "text Area" ||
         fieldType === "email" ||
@@ -47,7 +47,7 @@ export default function ValidationOptions({
                     value={validations.minLength || ""}
                     onChange={(e) => onChange("Min", Number(e.target.value))}
                     sx={{maxWidth:'8rem', mr:1}}/>
-                    
+          
          <TextField variant="outlined" 
          size="small"  
          label="Max "
@@ -62,32 +62,13 @@ export default function ValidationOptions({
 
       )}
 
-      {/* numbers options */}
-      {fieldType === "number" && (
-           <>
-           <FormControl sx={{display:'flex', justifyContent:'space-between', flexDirection:'row', alignItems:'center'}}>
-             
-             <Box sx={{display:'flex', 
-                       justifyContent:'center'}}>
-            <TextField variant="outlined" size="small"
-                       label="Min"  
-                       type="number" 
-                       value={validations.minLength || ""}
-                       onChange={(e) => onChange("Min", Number(e.target.value))}
-                       sx={{maxWidth:'8rem', mr:1}}/>
-                       
-            <TextField variant="outlined" 
-            size="small"  
-            label="Max "
-            type="number" sx={{maxWidth:'8rem'}}
-            value={validations.maxLength}
-            onChange={(e) => onChange("maxLength", Number(e.target.value))}/>
+     
    
-             </Box>
+
    
-           </FormControl>
-           </>
-      )}
+          
+           
+      
 
       {/* Options for Select */}
       {fieldType === "select" && (

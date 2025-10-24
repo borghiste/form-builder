@@ -9,8 +9,9 @@ class FormController extends Controller
 {
     // get form
     public function getForm( string $formId){
-        $form = Form::findOrFail($formId);
+        $form = Form::with('formFields')->findOrFail($formId);
         return response()->json($form);
+         
     }
 
 

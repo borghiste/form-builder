@@ -1,9 +1,9 @@
 import React from "react";
 import { Chip } from "@mui/material";
-export default function DeleteButton(){
+export default function DeleteButton({onClick}){
     return(
         <>
-        <Chip label={'delete'}/>
+        <Chip label={'delete'} onClick={onClick}/>
         </>
     )
 }

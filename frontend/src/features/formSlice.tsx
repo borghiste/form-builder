@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, nanoid } from "@reduxjs/toolkit";
+import { createSlice, nanoid, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../app/store";
 
 
@@ -15,35 +15,27 @@ name: string,
 description: string,
 created_at: string,
 updated_at: string,
-fields:formField[]
+form_fields:formField[]
 }
 
 type formState = {status: string, form:formData | null, error: string
 }
 
 const initialState: formState = {status:'idle', // 'succeeded | 'loading | 'failed
-                                form: {id:nanoid(), name:'', description:'', created_at:'', updated_at:'', fields:[{id:nanoid(), label:'submit', type:'button'}]},
+                                form: {id: '', name:'', description:'', created_at:'', updated_at:'', form_fields:[]},
                                 }
-
-
-
-
-
-  
-
- 
 
 
 const formSlice = createSlice({
     name:'form',
     initialState,
     reducers: {
-        setForm(state, action){
+        setForm(state, action: PayloadAction<FormData>){
             state.form = action.payload;
         }
         ,
         setFields(state, action) {
-            state.form.fields = action.payload;
+            state.form.form_fields = action.payload;
         },
         addField: (state, action) => {
 
@@ -69,7 +61,7 @@ const formSlice = createSlice({
     export const selectForm = (state: RootState) => state.form.form;
     export const selectStatus = (state: RootState) => state.form.status;
 
-export { setForm};
+export const { setForm} = formSlice.actions;
 export const {addField, setFields, setFormName} = formSlice.actions
 
 

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('description')->nullable(true);
             $table->date('created_at')->nullable(false);
             $table->timestamp('updated_at')->nullable(false);
+            
 
         });
     }
