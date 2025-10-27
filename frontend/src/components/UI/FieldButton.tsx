@@ -2,7 +2,10 @@ import React from "react";
 //MUI
 import { Box, Typography, Paper } from "@mui/material";
 
-export default function FieldButton({handleDragStart, field, Icon, name}) {
+
+export default function FieldButton({handleDragStart, field, Icon, name
+
+}) {
   return(
     <Paper
                   
@@ -12,7 +15,7 @@ export default function FieldButton({handleDragStart, field, Icon, name}) {
                   onMouseUp={(e) => (e.currentTarget.style.cursor = 'grab')}
                   sx={{
                       p: '0.75rem 1rem',
-                      
+                      bgcolor: 'background.default',
                       borderRadius: '0.375rem',
                       cursor: 'grab',
                       display: 'flex',
@@ -20,12 +23,12 @@ export default function FieldButton({handleDragStart, field, Icon, name}) {
                       gap: '0.75rem',
                       
                       transition: 'background-color 0.2s ease',
-                      // '&:hover': {
-                      //     bgcolor: '#4B5563' 
-                      //   },
+                       '&:hover': {
+                           bgcolor: 'gray.light' 
+                         },
                     }}
                     >
-                  {Icon} 
+                  {(Icon &&  <Icon  />)}
                   <Typography>{name}</Typography>
                 </Paper>
             

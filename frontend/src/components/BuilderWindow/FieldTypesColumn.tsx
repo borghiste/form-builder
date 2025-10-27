@@ -34,7 +34,7 @@ export const fieldTypes = [
  
 // };
 
-export default function FieldTypesColumn() {
+export default function FieldTypesColumn({handleDragStart}) {
     
   return (
     <Box>
@@ -53,10 +53,14 @@ export default function FieldTypesColumn() {
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
        
         {fieldTypes?.map((field) => {
-       const Icon = field.icon; 
+        
 
           return (
-            <FieldButton key={field.id} icon={ Icon} name={field.name}/>
+            <FieldButton key={field.id} 
+            Icon={field.icon} 
+            name={field.name} 
+            handleDragStart={handleDragStart}
+            field={field}/>
         
           );
         })

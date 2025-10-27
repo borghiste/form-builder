@@ -64,5 +64,3 @@ const formSlice = createSlice({
 export const { setForm} = formSlice.actions;
 export const {addField, setFields, setFormName} = formSlice.actions
 
-
-

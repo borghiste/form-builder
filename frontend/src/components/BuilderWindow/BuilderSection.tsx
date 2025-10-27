@@ -59,6 +59,7 @@ export default function BuilderSection() {
   return (
     <Box component={'main'} >
       
+      
       <Paper elevation={3} sx={{ backgroundColor: 'background.default'
        }}>
         
@@ -100,6 +101,7 @@ export default function BuilderSection() {
 
             {/*  central area */}
             <FormFieldList/>
+           
            
 
             {/* Right Pannel */}

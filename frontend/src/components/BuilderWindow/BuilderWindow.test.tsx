@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 // COMPONENTS
 import DeleteButton from '../UI/DeleteButton';
-import DraggableField from '../UI/DraggableField';
+
 
 const FormBuilder = () => {
   const [formFields, setFormFields] = useState([]);
