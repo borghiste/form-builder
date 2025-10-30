@@ -14,7 +14,8 @@ export default function BasicButton({text,
                                     width, 
                                     type, 
                                     fullWidth,
-                                    fontSize
+                                    fontSize,
+                                    borderradius
                                     
                                     }){
 
@@ -37,7 +38,7 @@ export default function BasicButton({text,
                     textWrap:'nowrap'}}
                     fullWidth={fullWidth}
                     fontSize={fontSize}
-                    
+                    borderRadius={borderradius}
                     href={href}
                     
        

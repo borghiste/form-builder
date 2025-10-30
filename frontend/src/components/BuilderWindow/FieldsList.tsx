@@ -1,53 +1,78 @@
 import React, {useState} from 'react';
 import { Box, Typography, TextField, Paper, IconButton } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
+
 
 // COMPONENTS
 import DraggableField from '../UI/DraggableField';
 
 // REDUX
 import { useDispatch, useSelector } from 'react-redux';
-import { selectForm, setFields } from '../../features/formSlice';
+import { selectForm  } from '../../features/formSlice';
 
 
 export default function FieldsList({
 
   handleFieldClick,
-  handleDeleteField,
   draggedField,
   selectedField,
   onDragOver,
   onDrop,
-  formFields
-  
-}) {
+  handleDraggedField,
+  formFields}) {
 
   const form = useSelector(selectForm);
+
+
+  
  
-  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  
+  const [targetIndex, setTargetIndex] = useState<number | null>(null)
+  const [draggedFieldIndex, setDraggedFieldIndex] = useState<number | null>(null);
   const dispatch = useDispatch();
+  
+ 
 
-     const handleDragStart = (index: number) => {
-     setDraggedIndex(index);
-   };
 
-   const handleDrop = (index: number) => {
-     if (draggedIndex === null) return;
 
-     const newFields = [...formFields];
-     const [moved] = newFields.splice(draggedIndex, 1);
-     newFields.splice(index, 0, moved);
+  const handleFieldDragStart = (e, index) => {
 
-     dispatch(setFields(newFields));
-     setDraggedIndex(null);
-   };
+    setDraggedFieldIndex(index);
+  e.dataTransfer.setData('reorder', 'true');
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("reorder", "true");
+    e.dataTransfer.setData("fieldIndex", index.toString());
+  };
+  
+
+
+  const handleFieldDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    if (draggedFieldIndex === null || draggedFieldIndex === index) return;
+    setTargetIndex(index);
+  };
+
+  const handleFieldDrop = (e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault();
+    onDrop(e, dropIndex);
+    setTargetIndex(null);
+  };
+
+  
+
+  const handleDeleteField = (fieldId) => {
+    setFormFields(formFields.filter((f) => f.id !== fieldId));
+    if (selectedField?.id === fieldId) {
+      setSelectedField(null);
+    }
+  }
     
   return (
     <Box
+    
       onDragOver={onDragOver}
       onDrop={onDrop}
       sx={{
-        minHeight: 500,
+        minHeight: '5rem',
         border: `2px dashed gray`, 
         borderRadius: '0.5rem',
         p: 3,
@@ -55,14 +80,13 @@ export default function FieldsList({
         display: 'flex',
         
         flexDirection: 'column',
-        justifyContent: 'center'
-          // formFields.length === 0 ? 'center' : 'flex-start',
+        justifyContent: formFields?.length === 0 ? 'center' : 'flex-start',
       }}
     >
         <Box>
         <Typography variant='h4' sx={{justifySelf:'start', alignSelf:'start', textAlign:'center'}}>{form.name}</Typography>
         </Box>
-      {formFields.length === 0 ? (
+      {formFields?.length === 0 ? (
         
        
         <Box
@@ -84,35 +108,44 @@ export default function FieldsList({
       ) : (
         <>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          {formFields.map((field, index) => (
-             <DraggableField key={`${field.id || field.type}-${index}`} 
-             field={field}
-             selectedField={selectedField}
-             handleDeleteField={handleDeleteField}
-             handleFieldClick={ handleFieldClick}
-            
-             index={index}
-           onDragStart={() => handleDragStart(index)}
-           onDragOver={(e) => e.preventDefault()}
-           onDrop={() => handleDrop(index)}/>
+        {formFields?.map((field, index) => (
+          <>
+             <Box
+  onDragOver={(e) => handleFieldDragOver(e, index)}
+  onDrop={(e) => handleFieldDrop(e, index)}
+  sx={{
+    height: targetIndex === index ? 20 : 8,
+    backgroundColor: targetIndex === index ? 'primary.main' : 'transparent',
+    my: 0.5,
+  }}
+/>
+  <DraggableField
+     key={`${field.id || field.type}-${index}`}
+     field={field}
+     selectedField={selectedField}
+     handleDeleteField={handleDeleteField}
+     handleFieldClick={handleFieldClick}
+     index={index}
+     onDragStart={(e)=> {handleFieldDragStart(e, index)}}
+     onDragOver={(e)=> {e.preventDefault(); setTargetIndex(index)}}/>
+  
 
-            
-          ))}
+     </>
+))}
+
         </Box>
         <Box
                  sx={{
                    height: 40,
                    border: "2px dashed lightgray",
+                   
                    borderRadius: 1,
                    textAlign: "center",
                    lineHeight: "40px",
                    color: "gray",
                    fontSize: 14,
                    mt: 1,
-                 }}
-                 onDragOver={(e) => e.preventDefault()}
-                 onDrop={() => handleDrop(formFields.length)}
-               >
+                 }}>
                  Drag and drop field here to change order
                </Box>
                </>
@@ -121,111 +154,3 @@ export default function FieldsList({
     
   );
 }
-
-
-// import React, { useState } from "react";
-// import { Card, CardContent, Typography } from "@mui/material";
-
-
-// import {
-//   Box,
-//   TextField,
-//   Checkbox,
-//   FormControlLabel,
-//   Card,
-//   CardContent,
-//   Grid,
-//   Paper,
-//   Button
-// } from "@mui/material";
-
-// //COMPONENTS
-// import DraggableCard from "../UI/DraggableCard";
-// import { useSelector } from "react-redux";
-
-// //REDUX
-// import { selectForm } from "../../features/formSlice";
-
-// import { useDispatch } from "react-redux";
-// import {setFields} from "../../features/formSlice";
-
-// import React, { useState } from "react";
-// import {
-//   Box,
-//   TextField,
-//   Checkbox,
-//   FormControlLabel,
-//   Card,
-//   CardContent,
-//   Grid,
-//   Paper,
-//   Button,
-//   Typography,
-// } from "@mui/material";
-
-// // COMPONENTS
-// import DraggableCard from "../UI/DraggableCard";
-
-// // REDUX
-// import { useSelector, useDispatch } from "react-redux";
-// import { selectForm, setFields } from "../../features/formSlice";
-
-// export default function FormFieldList() {
-//   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
-//   const dispatch = useDispatch();
-//   const form = useSelector(selectForm);
-//   const fields = form?.fields || [];
-
-//   const handleDragStart = (index: number) => {
-//     setDraggedIndex(index);
-//   };
-
-//   const handleDrop = (index: number) => {
-//     if (draggedIndex === null) return;
-
-//     const newFields = [...fields];
-//     const [moved] = newFields.splice(draggedIndex, 1);
-//     newFields.splice(index, 0, moved);
-
-//     dispatch(setFields(newFields));
-//     setDraggedIndex(null);
-//   };
-
-//   return (
-//     <Box>
-      
-      
-//       <Typography fontWeight="bold">Current fields on form</Typography>
-
-//       {fields.map((field, index) => (
-//         <DraggableCard
-//           key={field.id}
-//           index={index}
-//           onDragStart={() => handleDragStart(index)}
-//           onDragOver={(e) => e.preventDefault()}
-//           onDrop={() => handleDrop(index)}
-//           field={field}
-//         />
-//       ))}
-
-//       {/* empty space to drop item */}
-//       <Box
-//         sx={{
-//           height: 40,
-//           border: "2px dashed lightgray",
-//           borderRadius: 1,
-//           textAlign: "center",
-//           lineHeight: "40px",
-//           color: "gray",
-//           fontSize: 14,
-//           mt: 1,
-//         }}
-//         onDragOver={(e) => e.preventDefault()}
-//         onDrop={() => handleDrop(fields.length)}
-//       >
-//         Drag and drop field here to change order
-//       </Box>
-//     </Box>
-//   );
-// }
-

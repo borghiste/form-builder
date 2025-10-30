@@ -33,8 +33,7 @@ export default  function FormsList(){
 
 
 
-useEffect(() => {dispatch(fetchFormsList()) //fetch the forms list on component mount
-    
+useEffect(() => {dispatch(fetchFormsList()) //fetch the forms list on component mount   
 }
 , [forms])
 
@@ -47,9 +46,10 @@ const handleModalClose = () => { setModalOpen(false); //function to close the mo
 
 
  const handleNewFormisClicked = () => {
-    // 
-    setNewFormClick(true);
-    setModalOpen(true);
+     
+    setNewFormClick(true); //new form button is clicked
+    setModalOpen(true); // modal opens
+    dispatch(setForm({}));
     
     
   }
@@ -59,9 +59,7 @@ const handleModalClose = () => { setModalOpen(false); //function to close the mo
 
     const selectedForm = await dispatch(getForm(formId)).unwrap();
     console.log('selected form:', selectedForm);
-    dispatch(setForm({...selectedForm})); 
-
-       
+    dispatch(setForm({...selectedForm}));
       setModalOpen(true);
       setNewFormClick(false);
     

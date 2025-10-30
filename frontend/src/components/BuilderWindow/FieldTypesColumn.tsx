@@ -27,12 +27,7 @@ export const fieldTypes = [
   { id: 'checkbox', name: 'Checkbox', icon: CheckBoxIcon, description: 'Checkbox field' },
 ];
 
-// type FieldTypesColumnProps = {
-//   fieldTypes: typeof fieldTypes;
-//   handleDragStart: (e: React.DragEvent, field: any) => void;
-//   darkMode: boolean;
- 
-// };
+;
 
 export default function FieldTypesColumn({handleDragStart}) {
     

@@ -3,7 +3,7 @@ import {nanoid} from 'nanoid';
 import {useDispatch, useSelector} from  'react-redux';
 
 // REDUX
-import  { selectForm,  setFormName } from '../../features/formSlice';
+import  { selectForm,  setFormName, setFormFields } from '../../features/formSlice';
 
 
 // MUI
@@ -14,17 +14,22 @@ import { Box, ButtonGroup, TextField} from '@mui/material';
 import BasicButton from '../UI/BasicButton';
 import FieldsList from './FieldsList';
 import FieldTypesColumn from './FieldTypesColumn';
+import ValidationsOptionsBox from './ValidationsOptionsBox';
 
  export default function BuilderWindow () {
-  const [formFields, setFormFields] = useState([]);
-  const [selectedField, setSelectedField] = useState(null);
-  const form = useSelector(selectForm);
-  const dispatch = useDispatch();
+  
+   const form = useSelector(selectForm);
+  //  const formFields = form?.form_fields ||  [];
+   const [ formFields, setFormFields,] = useState([])
 
-  
-  
+  const [selectedField, setSelectedField] = useState(null);
+  const dispatch = useDispatch();
   const [draggedField, setDraggedField] = useState(null);
   const [preview, switchToPreview] = useState(false);
+  const [draggedFieldIndex ,setDraggedFieldIndex] = useState(null)
+  const[targetIndex, setTargetIndex] = useState()
+
+  
 
   // Validation state
   const [validation, setValidation] = useState({
@@ -36,38 +41,70 @@ import FieldTypesColumn from './FieldTypesColumn';
 
 
   // Drag and Drop Handlers
-  const handleDragStart = (e, field) => {
-    
-    setDraggedField(field);
-    e.dataTransfer.setData('application/json', JSON.stringify(field));
-    e.dataTransfer.effectAllowed = 'copy';
-  };
-
-// handle drag over
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'copy';
-  };
   
-  // Allow drop
-  const handleDrop = (e,) => {
+ // Drag and Drop Handlers for NEW fields
+ // function used by field types column component o handle every single field button drag start behaviour
+ const handleDragStart = (e, field) => {
+  setDraggedField(field); 
+  console.log('// Salva il tipo di campo')
+  e.dataTransfer.effectAllowed = 'copy'; // Indica che è una copia
+   const isNewField = e.dataTransfer.setData('newField', 'true'); // Marca come "nuovo campo"
+  
+
+};
+
+
+
+// Allow drag over
+const handleDragOver = (e) => {
+  
+  e.preventDefault();
+  const isNewField = e.dataTransfer.getData('newField')
+ 
+  e.dataTransfer.dropEffect = isNewField ? 'copy' : 'move';
+};
+  // handles field button drop by adding a new draggable field into the field list component
+  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
     e.preventDefault();
-    
-    
-    if (draggedField) {
+    e.stopPropagation();
+  
+    // Leggi i dati dal drag
+    const fieldIndex = e.dataTransfer.getData('fieldIndex'); // indice del campo trascinato
+    const isReorder = e.dataTransfer.getData('reorder');    // flag per riordino
+    const isNewField = e.dataTransfer.getData('newField');  // flag per nuovo campo
+  
+    // Copia dell'array dei campi
+    const updatedFields = [...formFields];
+  
+    // Se è un nuovo campo (drag dalla colonna dei tipi)
+    if (isNewField && draggedField) {
       const newField = {
-        id: nanoid(),
+        id: Date.now(),          // ID unico
         ...draggedField,
         label: `New ${draggedField.name}`,
         placeholder: `Enter ${draggedField.name.toLowerCase()}`,
         required: false,
       };
-      setFormFields([...formFields, newField]);
-      setSelectedField(newField);
-      setDraggedField(null);
+      // Inserisci nel punto giusto
+      updatedFields.splice(dropIndex, 0, newField);
     }
-   
+    // Se è un riordino di un campo esistente
+    else if (isReorder && fieldIndex !== '') {
+      const startIndex = parseInt(fieldIndex, 10);
+      // Rimuovi il campo dall'indice iniziale
+      const [movedField] = updatedFields.splice(startIndex, 1);
+      // Inserisci il campo nel nuovo indice
+      updatedFields.splice(dropIndex, 0, movedField);
+    }
+  
+    // Aggiorna lo stato dei campi
+    setFormFields(updatedFields);
+  
+    // Reset highlight della drop zone
+    setTargetIndex(null);
   };
+  
+  
 
   const handleFieldClick = (field) => {
     setSelectedField(field);
@@ -85,66 +122,58 @@ import FieldTypesColumn from './FieldTypesColumn';
     }
   };
 
-  const handleApplyValidation = () => {
-    if (selectedField) {
-      setFormFields(
-        formFields.map((f) =>
-          f.id === selectedField.id
-            ? {
-                ...f,
-                type: validation.fieldType,
-                required: validation.required,
-                customValidation: validation.customValidation,
-              }
-            : f
-        )
-      );
-    }
+  const handleFieldDragStart = (e, index) => {
+    setDraggedFieldIndex(index); // Salva l'indice (es: 2)
+    e.dataTransfer.effectAllowed = 'move'; // Indica che è un movimento
+    e.dataTransfer.setData('fieldIndex', index.toString()); // Marca con l'indice
   };
 
-
-
   return (
-    <div
-      style={{
-        minHeight: '100vh',
+    <Box
+    component={'div'}
+      sx={{
+        minHeight: '100%',
+        overflow:'auto',
         backgroundColor: 'background.default',
         fontFamily: 'Inter, system-ui, sans-serif',
       }}
     >
-      {/* Header */}
-     
+   
 
       {/* Main Content */}
       <Box component={'main'} style={{ padding: '1.5rem' }}>
         <Box
         component={'div'}
-          style={{
+          sx={{
             backgroundColor: 'background.paper',
             padding: '1.5rem',
             borderRadius: '0.5rem',
             boxShadow: '0 1px 3px rgba(0,0,0,0.12)',
+            overflow:'auto'
           }}
         >
           {/* Top Controls */}
-          <Box component={'div'} sx={{ display: 'flex', gap: '1rem', marginBottom: '2rem', alignItems: 'center' }}>
+          <Box component={'div'} sx={{ display: 'flex', gap: '1rem', marginBottom: '2rem', alignItems: 'center'}}>
 
-          <ButtonGroup>
+          <ButtonGroup sx={{display:'flex', alignItems:'center'}}>
       <BasicButton
                 text={"build"}
+                size={'large'}
                 onClick={() => {
                   switchToPreview(false);
                 }}
                 textColor={"black"}
-                variant={preview ? "" : "contained"}/>
+                variant={preview ? "" : "contained"}
+                borderradius={9}/>
        <BasicButton
                 text={"preview"}
+                size={'large'}
                 onClick={() => {
                  switchToPreview(true);
                 }}
                 variant={!preview ? "text" : "contained"}
                 textColor={!preview ? "text.primary" : "black"}
-                size={"small"}/>
+                borderradius={9}/>
 
       </ButtonGroup>
 
@@ -159,7 +188,7 @@ import FieldTypesColumn from './FieldTypesColumn';
                 backgroundColor: 'Background.default',
 
                 borderRadius: '0.375rem',
-                
+
                 fontSize: '0.875rem',
               }}
             />
@@ -175,152 +204,51 @@ import FieldTypesColumn from './FieldTypesColumn';
 
 
             {/* Center Column - Drop Zone */}
-            <FieldsList onDragOver={handleDragOver} 
+            <FieldsList 
+            onDragOver={handleDragOver} 
             onDrop={handleDrop} 
             handleFieldClick={handleFieldClick} 
             draggedField={draggedField} 
             formFields={formFields}
             selectedField={selectedField}
+            handleDraggedField={handleFieldDragStart}
+            
+            
+            
             />
-          
 
             {/* Right Column - Validations */}
-            <div>
-              <h2 style={{ fontSize: '1.125rem', fontWeight: 600, marginBottom: '1rem' }}>
-                Set Validations
-              </h2>
-              {selectedField ? (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                  <div>
-                    <label
-                      style={{
-                        display: 'block',
-                        fontSize: '0.875rem',
-                        fontWeight: 500,
-                
-                        marginBottom: '0.5rem',
-                      }}
-                    >
-                      Field Type
-                    </label>
-                    <select
-                      value={validation.fieldType}
-                      onChange={(e) => setValidation({ ...validation, fieldType: e.target.value })}
-                      style={{
-                        width: '100%',
-                        padding: '0.5rem',
-                      
-                        borderRadius: '0.375rem',
-                       
-                      }}
-                    >
-                      <option value="text">Text</option>
-                      <option value="email">Email</option>
-                      <option value="number">Number</option>
-                      <option value="telephone">Telephone</option>
-                      <option value="date">Date</option>
-                    </select>
-                  </div>
+            <ValidationsOptionsBox
+            selectedField={selectedField}/>
 
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontSize: '0.875rem', fontWeight: 500 }}>
-                      Required field
-                    </span>
-                    <label style={{ position: 'relative', display: 'inline-block', width: '44px', height: '24px' }}>
-                      <input
-                        type="checkbox"
-                        checked={validation.required}
-                        onChange={(e) => setValidation({ ...validation, required: e.target.checked })}
-                        style={{ opacity: 0, width: 0, height: 0 }}
-                      />
-                      <span
-                        style={{
-                          position: 'absolute',
-                          cursor: 'pointer',
-                          top: 0,
-                          left: 0,
-                          right: 0,
-                          bottom: 0,
-                          backgroundColor: validation.required ? '#3B82F6' : '#ccc',
-                          transition: '0.4s',
-                          borderRadius: '24px',
-                        }}
-                      >
-                        <span
-                          style={{
-                            position: 'absolute',
-                            content: '',
-                            height: '18px',
-                            width: '18px',
-                            left: validation.required ? '23px' : '3px',
-                            bottom: '3px',
-                            backgroundColor: 'white',
-                            transition: '0.4s',
-                            borderRadius: '50%',
-                          }}
-                        />
-                      </span>
-                    </label>
-                  </div>
-
-                  <div>
-                    <label
-                      style={{
-                        display: 'block',
-                        fontSize: '0.875rem',
-                        fontWeight: 500,
-                        
-                        marginBottom: '0.5rem',
-                      }}
-                    >
-                      Custom Validations
-                    </label>
-                    <textarea
-                      rows={3}
-                      value={validation.customValidation}
-                      onChange={(e) => setValidation({ ...validation, customValidation: e.target.value })}
-                      style={{
-                        width: '100%',
-                        padding: '0.5rem',
-                      
-                       
-                        borderRadius: '0.375rem',
-                       
-                        fontFamily: 'inherit',
-                        resize: 'vertical',
-                      }}
-                    />
-                  </div>
-
-                  <button
-                    onClick={handleApplyValidation}
-                    style={{
-                      width: '100%',
-                      padding: '0.75rem',
-                      backgroundColor: '#3B82F6',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '0.375rem',
-                      fontWeight: 600,
-                      cursor: 'pointer',
-                      fontSize: '0.875rem',
-                    }}
-                  >
-                    APPLY
-                  </button>
-                </div>
-              ) : (
-                <p style={{ textAlign: 'center', marginTop: '2rem' }}>
-                  Select a field to edit validations
-                </p>
-              )}
-            </div>
+        
           </Box>
           ) : <p>preview</p>
         }
+          {/* Bottom Controls */}
+          <Box component={'div'} sx={{ display: 'flex', gap: '1rem', alignItems: 'center', justifyContent:'end' }}>
+
+          <ButtonGroup sx={{p:3}}>
+      <BasicButton
+                text={"save"}
+                size={'large'}
+                textColor={"black"}
+
+                variant={ "outlined"}/>
+
+       <BasicButton
+                text={"cancel"}
+                variant="outlined"
+                textColor={!preview ? "text.primary" : "black"}
+                size={"large"}/>
+
+      </ButtonGroup>
+
+            
+          </Box>
         </Box>
       </Box>
-    </div>
+    </Box>
   );
 };
 
