@@ -30,14 +30,15 @@
 
 
 
-
 ### Timeline
 10-27-2025: added functional drag and drop system
+11-4-2025: added editable field label feature
+
 
 ### Todo
+-review desktop builder window layout
 - refine UI on builder window
 - fix draggable fields
-
 
 
 ---

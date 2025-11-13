@@ -10,9 +10,12 @@ export type FormField = {
 };
 
 export type FormData = {
+  message: string,
+  data: {
   id: string;
   name: string;
   fields: FormField[];
+}
 };
 
 export type FormListState = {
@@ -53,7 +56,7 @@ export const createNewForm = createAsyncThunk<FormData, FormData>(
     });
 
     if (!res.ok) throw new Error("Error creating new form");
-    console.log(res)
+    
     return (await res.json()) as FormData;
   }
 );
@@ -123,7 +126,8 @@ export const formsListSlice = createSlice({
       })
       .addCase(createNewForm.fulfilled, (state, action: PayloadAction<FormData>) => {
         state.status = "succeeded";
-        state.forms.push(action.payload);
+        state.forms.push(action.payload); 
+        console.log(action.payload)
       })
       .addCase(createNewForm.rejected, (state, action) => {
         state.status = "failed";

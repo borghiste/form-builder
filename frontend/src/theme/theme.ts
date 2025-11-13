@@ -33,14 +33,16 @@ export const LightTheme = createTheme({
       styleOverrides: {
         root: {
           display: 'flex',
-          justifyContent: 'stretch'
+          justifyContent: 'stretch',
+          
         }
       }
     },
     MuiListItemText: {
       styleOverrides: {
-        root: { display:'flex' },
+        root: { display:'flex'},
         primary: { color: '#3E3E42' }
+        
       }
     }
   }
@@ -72,11 +74,10 @@ export const DarkTheme = createTheme({
    
    MuiListItemText: {
     styleOverrides: {
+      
       root: ({theme}) => ({
       color: theme.palette.text.primary,
-     
-      
-      
+
     })
   }
    }

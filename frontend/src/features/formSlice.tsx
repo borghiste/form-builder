@@ -6,6 +6,7 @@ type formField = {
     label: string,
     value?: string,
     type: string,
+    
     validations?: { [key: string]: any }
 }
 

@@ -13,18 +13,19 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import TextFieldsIcon from '@mui/icons-material/TextFields';
 import ListIcon from '@mui/icons-material/List';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
-
+import PasswordIcon from '@mui/icons-material/Password';
 // FORM FIELD DEFINITIONS
 export const fieldTypes = [
-  { id: 'text', name: 'Text', icon: TextFieldsIcon, description: 'Single line text field' },
-  { id: 'textarea', name: 'Text Area', icon: NotesIcon, description: 'Multi-line text area' },
-  { id: 'email', name: 'Email', icon: EmailIcon, description: 'Email field' },
-  { id: 'number', name: 'Number', icon: PinIcon, description: 'Numeric field' },
-  { id: 'phone', name: 'Phone', icon: LocalPhoneIcon, description: 'Phone number field' },
-  { id: 'date', name: 'Date', icon: DateRangeIcon, description: 'Date selector' },
-  { id: 'time', name: 'Time', icon: AccessTimeIcon, description: 'Time selector' },
-  { id: 'select', name: 'Select List', icon: ListIcon, description: 'Options list' },
-  { id: 'checkbox', name: 'Checkbox', icon: CheckBoxIcon, description: 'Checkbox field' },
+  { id: 'text', name: 'text', type:'text', icon: TextFieldsIcon, description: 'Single line text field' },
+  { id: 'textarea', name: 'text area', type: 'text area', icon: NotesIcon, description: 'Multi-line text area' },
+  { id: 'email', name: 'email', type:'email', icon: EmailIcon, description: 'Email field' },
+  { id: 'number', name: 'number', type:'number', icon: PinIcon, description: 'Numeric field' },
+  { id: 'phone', name: 'phone', type:'phone', icon: LocalPhoneIcon, description: 'Phone number field' },
+  {id:'pass', name: 'password', type:'password', icon:PasswordIcon},
+  { id: 'date', name: 'date', type:'date', icon: DateRangeIcon, description: 'Date selector' },
+  { id: 'time', name: 'time', type:'time', icon: AccessTimeIcon, description: 'Time selector' },
+  { id: 'select', name: 'select list', type:'select list', icon: ListIcon, description: 'Options list' },
+  { id: 'checkbox', name: 'checkbox', type:'checkbox', icon: CheckBoxIcon, description: 'Checkbox field' },
 ];
 
 ;

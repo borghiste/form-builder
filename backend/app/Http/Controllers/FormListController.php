@@ -19,7 +19,8 @@ class FormListController extends Controller
 
                         $request->validate(['name' => 'string|max:255']);
                     $newForm = Form::create($request->only(['name']));
-                    return response()->json($newForm);
+                    return response()->json(['message' => 'form created successfully',
+                        'data' => $newForm]);
             }
 
 

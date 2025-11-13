@@ -32,9 +32,8 @@ export default function FormBuilderModal({modalIsOpen, handleModalClose }){
 //   // MODAL STYLE
 
   const boxStyle = {
-      
      position: 'absolute',
-    
+    overflow:'auto',
     display:'flex',
     justifyContent:'center',
      top: '50%',
@@ -42,7 +41,7 @@ export default function FormBuilderModal({modalIsOpen, handleModalClose }){
      transform: 'translate(-50%, -50%)',
      maxWidth: '100%',
      mazHeight:'100%',
-     bgcolor: 'background.default',
+     
      border: '1px solid #000',
      boxShadow: 24,
      
