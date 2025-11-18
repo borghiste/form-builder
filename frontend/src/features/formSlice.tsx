@@ -1,115 +1,64 @@
-import { createSlice, createAsyncThunk, nanoid } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../app/store";
-
 
 type formField = {
     id: string,
     label: string,
     value?: string,
-    type: string}
-
-type formData = { id: string,
-name: string,
-description: string,
-created_at: string,
-updated_at: string,
-fields:formField[]
+    type: string,
+    
+    validations?: { [key: string]: any }
 }
 
-type formState = {status: string, form:formData | null, error: string
+type formData = {
+    id: string,
+    name: string,
+    description: string,
+    created_at: string,
+    updated_at: string,
+    form_fields: formField[]
 }
 
-const initialState: formState = {status:'idle', // 'succeeded | 'loading | 'failed
-                                form: {id:nanoid(), name:'', description:'', created_at:'', updated_at:'', fields:[{id:nanoid(), label:'submit', type:'button'}]},
-                                }
+type formState = {
+    status: string,
+    form: formData | null,
+    error: string
+}
 
-const getForm = createAsyncThunk<formData, string>(
-    'forms/getForm',
-    async (formId: string) => {
-        const res  = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/forms/${formId}`,
-            {method:'GET',
-                headers: {'Content-Type': 'application/json'},
-            
-            }
-        )
-        
-       
-        return await res.json() as formData
-
-    }
-)
-
-const createForm = createAsyncThunk<formState, formData>(
-    'forms/createForm',
-    async (form) => {
-        const res  = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/forms`,
-            {method:'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(form)
-                
-            }
-        )
-        if(res.ok){
-        return res.json() as Promise<formData>;
-        }
-
-    })
-
+const initialState: formState = {
+    status: 'idle',
+    form: { id: '', name:'', description:'', created_at:'', updated_at:'', form_fields:[] },
+    error: ''
+}
 
 const formSlice = createSlice({
-    name:'form',
+    name: 'form',
     initialState,
     reducers: {
-        setFields(state, action) {
-            state.form.fields = action.payload;
+        setForm(state, action: PayloadAction<formData>){
+            state.form = action.payload;
         },
-        addField: (state, action) => {
-
+        setFormFields(state, action: PayloadAction<formField[]>) {
             if(state.form){
-           
-            state.form?.fields.push(action.payload);
+                state.form.form_fields = action.payload;
             }
         },
-        setFormName(state, action) {
+        addField(state, action: PayloadAction<formField>) {
             if(state.form){
-            state.form.name = action.payload;
+                state.form.form_fields.push(action.payload);
+            }
+        },
+        setFormName(state, action: PayloadAction<string>) {
+            if(state.form){
+                state.form.name = action.payload;
             }
         }
     },
-    extraReducers: (builder) => {
-        builder.addCase(getForm.fulfilled, (state, action) => {
-            
+    extraReducers: (builder) => {}
+})
 
-            state.status = 'succeeded';
-            state.form = action.payload
-         
-        })
+export default formSlice.reducer;
 
-        builder.addCase(getForm.pending, (state) => {state.status = 'loading'})
-        builder.addCase(getForm.rejected, (state) => {
-            state.status= 'failed';
-        })
-
-        /* create form cases */
-        builder.addCase(createForm.fulfilled, (state, action) => {
-            state.status = 'succeeded';
-            confirm.log('action',action)
-            
-        })
-        builder.addCase(createForm.pending, (state) => {state.status = 'loading'
-            console.log('loading...')
-        })
-    }
-        
-    })
-
-    export default formSlice.reducer;
-
-    export const selectForm = (state: RootState) => state.form.form;
-    export const selectStatus = (state: RootState) => state.form.status;
-
-export {getForm, createForm};
-export const {addField, setFields, setFormName} = formSlice.actions
-
-
-
+export const selectForm = (state: RootState) => state.form.form;
+export const selectStatus = (state: RootState) => state.form.status;
+export const { setForm, addField, setFormFields, setFormName } = formSlice.actions;

@@ -1,3 +1,6 @@
+
+
+
 import React from "react";
 import  Button  from "@mui/material/Button";
 export default function BasicButton({text, 
@@ -11,7 +14,8 @@ export default function BasicButton({text,
                                     width, 
                                     type, 
                                     fullWidth,
-                                    fontSize
+                                    fontSize,
+                                    borderradius
                                     
                                     }){
 
@@ -23,9 +27,7 @@ export default function BasicButton({text,
                 startIcon={startIcon}
                 type={type}
                 
-                
-               
-                 
+
                 
                 sx={{ 
                     backgroundColor:color, 
@@ -36,7 +38,7 @@ export default function BasicButton({text,
                     textWrap:'nowrap'}}
                     fullWidth={fullWidth}
                     fontSize={fontSize}
-                    
+                    borderRadius={borderradius}
                     href={href}
                     
        

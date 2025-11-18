@@ -2,8 +2,13 @@
 
 namespace Database\Factories;
 
+use App\Models\FormField;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+
+use App\Models\Form;
+
+
+
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Form>
@@ -11,18 +16,28 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class FormFactory extends Factory
 {
     
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
+
+
+    protected $model = Form::class;
+
     public function definition(): array
     {
         return [
-            'name'=> fake()->name(),
-            'description'=> fake()->paragraph(),
-            'updated_at'=> fake()->date(),
-            'created_at'=> fake()->date()
+            'name' => $this->faker->sentence(3),
+            'description' => $this->faker->paragraph(),
         ];
     }
+
+   
+    public function configure()
+    {
+        return $this->afterCreating(function (Form $form) {
+            FormField::factory()->count(3)->create([
+                'form_id' => $form->id, //  
+            ]);
+        });
+    }
 }
+
+    
+    
