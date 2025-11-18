@@ -84,8 +84,8 @@ const handleDragOver = (e) => {
       const newField = {
         id: nanoid(),
         ...draggedField,
-        // label: fieldState?.label || `New ${draggedField.label} field`,
-        label: 'label',
+         label: fieldState?.label || `New ${draggedField.name} field`,
+        
         type:'type',
         required: true,
         // placeholder: `Enter ${draggedField.name}`,
