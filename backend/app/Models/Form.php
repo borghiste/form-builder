@@ -9,5 +9,10 @@ class Form extends Model
 {
     use HasFactory;
     protected $table ='forms';
-    protected $fillable = ['name', 'description', 'created_at', 'updated_at', 'fields'];
+    protected $fillable = ['name', 'description', 'created_at', 'updated_at'];
+
+    public function formFields(){
+        return $this->hasMany(FormField::class, 'form_id');
+
+}
 }

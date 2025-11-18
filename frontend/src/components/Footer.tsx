@@ -1,23 +1,100 @@
-import React from "react"
-// MUI
-import { Typography, Box, Divider} from "@mui/material"
-export default function Footer(){
+// import React from "react"
+// // MUI
+// import { Typography, Box, Divider} from "@mui/material"
+// export default function Footer(){
 
-    return(
-        <>
-        <Divider/>
-        <Box component={'footer'} sx={{bgcolor:'background.default', display:'flex', justifyContent:'space-between'}}>
-        <Typography component={'p'} sx={{color:'text.primary'}}>
-        Author: Stefano Borghi
+//     return(
+//         <>
+//         <Divider/>
+//         <Box component={'footer'} sx={{bgcolor:'background.default', display:'flex', justifyContent:'space-between'}}>
+//         <Typography component={'p'} sx={{color:'text.primary'}}>
+//         Author: Stefano Borghi
+
+//         </Typography>
+//         <Typography component={'p'} sx={{color:'text.primary'}}>
+//        About
 
 
-        </Typography>
-        <Typography component={'p'} sx={{color:'text.primary'}}>
-       About
+//         </Typography>
+//         </Box>
+//         </>
+//     )
+// }
+import React from 'react';
+import { Box, Container, Typography, Link } from '@mui/material';
 
+const Footer = () => {
+  const currentYear = new Date().getFullYear();
 
-        </Typography>
+  return (
+    <Box
+      component="footer"
+      sx={{
+        py: 3,
+        px: 2,
+        mt: 'auto',
+        backgroundColor: (theme) =>
+          theme.palette.mode === 'light'
+            ? theme.palette.grey[100]
+            : theme.palette.grey[900],
+        borderTop: '1px solid',
+        borderColor: 'divider',
+      }}
+    >
+      <Container maxWidth="xl">
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: 2,
+          }}
+        >
+          <Typography variant="body2" color="text.secondary">
+            © {currentYear} Form Builder. All rights reserved. · Developed by{' '}
+            <Link
+              href="#"
+              underline="hover"
+              color="primary"
+              sx={{ fontWeight: 500 }}
+            >
+              Acme Inc.
+            </Link>
+          </Typography>
+
+          <Box sx={{ display: 'flex', gap: 3 }}>
+            <Link
+              href="#"
+              underline="hover"
+              color="text.secondary"
+              variant="body2"
+              sx={{
+                '&:hover': {
+                  color: 'primary.main',
+                },
+              }}
+            >
+              Privacy Policy
+            </Link>
+            <Link
+              href="#"
+              underline="hover"
+              color="text.secondary"
+              variant="body2"
+              sx={{
+                '&:hover': {
+                  color: 'primary.main',
+                },
+              }}
+            >
+              Terms of Service
+            </Link>
+          </Box>
         </Box>
-        </>
-    )
-}
+      </Container>
+    </Box>
+  );
+};
+
+export default Footer;

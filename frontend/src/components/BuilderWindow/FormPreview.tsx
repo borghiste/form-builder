@@ -1,10 +1,10 @@
-import React from "react";
-// REDUX
-
-import { selectForm } from "../features/formSlice";
-import { useSelector, UseSelector } from "react-redux";
 
 import React, { useState } from "react";
+// REDUX
+
+import { selectForm } from "../../features/formSlice";
+import { useSelector, useSelector } from "react-redux";
+
 import {
   Container,
   Paper,
@@ -31,6 +31,8 @@ type FormData = {
   role: "user" | "admin" | "guest" | "";
   acceptTerms: boolean;
 };
+
+
 
 export default function SimpleMuiForm(): JSX.Element {
   const [data, setData] = useState<FormData>({

@@ -1,7 +1,7 @@
 # Project Progress Report
 
 ## Project Overview
-- **Project Name**: Form Based
+- **Project Name**: Form Builder
 - **Objective**: A web-based form builder application to create, manage, and validate custom forms with both front-end React and a back-end API.
 - **Technologies Used**: React, Node.js, Express, MongoDB, Material UI, Docker, Jest, Laravel and vitest.
 
@@ -12,7 +12,6 @@
 ### Completed Features
 - User authentication 
 - Forms List loaded from db
-- add new form feature from form builder modal
 
 
 
@@ -29,19 +28,17 @@
 
 ---
 
-## Upcoming Tasks
 
-### Next Steps
-
-- add logic to form builder window
-- add description feature to form builder
--fix errors handling on form builder and login feature
--implement new form creation
-- project and design form builder modal
-- Implement customizable fields 
 
 ### Timeline
+10-27-2025: added functional drag and drop system
+11-4-2025: added editable field label feature
 
+
+### Todo
+-review desktop builder window layout
+- refine UI on builder window
+- fix draggable fields
 
 
 ---
