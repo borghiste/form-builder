@@ -4,7 +4,7 @@ import UserReducer from '../features/UserSlice';
 import formsReducer from '../features/formsListSlice';
 import formReducer from '../features/formSlice';
 import validationsDrawerReducer from '../features/validationDrawerSlice';
-import fieldReducer from '../features/FieldSlice';
+import fieldReducer from '../features/fieldSlice';
 
 export default configureStore({
   reducer: {

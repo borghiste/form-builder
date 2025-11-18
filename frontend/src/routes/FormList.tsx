@@ -24,7 +24,7 @@ import { AppDispatch } from "../app/store";
 import { selectUser } from "../features/UserSlice";
 import { fetchFormsList, deleteForm, getForm } from "../features/formsListSlice";
 import { selectForms } from "../features/formsListSlice";
-import { setFormFields } from "../features/formSlice";
+import { setFormFields, setFormName, setForm } from "../features/formSlice";
 import { modalContext } from "../App";
 
 export default function FormsList() {
@@ -52,9 +52,14 @@ export default function FormsList() {
 
   const handleViewForm = async (formId: number) => {
     const selectedForm = await dispatch(getForm(formId)).unwrap();
-    dispatch(setFormFields(selectedForm.fields || []));
+    console.log(selectedForm.form_fields);
+    dispatch(setForm({name:selectedForm.name,
+                  form_fields: selectedForm?.form_fields
+    }))
+
     setModalOpen(true);
     setNewFormClick(false);
+    
   };
 
   const handleEditForm = async (formId: number) => {
@@ -71,26 +76,26 @@ export default function FormsList() {
       <Container sx={{ minHeight: "100vh", mt: 4 }}>
     
 
-        <TableContainer component={Paper} sx={{ mt: 2 }}>
+        <TableContainer component={Paper} sx={{ mt: 2, bgcolor:'background.default' }}>
           <Table sx={{ minWidth: 650 }} aria-label="forms table">
             <TableHead>
               <TableRow>
                 <TableCell><b>Form Name</b></TableCell>
                 <TableCell><b>Created Time</b></TableCell>
                 <TableCell><b>Updated Time</b></TableCell>
-                <TableCell><b>Actions</b></TableCell>
-                <TableCell>
+                <TableCell sx={{display:'flex', justifyContent:'space-between', alignItems:'center'}}><b>Actions</b>
                 {User.role === "admin" && (
           <BasicButton
             text="+ NEW FORM"
             variant="contained"
             color="gray.light"
             textColor="black"
-            width={200}
+           
             onClick={handleNewFormClick}
           />
         )}
-                </TableCell>
+        </TableCell>
+               
               </TableRow>
             </TableHead>
             <TableBody>

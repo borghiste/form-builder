@@ -14,8 +14,9 @@ import {
   FormLabel
 } from '@mui/material';
 //REDUX
-import{ setFieldType, selectFields, setFields} from '../../features/FieldSlice';
+import{  updateField} from '../../features/fieldSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { fieldTypes } from './FieldTypesColumn';
 
 interface Validation {
   fieldType: string;
@@ -32,7 +33,7 @@ interface Props {
  export default function  ValidationPanel({selectedField, validations}) {
   
   const dispatch = useDispatch();
-  
+  const fieldType = selectedField?.type
   
   const [localLabel, SetLocalLabel] = useState('')
   
@@ -74,7 +75,10 @@ interface Props {
             control={
               <Switch
                 // checked={validation.required}
-                onChange={(e) => setValidations({ ...validations,required: e.target.checked })}
+                onChange={(e) => dispatch(updateField({
+                  id: selectedField?.id,
+                  updates:{ validations: {...validations, required: e.target.value}}
+                }))}
                 color="primary"/>
             }
             label="Required field"

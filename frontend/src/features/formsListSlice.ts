@@ -2,10 +2,13 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 
 // ===== TYPES =====
 export type FormField = {
+  name: string;
   id: string;
   label: string;
   value?: string;
   type: string;
+  required?: boolean;
+  order?: number;
   validations?: { [key: string]: any };
 };
 
@@ -14,7 +17,7 @@ export type FormData = {
   data: {
   id: string;
   name: string;
-  fields: FormField[];
+  form_fields: FormField[];
 }
 };
 
@@ -49,10 +52,20 @@ export const fetchFormsList = createAsyncThunk<FormData[]>(
 export const createNewForm = createAsyncThunk<FormData, FormData>(
   "forms/createNewForm",
   async (newFormData) => {
+ 
+    const sanitized = {
+      ...newFormData,
+      form_fields: newFormData.form_fields.map(({ name, description, id, ...rest }) => rest),
+
+    };
+
+    
+    console.log("sending sanitized:", sanitized);
+
     const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/forms`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newFormData),
+      headers: { "Content-Type": "application/json"},
+      body: JSON.stringify(sanitized),
     });
 
     if (!res.ok) throw new Error("Error creating new form");
@@ -127,7 +140,7 @@ export const formsListSlice = createSlice({
       .addCase(createNewForm.fulfilled, (state, action: PayloadAction<FormData>) => {
         state.status = "succeeded";
         state.forms.push(action.payload); 
-        console.log(action.payload)
+        console.log('creating form in thunk', action.payload)
       })
       .addCase(createNewForm.rejected, (state, action) => {
         state.status = "failed";

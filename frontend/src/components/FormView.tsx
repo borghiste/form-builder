@@ -35,11 +35,15 @@ export default function FormView() {
 
   
   const form = useSelector(selectForm);
+  console.log(form)
   const status = useSelector(selectStatus)
+  const fields = form?.form_fields 
   
   useEffect(() => {
+    
+    console.log('form in view', form);
+    console.log('fields',fields)
 
-    console.log('form in view', form?.form_fields);
   },[form])
 
 
@@ -47,17 +51,19 @@ export default function FormView() {
 
 
   <>
-<Container maxWidth="sm" sx={{ mt: 6 }}>
+
       <Paper sx={{ p: 4, borderRadius: 3 }} elevation={3}>
         <Typography variant="h5" component="h1" gutterBottom>
-          {form.name}
+          {form?.name}
         </Typography>
 
         <Box component="form"  noValidate>
           <Grid container spacing={2}>
      
-
-            {/* <Grid item xs={12}>
+          {
+        fields?.map((field) => { return <p key={field.id}>hh</p>})
+        } 
+            <Grid item xs={12}>
               <TextField
                 label="Nome"
                 fullWidth
@@ -83,8 +89,7 @@ export default function FormView() {
                 label="Password"
                 type="password"
                 fullWidth
-               
-            
+              
                 autoComplete="new-password"
               />
             </Grid>
@@ -135,13 +140,13 @@ export default function FormView() {
               >
                 Reset
               </Button>
-            </Grid> */}
+            </Grid>
 
        
-          </Grid>
+          </Grid> 
         </Box>
       </Paper>
-    </Container>
+   
  
 
 

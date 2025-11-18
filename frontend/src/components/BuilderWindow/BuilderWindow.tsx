@@ -3,9 +3,9 @@ import {nanoid} from 'nanoid';
 import {useDispatch, useSelector} from  'react-redux';
 
 // REDUX
-import  { selectForm,  setFormName, setFormFields } from '../../features/formSlice';
+import  { selectForm,  setFormName, setFormFields, setForm, addField } from '../../features/formSlice';
 import { createNewForm } from '../../features/formsListSlice';
-import {selectFields, setFields} from '../../features/FieldSlice';
+import { selectFields, setFields} from '../../features/fieldSlice';
 
 
 // MUI
@@ -14,16 +14,17 @@ import { Box, ButtonGroup, TextField} from '@mui/material';
 
 // COMPONENTS
 import BasicButton from '../UI/BasicButton';
-import FieldsList from './FieldsList';
+import DropZone from './DropZone';
 import FieldTypesColumn from './FieldTypesColumn';
 import ValidationsPanel from './ValidationsPanel';
+import FormPreview from '../BuilderWindow/FormPreview';
 
 
  export default function BuilderWindow () {
   
    const form = useSelector(selectForm);
     const formFields = form?.form_fields || [];
-  //  const [ formFields, setFormFields] = useState([])
+ 
 
   const [selectedField, setSelectedField] = useState(null);
   const dispatch = useDispatch();
@@ -44,7 +45,7 @@ import ValidationsPanel from './ValidationsPanel';
 
  // function used by field types column component to handle every single field button drag start behavior
  const handleDragStart = (e, field) => {
-  //field state is not set when drag starts
+  
   
   
   setDraggedField(field); 
@@ -75,7 +76,7 @@ const handleDragOver = (e) => {
     const isReorder = e.dataTransfer.getData('reorder');    // reorder flag
     const isNewField = e.dataTransfer.getData('newField');  // new field flag
   
-    // Copia dell'array dei campi
+    // Copies fields fields state into new array
     const updatedFields = [...formFields];
   
     // Se è un nuovo campo (drag dalla colonna dei tipi)
@@ -83,14 +84,18 @@ const handleDragOver = (e) => {
       const newField = {
         id: nanoid(),
         ...draggedField,
-        label: fieldState?.label || `New ${draggedField.name} field`,
-        icon: '',
-        placeholder: `Enter ${draggedField.name}`,
+        // label: fieldState?.label || `New ${draggedField.label} field`,
+        label: 'label',
+        type:'type',
         required: true,
-      };
+        // placeholder: `Enter ${draggedField.name}`,
+      }
+       
+      dispatch(addField({form_fields:newField}));
       
       // updatedFields.splice(dropIndex, 0, newField);
       updatedFields.push(newField);
+      
     }
     // Se è un riordino di un campo esistente
     else if (isReorder && fieldIndex !== '') {
@@ -107,17 +112,16 @@ const handleDragOver = (e) => {
   
     // Reset highlight della drop zone
     setTargetIndex(null);
-   
-  };
+  }
   
   
 
   const handleFieldClick = (field) => {
      setSelectedField(field);
     dispatch(setFields(field));
-    console.log(fieldState)
-    dispatch(setFieldType(field));
-    console.log(fieldState.type)
+  
+    
+    
     // setValidation({
     //   fieldType: field.type,
     //   required: field.required,
@@ -139,9 +143,13 @@ const handleDragOver = (e) => {
     e.dataTransfer.setData('fieldIndex', index.toString()); // Marca con l'indice
   };
 
-  const handleSaveForm = () => {
+  const handleSaveForm = async () => {
+    
     const newForm = {...form}
-    dispatch(createNewForm(newForm))
+    
+     dispatch(createNewForm(newForm));
+   
+    dispatch(setFormName(''))
   }
 
   return (
@@ -220,7 +228,7 @@ const handleDragOver = (e) => {
             
 
             {/* Center Column - Drop Zone */}
-            <FieldsList 
+            <DropZone 
             onDragOver={handleDragOver} 
             onDrop={handleDrop} 
             handleFieldClick={handleFieldClick} 
@@ -236,7 +244,7 @@ const handleDragOver = (e) => {
 
         
           </Box>
-          ) : <p>prw</p>
+          ) : <FormPreview/>
         }
           {/* Bottom Controls */}
           <Box component={'div'} sx={{ display: 'flex', gap: '1rem', alignItems: 'center', justifyContent:'end' }}>

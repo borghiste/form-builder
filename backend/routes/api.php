@@ -29,9 +29,9 @@ Route::get('forms', [FormListController::class, 'getFormList']);
 //get form 
  Route::get('forms/{id}', [FormController::class, 'getForm']);
 
- // create form
- Route::post('forms', [FormController::class, 'saveForm']);
+ // create a new form
+ Route::post('forms', [FormController::class, 'createNewForm']);
 
-// delete form
+// delete form: delete existing form
 
 Route::delete('forms/{id}', [FormListController::class, 'deleteForm']);

@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useDispatch, useSelector } from "react-redux";
-import { selectFields } from "../../features/FieldSlice";
+import { selectFields } from "../../features/fieldSlice";
 
 type Field = { id: string; label: string; required?: boolean };
 
