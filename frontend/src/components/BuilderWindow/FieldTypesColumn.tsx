@@ -17,10 +17,11 @@ import PasswordIcon from '@mui/icons-material/Password';
 // FORM FIELD DEFINITIONS
 export const fieldTypes = [
   { name: 'text', type:'text', 
-     icon: TextFieldsIcon, 
+      icon: TextFieldsIcon, 
      description: 'Single line text field'
    },
-   { name: 'text area', type: 'text area', icon: NotesIcon, description: 'Multi-line text area' },
+   { name: 'text area', type: 'textarea', icon: NotesIcon, 
+    description: 'Multi-line text area' },
    { name: 'email', type:'email', icon: EmailIcon, description: 'Email field' },
    { name: 'number', type:'number', icon: PinIcon, description: 'Numeric field' },
    { name: 'phone', type:'phone', icon: LocalPhoneIcon, description: 'Phone number field' },

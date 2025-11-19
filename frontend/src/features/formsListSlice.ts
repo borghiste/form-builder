@@ -55,7 +55,7 @@ export const createNewForm = createAsyncThunk<FormData, FormData>(
  
     const sanitized = {
       ...newFormData,
-      form_fields: newFormData.form_fields.map(({ name, description, id, ...rest }) => rest),
+      form_fields: newFormData.form_fields.map(({ name, description, id, icon, ...rest }) => rest),
 
     };
 

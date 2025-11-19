@@ -43,6 +43,7 @@ interface Props {
       <Typography variant="h6" mb={2} fontWeight={600}>
         Set Validations
       </Typography>
+      <Typography fontWeight={600} fontSize={18}> not available </Typography>
       
       {selectedField ? (
         

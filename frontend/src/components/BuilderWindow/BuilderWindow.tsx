@@ -18,6 +18,7 @@ import DropZone from './DropZone';
 import FieldTypesColumn from './FieldTypesColumn';
 import ValidationsPanel from './ValidationsPanel';
 import FormPreview from '../BuilderWindow/FormPreview';
+import FormView from '../FormView';
 
 
  export default function BuilderWindow () {
@@ -81,13 +82,14 @@ const handleDragOver = (e) => {
   
     // Se è un nuovo campo (drag dalla colonna dei tipi)
     if (isNewField && draggedField) {
+      const {icon, ...cleanDraggedField} = draggedField
       const newField = {
         id: nanoid(),
-        ...draggedField,
+        ...cleanDraggedField,
          label: fieldState?.label || `New ${draggedField.name} field`,
         
-        type:'type',
-        required: true,
+        type: draggedField.type,
+        required: false,
         // placeholder: `Enter ${draggedField.name}`,
       }
        
@@ -166,15 +168,14 @@ const handleDragOver = (e) => {
    
 
       {/* Main Content */}
-      <Box component={'main'} style={{ padding: '1.5rem' }}>
+      <Box component={'main'} style={{ padding: '1.5rem', overflow:'scroll',maxHeight:'100vh' }}>
         <Box
         component={'div'}
           sx={{
-          
             padding: '1.5rem',
             borderRadius: '0.5rem',
             boxShadow: '0 1px 3px rgba(0,0,0,0.12)',
-            overflow:'auto'
+            
           }}
         >
           {/* Top Controls */}
@@ -209,12 +210,14 @@ const handleDragOver = (e) => {
               onChange={(e) => {dispatch(setFormName(e.target.value))}}
               sx={{
                 flex: 1,
-                
                 borderRadius: '0.375rem',
                 fontSize: '0.875rem',
-                minWidth:'100%',
-                overflow:'auto',
-                color:'text.primary'
+                color:'text.primary',
+                '& .MuiInputBase-input::placeholder': {
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+    },
               }}
             />
           </Box>
@@ -244,7 +247,7 @@ const handleDragOver = (e) => {
 
         
           </Box>
-          ) : <FormPreview/>
+          ) : <FormView/>
         }
           {/* Bottom Controls */}
           <Box component={'div'} sx={{ display: 'flex', gap: '1rem', alignItems: 'center', justifyContent:'end' }}>
