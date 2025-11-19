@@ -30,12 +30,34 @@ import {
 import { RootState } from "../app/store";
 
 const renderedComponent = {
-  text: <TextField/>,
-  textarea: <TextareaAutosize/>
+  text: (props) => <TextField type="text" {...props}/>,
+  textarea: (props) => <TextareaAutosize {...props}/>,
+  email: (props) => <TextField type="email" {...props}/>,
+  number: (props) => <TextField type="number" {...props}/>,
+  phone: (props) => <TextField type="tel" {...props}/>,
+  password: (props) => <TextField type="password" {...props}/>,
+  date: (props) => <TextField type="date" {...props}/>,
+  time: (props) => <TextField type="time" {...props}/>,
+  selectList: (props) => (
+    <FormControl fullWidth>
+  <InputLabel id="demo-simple-select-label">{props.label}</InputLabel>
+  <Select
+    labelId="demo-simple-select-label"
+    id="demo-simple-select"
+    value={age}
+    label="Age"
+    onChange={handleChange}
+  >
+    <MenuItem value={10}>Ten</MenuItem>
+    <MenuItem value={20}>Twenty</MenuItem>
+    <MenuItem value={30}>Thirty</MenuItem>
+  </Select>
+</FormControl>
+  )
 }
 
 
-export default function FormView() {
+export default function FormView({disabledFields}) {
 
   const dispatch = useDispatch();
 
@@ -43,7 +65,6 @@ export default function FormView() {
   const form = useSelector(selectForm);
   
   const status = useSelector(selectStatus)
-  
   
 
   return (
@@ -61,7 +82,8 @@ export default function FormView() {
             form?.form_fields?.map((field) => {
               console.log(field.type)
              
-          return renderedComponent[field.type]
+          const Component = renderedComponent[field.type];
+          return ( <Component label={field.label} disabled={disabledFields}/>)
             })
           }
       

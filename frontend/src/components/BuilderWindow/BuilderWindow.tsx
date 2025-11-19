@@ -247,7 +247,7 @@ const handleDragOver = (e) => {
 
         
           </Box>
-          ) : <FormView/>
+          ) : <FormView disabledFields={preview ? true : false}/>
         }
           {/* Bottom Controls */}
           <Box component={'div'} sx={{ display: 'flex', gap: '1rem', alignItems: 'center', justifyContent:'end' }}>

@@ -28,7 +28,7 @@ export const fieldTypes = [
    { name: 'password', type:'password', icon:PasswordIcon},
    { name: 'date', type:'date', icon: DateRangeIcon, description: 'Date selector' },
    { name: 'time', type:'time', icon: AccessTimeIcon, description: 'Time selector' },
-   {  name: 'select list', type:'select list', icon: ListIcon, description: 'Options list' },
+   {  name: 'select list', type:'selectlist', icon: ListIcon, description: 'Options list' },
    {  name: 'checkbox', type:'checkbox', icon: CheckBoxIcon, description: 'Checkbox field' },
 ];
 
