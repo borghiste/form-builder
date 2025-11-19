@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+/// MUI
 import {
   Card,
   CardContent,
@@ -8,7 +9,10 @@ import {
   Box,
   FormControl,
   Checkbox,
-  FormControlLabel
+  FormControlLabel,
+  InputLabel,
+  Select,
+  MenuItem
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useDispatch, useSelector } from "react-redux";
@@ -94,6 +98,22 @@ export default function DraggableCard({
                    </Typography>
 
                    {['text', 'text area', 'email', 'number', 'phone', 'password', 'time', 'date'].includes(field.type) && ( <TextField type={field.type} disabled/>)}
+
+                   {field.type == 'selectlist' && (
+                   <FormControl fullWidth>
+                   <InputLabel id="demo-simple-select-label">{field.label}</InputLabel>
+                   <Select
+                     labelId="demo-simple-select-label"
+                     id="demo-simple-select"
+                    
+                     label={field.label}>
+                     <MenuItem value={10}>Ten</MenuItem>
+                     <MenuItem value={20}>Twenty</MenuItem>
+                     <MenuItem value={30}>Thirty</MenuItem>
+                   </Select>
+                 </FormControl> 
+                   )
+                   }
                
 
                    {

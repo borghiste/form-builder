@@ -43,6 +43,7 @@ interface Props {
       <Typography variant="h6" mb={2} fontWeight={600}>
         Set Validations
       </Typography>
+      {/* <Typography fontWeight={600} fontSize={18}> not available </Typography> */}
       
       {selectedField ? (
         
@@ -50,23 +51,23 @@ interface Props {
         <Box display="flex" flexDirection="column" gap={3}>
           {/* Field Type */}
           <FormControl fullWidth>
-             {/* <InputLabel id="field-type-label">Field Type</InputLabel>  */}
-            {/* <Select
+             <InputLabel id="field-type-label">Field Type</InputLabel> 
+             <Select
               labelId="field-type-label"
-              value={fieldType}>
+              value={selectedField?.type}>
               <MenuItem value="text">Text</MenuItem>
               <MenuItem value="text area">Text area</MenuItem>
               <MenuItem value="email">Email</MenuItem>
               <MenuItem value="number">Number</MenuItem>
               <MenuItem value="telephone">Telephone</MenuItem>
               <MenuItem value="date">Date</MenuItem>
-              </Select> */}
+              </Select> 
           </FormControl>
+          
               {/* edit field label */}
           <TextField 
           type='text'
-        
-          
+label={selectedField?.label}
           />
 
           {/* Required Field */}

@@ -36,9 +36,9 @@
 
 
 ### Todo
--review desktop builder window layout
+- build form view and preview
 - refine UI on builder window
-- fix draggable fields
+
 
 
 ---

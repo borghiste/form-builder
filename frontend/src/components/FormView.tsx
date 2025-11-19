@@ -25,30 +25,49 @@ import {
   Checkbox,
   Divider,
   Chip,
+  TextareaAutosize
 } from "@mui/material";
 import { RootState } from "../app/store";
 
+const renderedComponent = {
+  text: (props) => <TextField type="text" {...props}/>,
+  textarea: (props) => <TextareaAutosize {...props}/>,
+  email: (props) => <TextField type="email" {...props}/>,
+  number: (props) => <TextField type="number" {...props}/>,
+  phone: (props) => <TextField type="tel" {...props}/>,
+  password: (props) => <TextField type="password" {...props}/>,
+  date: (props) => <TextField type="date" {...props}/>,
+  time: (props) => <TextField type="time" {...props}/>,
+  selectList: (props) => (
+    <FormControl fullWidth>
+  <InputLabel id="demo-simple-select-label">{props.label}</InputLabel>
+  <Select
+    labelId="demo-simple-select-label"
+    id="demo-simple-select"
+    value={age}
+    label="Age"
+    onChange={handleChange}
+  >
+    <MenuItem value={10}>Ten</MenuItem>
+    <MenuItem value={20}>Twenty</MenuItem>
+    <MenuItem value={30}>Thirty</MenuItem>
+  </Select>
+</FormControl>
+  )
+}
 
-export default function FormView() {
+
+export default function FormView({disabledFields}) {
 
   const dispatch = useDispatch();
 
   
   const form = useSelector(selectForm);
-  console.log(form)
-  const status = useSelector(selectStatus)
-  const fields = form?.form_fields 
   
-  useEffect(() => {
-    
-    console.log('form in view', form);
-    console.log('fields',fields)
-
-  },[form])
-
+  const status = useSelector(selectStatus)
+  
 
   return (
-
 
   <>
 
@@ -59,20 +78,16 @@ export default function FormView() {
 
         <Box component="form"  noValidate>
           <Grid container spacing={2}>
-     
           {
-        fields?.map((field) => { return <p key={field.id}>hh</p>})
-        } 
-            <Grid item xs={12}>
-              <TextField
-                label="Nome"
-                fullWidth
-
-                autoComplete="name"
-              />
-            </Grid>
-
-            <Grid item xs={12}>
+            form?.form_fields?.map((field) => {
+              console.log(field.type)
+             
+          const Component = renderedComponent[field.type];
+          return ( <Component label={field.label} disabled={disabledFields}/>)
+            })
+          }
+      
+            {/* <Grid item xs={12}>
               <TextField
                 label="Email"
                 type="email"
@@ -82,19 +97,11 @@ export default function FormView() {
                 
                 autoComplete="email"
               />
-            </Grid>
+            </Grid> */}
 
-            <Grid item xs={12}>
-              <TextField
-                label="Password"
-                type="password"
-                fullWidth
-              
-                autoComplete="new-password"
-              />
-            </Grid>
+       
 
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <FormControl fullWidth>
                 <InputLabel id="role-label">Ruolo</InputLabel>
                 <Select
@@ -109,39 +116,11 @@ export default function FormView() {
                 </Select>
               
               </FormControl>
-            </Grid>
+            </Grid> */}
 
-            <Grid item xs={12}>
-              <FormControl component="fieldset">
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                 
-                     
-                      name="acceptTerms"
-                    />
-                  }
-                  label="Accetto i termini e le condizioni"
-                />
-               
-              </FormControl>
-            </Grid>
+          
 
-            <Grid item xs={12} sx={{ display: "flex", gap: 2 }}>
-              <Button type="submit" variant="contained">
-                Invia
-              </Button>
-
-              <Button
-                type="button"
-                variant="outlined"
-               
-              
-              >
-                Reset
-              </Button>
-            </Grid>
-
+           
        
           </Grid> 
         </Box>

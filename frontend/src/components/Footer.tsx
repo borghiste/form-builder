@@ -52,14 +52,15 @@ const Footer = () => {
           }}
         >
           <Typography variant="body2" color="text.secondary">
-            © {currentYear} Form Builder. All rights reserved. · Developed by{' '}
+            © {currentYear} · Developed by{' '}
             <Link
-              href="#"
+              href="http://www.linkedin.com/in/borghi-stefano"
+              target="_blank"
               underline="hover"
               color="primary"
               sx={{ fontWeight: 500 }}
             >
-              Acme Inc.
+            Stefano Borghi
             </Link>
           </Typography>
 
