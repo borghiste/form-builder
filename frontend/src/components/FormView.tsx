@@ -77,7 +77,7 @@ export default function FormView({disabledFields}) {
           {form?.name}
         </Typography>
 
-        <Box component="form"  noValidate >
+        <Box component="form"  noValidate>
           <Grid container spacing={2} sx={{display:'flex', flexDirection:'column'}}>
           {
             form?.form_fields?.map((field) => {

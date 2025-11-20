@@ -25,14 +25,14 @@ export const fieldTypes = [
    { name: 'email', type:'email', icon: EmailIcon, description: 'Email field' },
    { name: 'number', type:'number', icon: PinIcon, description: 'Numeric field' },
    { name: 'phone', type:'phone', icon: LocalPhoneIcon, description: 'Phone number field' },
-   { name: 'password', type:'password', icon:PasswordIcon},
+   { name: 'password', type:'password', icon:PasswordIcon, desription: 'Password field'},
    { name: 'date', type:'date', icon: DateRangeIcon, description: 'Date selector' },
    { name: 'time', type:'time', icon: AccessTimeIcon, description: 'Time selector' },
    {  name: 'select list', type:'selectlist', icon: ListIcon, description: 'Options list' },
    {  name: 'checkbox', type:'checkbox', icon: CheckBoxIcon, description: 'Checkbox field' },
 ];
 
-;
+
 
 export default function FieldTypesColumn({handleDragStart}) {
     

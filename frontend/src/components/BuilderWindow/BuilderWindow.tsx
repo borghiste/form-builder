@@ -21,7 +21,7 @@ import FormPreview from '../BuilderWindow/FormPreview';
 import FormView from '../FormView';
 
 
- export default function BuilderWindow () {
+ export default function BuilderWindow ({handleModalClose}) {
   
    const form = useSelector(selectForm);
     const formFields = form?.form_fields || [];
@@ -86,8 +86,7 @@ const handleDragOver = (e) => {
       const newField = {
         id: nanoid(),
         ...cleanDraggedField,
-         label: fieldState?.label || `New ${draggedField.name} field`,
-        
+         label: `New ${draggedField.name} field`,
         type: draggedField.type,
         required: false,
         // placeholder: `Enter ${draggedField.name}`,
@@ -114,6 +113,7 @@ const handleDragOver = (e) => {
   
     // Reset highlight della drop zone
     setTargetIndex(null);
+    
   }
   
   
@@ -149,9 +149,12 @@ const handleDragOver = (e) => {
     
     const newForm = {...form}
     
-     dispatch(createNewForm(newForm));
+     dispatch(createNewForm(newForm))
+     
+     
    
-    dispatch(setFormName(''))
+    dispatch(setFormName(''));
+    
   }
 
   return (

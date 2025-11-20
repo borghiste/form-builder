@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { Box, Typography, TextField, Paper, IconButton } from '@mui/material';
 // COMPONENTS
-import DraggableField from '../UI/DraggableField';
+import DraggableCard from '../UI/DraggableCard';
 // REDUX
 import { useDispatch, useSelector } from 'react-redux';
 import { selectForm, setFormFields  } from '../../features/formSlice';
@@ -98,7 +98,7 @@ export default function FieldsList({
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             {formFields?.map((field, index) => (
               <React.Fragment key={`${field.id || field.type}-${index}`}>
-                {/* Drop zone sopra ogni campo */}
+                {/* Drop zone */}
                 <Box
                 data-testid={`field-${field.id}`}
                   onDragOver={(e) => handleFieldDragOver(e, index)}
@@ -110,7 +110,7 @@ export default function FieldsList({
                     transition: 'all 0.2s'
                   }}
                 />
-                <DraggableField
+                <DraggableCard
                 
                   field={field}
                   selectedField={selectedField}
