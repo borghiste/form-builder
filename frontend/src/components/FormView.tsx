@@ -48,12 +48,13 @@ const renderedComponent = {
     label="Age"
     onChange={handleChange}
   >
-    <MenuItem value={10}>Ten</MenuItem>
-    <MenuItem value={20}>Twenty</MenuItem>
-    <MenuItem value={30}>Thirty</MenuItem>
+    <MenuItem value={10}></MenuItem>
+    <MenuItem value={20}></MenuItem>
+    <MenuItem value={30}></MenuItem>
   </Select>
 </FormControl>
-  )
+  ),
+  checkbox: (props) => (<FormControlLabel control={<Checkbox label={props.label}/>} {...props}/>)
 }
 
 
@@ -71,13 +72,13 @@ export default function FormView({disabledFields}) {
 
   <>
 
-      <Paper sx={{ p: 4, borderRadius: 3 }} elevation={3}>
+      <Paper sx={{ p: 4, borderRadius: 3,display:'flex', flexDirection:'column'}}  elevation={3}>
         <Typography variant="h5" component="h1" gutterBottom>
           {form?.name}
         </Typography>
 
         <Box component="form"  noValidate>
-          <Grid container spacing={2}>
+          <Grid container spacing={2} sx={{display:'flex', flexDirection:'column'}}>
           {
             form?.form_fields?.map((field) => {
               console.log(field.type)
@@ -87,36 +88,7 @@ export default function FormView({disabledFields}) {
             })
           }
       
-            {/* <Grid item xs={12}>
-              <TextField
-                label="Email"
-                type="email"
-                fullWidth
-               
-                
-                
-                autoComplete="email"
-              />
-            </Grid> */}
-
-       
-
-            {/* <Grid item xs={12}>
-              <FormControl fullWidth>
-                <InputLabel id="role-label">Ruolo</InputLabel>
-                <Select
-                  labelId="role-label"
-                  label="Ruolo"
-               
-                 
-                >
-                  <MenuItem value="user">User</MenuItem>
-                  <MenuItem value="admin">Admin</MenuItem>
-                  <MenuItem value="guest">Guest</MenuItem>
-                </Select>
-              
-              </FormControl>
-            </Grid> */}
+        
 
           
 

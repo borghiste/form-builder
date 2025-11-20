@@ -90,14 +90,14 @@ export default function DraggableCard({
                      
                     }}>
                      {field.label}
-                     {field.required && (
+                     {!!field.required && (
                        <Box component="span" sx={{ color: "red" }}>
-                         *
+                          *
                        </Box>
                      )}
                    </Typography>
 
-                   {['text', 'text area', 'email', 'number', 'phone', 'password', 'time', 'date'].includes(field.type) && ( <TextField type={field.type} disabled/>)}
+                   {['text', 'text area', 'email', 'number', 'phone', 'password', 'time', 'date'].includes(field.type) && ( <TextField type={field.type} disabled label={field.label}/>)}
 
                    {field.type == 'selectlist' && (
                    <FormControl fullWidth>
@@ -107,8 +107,8 @@ export default function DraggableCard({
                      id="demo-simple-select"
                     
                      label={field.label}>
-                     <MenuItem value={10}>Ten</MenuItem>
-                     <MenuItem value={20}>Twenty</MenuItem>
+                     <MenuItem value={10}></MenuItem>
+                     <MenuItem value={20}></MenuItem>
                      <MenuItem value={30}>Thirty</MenuItem>
                    </Select>
                  </FormControl> 

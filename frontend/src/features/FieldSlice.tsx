@@ -39,32 +39,4 @@ export const { addField, updateField, removeField, setFields } = fieldSlice.acti
 export default fieldSlice.reducer;
 export const selectFields = (state: { fields: FieldsState }) => state.fields?.fields;
 
-// import { createSlice } from "@reduxjs/toolkit";
 
-// interface FieldState {
-//     id: string | null;
-//     type: string | null;
-//     label: string | null;
-//     validations?: Record<string> | null; 
-// }
-
-// const initialState: FieldState = {
-//     id: null,
-//     type: null,
-//     label: null,
-//     validations: null,
-// }
-
-// const fieldSlice = createSlice({
-//     name: 'field',
-//     initialState,
-//     reducers: {
-//         setField(state, action) {
-//             Object.assign(state, action.payload)
-//         }
-//     } 
-// });
-
-// export const {setField} = fieldSlice.actions;
-// export default fieldSlice.reducer;
-// export const selectField = (state: { field: FieldState }) => state.field;
