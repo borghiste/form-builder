@@ -81,7 +81,7 @@ export default function FormView({disabledFields}) {
           <Grid container spacing={2} sx={{display:'flex', flexDirection:'column'}}>
           {
             form?.form_fields?.map((field) => {
-              console.log(field.type)
+            
              
           const Component = renderedComponent[field.type];
           return ( <Component label={field.label} disabled={disabledFields}/>)

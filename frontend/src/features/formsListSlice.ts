@@ -111,6 +111,29 @@ export const getForm = createAsyncThunk<FormData, string>(
     return (await res.json()) as FormData;
   }
 );
+// Update form
+ export const updateForm = createAsyncThunk<FormData, FormData>(
+    "forms/updateForm",
+    async (updateFormData) => {
+      const sanitized = {
+        ...updateFormData,
+        form_fields: updateFormData.form_fields.map(({ name, description, id, icon, ...rest }) => rest),
+      };
+
+      const res = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/forms/${updateFormData.id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(sanitized),
+        }
+      );
+      console.log('response', res)
+      if (!res.ok) throw new Error("Error updating form");
+      
+      return (await res.json()) as FormData;
+    }
+ )
 
 // ===== SLICE =====
 export const formsListSlice = createSlice({
@@ -173,7 +196,20 @@ export const formsListSlice = createSlice({
       .addCase(getForm.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message || "Failed to fetch form";
-      });
+      })
+      // --- UPDATE FORM ---
+      builder.addCase(updateForm.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(updateForm.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        const index = state.forms.findIndex(f => f.id === action.payload.data.id);
+    })
+    .addCase(updateForm.rejected), (state, action) => {
+      state.status = 'failed';
+      state.error = action.error.message || "Failed to update form";
+    }
+    
   },
 });
 

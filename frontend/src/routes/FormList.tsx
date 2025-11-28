@@ -27,11 +27,12 @@ import { selectForms } from "../features/formsListSlice";
 import { setFormFields, setFormName, setForm } from "../features/formSlice";
 import { modalContext } from "../App";
 
+
 export default function FormsList() {
   const dispatch = useDispatch<AppDispatch>();
   const forms = useSelector(selectForms);
   const User = useSelector(selectUser);
-  const { newFormClick, setNewFormClick } = useContext(modalContext);
+  const { setContext } = useContext(modalContext);
 
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -41,11 +42,11 @@ export default function FormsList() {
 
   const handleModalClose = () => {
     setModalOpen(false);
-    setNewFormClick(false);
+    setContext(null);
   };
 
   const handleNewFormClick = () => {
-    setNewFormClick(true);
+    setContext('newForm');
     setModalOpen(true);
     dispatch(setFormFields([]));
   };
@@ -58,16 +59,16 @@ export default function FormsList() {
     }))
 
     setModalOpen(true);
-    setNewFormClick(false);
+    setContext('view');
     
   };
 
   const handleEditForm = async (formId: number) => {
     const selectedForm = await dispatch(getForm(formId)).unwrap();
     dispatch(setFormFields(selectedForm.form_fields));
-    console.log(selectedForm)
+    dispatch(setForm(selectedForm));
     setModalOpen(true);
-    setNewFormClick(true);
+    setContext('editing');
   };
 
   return (

@@ -96,6 +96,7 @@ export default function FieldsList({
       ) : (
         <>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            
             {formFields?.map((field, index) => (
               <React.Fragment key={`${field.id || field.type}-${index}`}>
                 {/* Drop zone */}

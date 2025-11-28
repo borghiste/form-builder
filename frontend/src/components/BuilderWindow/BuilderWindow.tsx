@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import {nanoid} from 'nanoid';
 import {useDispatch, useSelector} from  'react-redux';
+import { useContext } from 'react';
+import {modalContext} from '../../App';
 
 // REDUX
 import  { selectForm,  setFormName, setFormFields, setForm, addField } from '../../features/formSlice';
-import { createNewForm } from '../../features/formsListSlice';
+import { createNewForm, updateForm } from '../../features/formsListSlice';
 import { selectFields, setFields} from '../../features/fieldSlice';
 
 
@@ -34,6 +36,8 @@ import FormView from '../FormView';
   const [draggedFieldIndex ,setDraggedFieldIndex] = useState(null)
   const[targetIndex, setTargetIndex] = useState()
   const fieldState = useSelector(selectFields);
+  const  modalTypeContext = useContext(modalContext);
+  const {context, setContext} = modalTypeContext;
 
 
   // Validation state
@@ -142,14 +146,24 @@ const handleDragOver = (e) => {
   const handleFieldDragStart = (e, index) => {
     setDraggedFieldIndex(index); // Salva l'indice (es: 2)
     e.dataTransfer.effectAllowed = 'move'; // Indica che è un movimento
-    e.dataTransfer.setData('fieldIndex', index.toString()); // Marca con l'indice
+    e.dataTransfer.setData('fieldIndex', index.toString()); 
   };
 
   const handleSaveForm = async () => {
+    console.log('saving');
+    console.log('context:', context);
     
     const newForm = {...form}
+    if(context === 'newForm'){
+console.log('creating new form:', newForm);
+     
+      dispatch(createNewForm(newForm))
+    }
+    else if(context === 'editing'){
+      console.log('updating form:', newForm);
+      dispatch(updateForm(newForm));
+    }
     
-     dispatch(createNewForm(newForm))
      
      
    
