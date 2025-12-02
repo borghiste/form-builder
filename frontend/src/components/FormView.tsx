@@ -36,7 +36,7 @@ const renderedComponent = {
   number: (props) => <TextField type="number" {...props}/>,
   phone: (props) => <TextField type="tel" {...props}/>,
   password: (props) => <TextField type="password" {...props}/>,
-  date: (props) => <TextField type="date" {...props}/>,
+  date: (props) => <TextField type="date" InputLabelProps={{ shrink: true }}  {...props}/>,
   time: (props) => <TextField type="time" {...props}/>,
   selectList: (props) => (
     <FormControl fullWidth>
