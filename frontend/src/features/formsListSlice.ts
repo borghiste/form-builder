@@ -60,7 +60,7 @@ export const createNewForm = createAsyncThunk<FormData, FormData>(
     };
 
     
-    console.log("sending sanitized:", sanitized);
+  ;
 
     const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/forms`, {
       method: "POST",
@@ -85,7 +85,7 @@ export const deleteForm = createAsyncThunk<string, string>(
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: formId }),
       });
-      console.log('status', res.status)
+      
       
 
     if (!res.ok) throw new Error("Error deleting form");
@@ -128,7 +128,7 @@ export const getForm = createAsyncThunk<FormData, string>(
           body: JSON.stringify(sanitized),
         }
       );
-      console.log('response', res)
+      
       if (!res.ok) throw new Error("Error updating form");
       
       return (await res.json()) as FormData;
@@ -163,7 +163,7 @@ export const formsListSlice = createSlice({
       .addCase(createNewForm.fulfilled, (state, action: PayloadAction<FormData>) => {
         state.status = "succeeded";
         state.forms.push(action.payload); 
-        console.log('creating form in thunk', action.payload)
+        
       })
       .addCase(createNewForm.rejected, (state, action) => {
         state.status = "failed";

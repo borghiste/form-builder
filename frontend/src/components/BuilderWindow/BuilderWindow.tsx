@@ -150,19 +150,16 @@ const handleDragOver = (e) => {
   };
 
   const handleSaveForm = async () => {
-    console.log('saving');
-    console.log('context:', context);
+    
     
     const newForm = {...form}
     if(context === 'newForm'){
-console.log('creating new form:', newForm);
+
      
       dispatch(createNewForm(newForm))
     }
-    else if(context === 'editing'){
-      console.log('updating form:', newForm);
-      dispatch(updateForm(newForm));
-    }
+    else if(context === 'editing') dispatch(updateForm(newForm));
+    
     
      
      
@@ -196,7 +193,7 @@ console.log('creating new form:', newForm);
           }}
         >
           {/* Top Controls */}
-          <Box component={'div'} sx={{ display: 'flex', gap: '1rem', marginBottom: '2rem', alignItems: 'center'}}>
+          <Box component={'div'} sx={{ display: 'flex', gap: '1rem', marginBottom: '2rem', alignItems: 'center', flexDirection:'column'}}>
 
           <ButtonGroup sx={{display:'flex', alignItems:'center'}}>
       <BasicButton
@@ -219,7 +216,7 @@ console.log('creating new form:', newForm);
                 borderradius={9}/>
 
       </ButtonGroup>
-
+              
             <TextField
               type="text"
               placeholder="Insert Form Name"
@@ -237,6 +234,24 @@ console.log('creating new form:', newForm);
     },
               }}
             />
+             <TextField
+              type="text"
+              placeholder="Insert Form description"
+              value={form?.description}
+              onChange={(e) => {dispatch(setForm({...form, description: e.target.value}))}}
+              sx={{
+                flex: 1,
+                borderRadius: '0.375rem',
+                fontSize: '0.875rem',
+                color:'text.primary',
+                '& .MuiInputBase-input::placeholder': {
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+    },
+              }}
+            />
+            
           </Box>
 
           {/* Three Column Layout */}

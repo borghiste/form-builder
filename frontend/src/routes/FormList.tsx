@@ -38,7 +38,7 @@ export default function FormsList() {
 
   useEffect(() => {
     dispatch(fetchFormsList());
-  }, [dispatch]);
+  }, [forms]);
 
   const handleModalClose = () => {
     setModalOpen(false);
@@ -53,11 +53,10 @@ export default function FormsList() {
 
   const handleViewForm = async (formId: number) => {
     const selectedForm = await dispatch(getForm(formId)).unwrap();
-    console.log(selectedForm.form_fields);
+   
     dispatch(setForm({name:selectedForm.name,
                   form_fields: selectedForm?.form_fields
     }))
-
     setModalOpen(true);
     setContext('view');
     

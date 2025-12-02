@@ -77,6 +77,10 @@ export default function FormView({disabledFields}) {
           {form?.name}
         </Typography>
 
+        <Typography>
+          {form?.description || 'No description provided.'}
+        </Typography>
+
         <Box component="form"  noValidate>
           <Grid container spacing={2} sx={{display:'flex', flexDirection:'column'}}>
           {

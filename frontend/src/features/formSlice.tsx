@@ -35,8 +35,10 @@ const formSlice = createSlice({
     name: 'form',
     initialState,
     reducers: {
-        setForm(state, action: PayloadAction<formData>){
-            state.form = action.payload;
+        setForm(state, action: PayloadAction<formData>) {
+            if(state.form){
+                Object.assign(state.form, action.payload)
+            }
         },
         setFormFields(state, action: PayloadAction<formField[]>) {
             if(state.form){
