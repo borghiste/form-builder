@@ -44,7 +44,8 @@ export const LightTheme = createTheme({
         primary: { color: '#3E3E42' }
         
       }
-    }
+    },
+  
   }
 });
 

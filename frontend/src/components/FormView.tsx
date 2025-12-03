@@ -36,7 +36,7 @@ const renderedComponent = {
   number: (props) => <TextField type="number" {...props}/>,
   phone: (props) => <TextField type="tel" {...props}/>,
   password: (props) => <TextField type="password" {...props}/>,
-  date: (props) => <TextField type="date" {...props}/>,
+  date: (props) => <TextField type="date" InputLabelProps={{ shrink: true }}  {...props}/>,
   time: (props) => <TextField type="time" {...props}/>,
   selectList: (props) => (
     <FormControl fullWidth>
@@ -72,21 +72,32 @@ export default function FormView({disabledFields}) {
 
   <>
 
-      <Paper sx={{ p: 4, borderRadius: 3,display:'flex', flexDirection:'column'}}  elevation={3}>
+      <Paper sx={{ p: 4, borderRadius: 3,display:'flex', flexDirection:'column', backgroundColor: 'background.default'}}  elevation={3}>
         <Typography variant="h5" component="h1" gutterBottom>
           {form?.name}
+        </Typography>
+
+        <Typography>
+          {form?.description || 'No description provided.'}
         </Typography>
 
         <Box component="form"  noValidate>
           <Grid container spacing={2} sx={{display:'flex', flexDirection:'column'}}>
           {
             form?.form_fields?.map((field) => {
-              console.log(field.type)
+            
              
           const Component = renderedComponent[field.type];
           return ( <Component label={field.label} disabled={disabledFields}/>)
             })
           }
+          {/* submit button */}
+          <BasicButton text={'submit'}
+          color={'cyan.main'} textColor={'white'}/>
+          {/* reset button */}
+          <BasicButton text={'reset'} variant={'outlined'}/>
+
+
       
         
 

@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useDispatch, useSelector } from "react-redux";
-import { selectFields } from "../../features/fieldSlice";
+// import { selectFields } from "../../features/fieldSlice";
 
 type Field = { id: string; label: string; required?: boolean };
 
@@ -42,7 +42,7 @@ export default function DraggableCard({
 }: DraggableCardProps) {
   
   const dispatch = useDispatch();
-  const fieldState = useSelector(selectFields);
+  
 
   const handleLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLocalLabel(e.target.value);
@@ -86,9 +86,7 @@ export default function DraggableCard({
                      fontSize: 14,
                      fontWeight: 500,
                      mb: 1,
-                     zIndex: 9,
-                     
-                    }}>
+                     zIndex: 9}}>
                      {field.label}
                      {!!field.required && (
                        <Box component="span" sx={{ color: "red" }}>

@@ -23,14 +23,14 @@ export default function App(){
 
     const themeState = useSelector(selectMode); 
      const User = useSelector(selectUser); 
-    const [newFormClick, setNewFormClick] = useState(false);
+    const [context, setContext] = useState< 'newForm' | 'editing' | 'view' | null>(null);
     
 
    
     return(
         
         <ThemeProvider theme={ themeState ? DarkTheme : LightTheme }>
-            <modalContext.Provider value={{newFormClick, setNewFormClick}}>
+            <modalContext.Provider value={{context, setContext}}>
 
 
         

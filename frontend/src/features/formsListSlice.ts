@@ -60,7 +60,7 @@ export const createNewForm = createAsyncThunk<FormData, FormData>(
     };
 
     
-    console.log("sending sanitized:", sanitized);
+  ;
 
     const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/forms`, {
       method: "POST",
@@ -85,7 +85,7 @@ export const deleteForm = createAsyncThunk<string, string>(
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: formId }),
       });
-      console.log('status', res.status)
+      
       
 
     if (!res.ok) throw new Error("Error deleting form");
@@ -111,6 +111,29 @@ export const getForm = createAsyncThunk<FormData, string>(
     return (await res.json()) as FormData;
   }
 );
+// Update form
+ export const updateForm = createAsyncThunk<FormData, FormData>(
+    "forms/updateForm",
+    async (updateFormData) => {
+      const sanitized = {
+        ...updateFormData,
+        form_fields: updateFormData.form_fields.map(({ name, description, id, icon, ...rest }) => rest),
+      };
+
+      const res = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/forms/${updateFormData.id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(sanitized),
+        }
+      );
+      
+      if (!res.ok) throw new Error("Error updating form");
+      
+      return (await res.json()) as FormData;
+    }
+ )
 
 // ===== SLICE =====
 export const formsListSlice = createSlice({
@@ -140,7 +163,7 @@ export const formsListSlice = createSlice({
       .addCase(createNewForm.fulfilled, (state, action: PayloadAction<FormData>) => {
         state.status = "succeeded";
         state.forms.push(action.payload); 
-        console.log('creating form in thunk', action.payload)
+        
       })
       .addCase(createNewForm.rejected, (state, action) => {
         state.status = "failed";
@@ -173,7 +196,20 @@ export const formsListSlice = createSlice({
       .addCase(getForm.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message || "Failed to fetch form";
-      });
+      })
+      // --- UPDATE FORM ---
+      builder.addCase(updateForm.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(updateForm.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        const index = state.forms.findIndex(f => f.id === action.payload.data.id);
+    })
+    .addCase(updateForm.rejected), (state, action) => {
+      state.status = 'failed';
+      state.error = action.error.message || "Failed to update form";
+    }
+    
   },
 });
 

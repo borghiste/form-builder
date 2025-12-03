@@ -23,10 +23,10 @@
  import { useDispatch, useSelector } from "react-redux";
 
 // //MUI
- import { colors, Divider, Stack } from "@mui/material";
+ import { Divider } from "@mui/material";
 
 export default function FormBuilderModal({modalIsOpen, handleModalClose }){
-  const {newFormClick, setNewFormClick} = useContext(modalContext);
+  const {context} = useContext(modalContext);
 
 
 //   // MODAL STYLE
@@ -66,7 +66,7 @@ export default function FormBuilderModal({modalIsOpen, handleModalClose }){
 
                         
                         {
-                          newFormClick ? <BuilderWindow handleModalClose={handleModalClose} /> 
+                          context === 'newForm' | context === 'editing' ? <BuilderWindow handleModalClose={handleModalClose} /> 
                             : <FormView/>
                           }
                         

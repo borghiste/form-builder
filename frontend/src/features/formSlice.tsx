@@ -35,8 +35,10 @@ const formSlice = createSlice({
     name: 'form',
     initialState,
     reducers: {
-        setForm(state, action: PayloadAction<formData>){
-            state.form = action.payload;
+        setForm(state, action: PayloadAction<formData>) {
+            if(state.form){
+                Object.assign(state.form, action.payload)
+            }
         },
         setFormFields(state, action: PayloadAction<formField[]>) {
             if(state.form){
@@ -48,17 +50,15 @@ const formSlice = createSlice({
                 state.form.form_fields.push(action.payload);
             }
         },
-        setFormName(state, action: PayloadAction<string>) {
-            if(state.form){
-                state.form.name = action.payload;
-            }
-        }
+
+      
+
     },
-    extraReducers: (builder) => {}
+        
 })
 
 export default formSlice.reducer;
 
 export const selectForm = (state: RootState) => state.form.form;
 export const selectStatus = (state: RootState) => state.form.status;
-export const { setForm, addField, setFormFields, setFormName } = formSlice.actions;
+export const { setForm, addField, setFormFields } = formSlice.actions;

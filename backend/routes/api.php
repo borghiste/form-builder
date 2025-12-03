@@ -35,3 +35,6 @@ Route::get('forms', [FormListController::class, 'getFormList']);
 // delete form: delete existing form
 
 Route::delete('forms/{id}', [FormListController::class, 'deleteForm']);
+
+// UPDATE FORM
+Route::put('forms/{id}', [FormController::class, 'updateForm']);
