@@ -14,8 +14,8 @@ import {
   FormLabel
 } from '@mui/material';
 //REDUX
-import{  updateField} from '../../features/fieldSlice';
-import { useDispatch, useSelector } from 'react-redux';
+// import{  updateField} from '../../features/fieldSlice';
+import { useDispatch } from 'react-redux';
 import { fieldTypes } from './FieldTypesColumn';
 
 interface Validation {
@@ -123,7 +123,7 @@ label={selectedField?.label}
           <Button
             variant="contained"
             color="primary"
-            onClick={() => {setValidations({label: localLabel})}}
+           
             fullWidth
             sx={{ fontWeight: 600 }}>
             APPLY

@@ -50,17 +50,15 @@ const formSlice = createSlice({
                 state.form.form_fields.push(action.payload);
             }
         },
-        setFormName(state, action: PayloadAction<string>) {
-            if(state.form){
-                state.form.name = action.payload;
-            }
-        }
+
+      
+
     },
-    extraReducers: (builder) => {}
+        
 })
 
 export default formSlice.reducer;
 
 export const selectForm = (state: RootState) => state.form.form;
 export const selectStatus = (state: RootState) => state.form.status;
-export const { setForm, addField, setFormFields, setFormName } = formSlice.actions;
+export const { setForm, addField, setFormFields } = formSlice.actions;

@@ -5,9 +5,9 @@ import { useContext } from 'react';
 import {modalContext} from '../../App';
 
 // REDUX
-import  { selectForm,  setFormName, setFormFields, setForm, addField } from '../../features/formSlice';
+import  { selectForm, setFormFields, setForm, addField } from '../../features/formSlice';
 import { createNewForm, updateForm } from '../../features/formsListSlice';
-import { selectFields, setFields} from '../../features/fieldSlice';
+// import { selectFields, setFields} from '../../features/fieldSlice';
 
 
 // MUI
@@ -35,7 +35,7 @@ import FormView from '../FormView';
   const [preview, switchToPreview] = useState(false);
   const [draggedFieldIndex ,setDraggedFieldIndex] = useState(null)
   const[targetIndex, setTargetIndex] = useState()
-  const fieldState = useSelector(selectFields);
+  
   const  modalTypeContext = useContext(modalContext);
   const {context, setContext} = modalTypeContext;
 
@@ -96,7 +96,8 @@ const handleDragOver = (e) => {
         // placeholder: `Enter ${draggedField.name}`,
       }
        
-      dispatch(addField({form_fields:newField}));
+     
+       dispatch(addField({form_fields:newField}));
       
       // updatedFields.splice(dropIndex, 0, newField);
       updatedFields.push(newField);
@@ -111,8 +112,9 @@ const handleDragOver = (e) => {
       updatedFields.splice(dropIndex, 0, movedField);
     }
   
-    // Aggiorna lo stato dei campi
-    dispatch(setFormFields(updatedFields));
+    // updated form fields state
+    dispatch(setForm({...form, form_fields: updatedFields}))
+    
     
   
     // Reset highlight della drop zone
@@ -124,7 +126,7 @@ const handleDragOver = (e) => {
 
   const handleFieldClick = (field) => {
      setSelectedField(field);
-    dispatch(setFields(field));
+    
   
     
     
@@ -136,7 +138,8 @@ const handleDragOver = (e) => {
   };
 
   const handleDeleteField = (fieldId) => {
-    setFormFields(formFields.filter((f) => f.id !== fieldId));
+
+    // setFormFields(formFields.filter((f) => f.id !== fieldId));
     if (selectedField?.id === fieldId) {
       setSelectedField(null);
       dispatch(setField(null));
@@ -164,7 +167,7 @@ const handleDragOver = (e) => {
      
      
    
-    dispatch(setFormName(''));
+    dispatch(setForm({...form, name: ''}));
     
   }
 
@@ -203,8 +206,7 @@ const handleDragOver = (e) => {
                   switchToPreview(false);
                 }}
                 textColor={"black"}
-                variant={preview ? "" : "contained"}
-                borderradius={9}/>
+                variant={preview ? "" : "contained"}/>
        <BasicButton
                 text={"preview"}
                 size={'large'}
@@ -213,7 +215,7 @@ const handleDragOver = (e) => {
                 }}
                 variant={!preview ? "text" : "contained"}
                 textColor={!preview ? "text.primary" : "black"}
-                borderradius={9}/>
+                />
 
       </ButtonGroup>
               
@@ -221,7 +223,7 @@ const handleDragOver = (e) => {
               type="text"
               placeholder="Insert Form Name"
               value={form?.name}
-              onChange={(e) => {dispatch(setFormName(e.target.value))}}
+              onChange={(e) => {dispatch(setForm({name: e.target.value}))}}
               sx={{
                 flex: 1,
                 borderRadius: '0.375rem',
@@ -290,13 +292,16 @@ const handleDragOver = (e) => {
                 size={'large'}
                 textColor={"black"}
               onClick={() => {handleSaveForm()}}
-                variant={ "outlined"}/>
+                variant={ "outlined"}
+                textColor={!preview ? "text.primary" : "black"}
+                />
 
        <BasicButton
                 text={"cancel"}
-                variant="outlined"
-                size={"large"}/>
+                variant={"outlined"}
                 textColor={!preview ? "text.primary" : "black"}
+                size={"large"}/>
+                
 
       </ButtonGroup>
 
