@@ -8,6 +8,7 @@ import {modalContext} from '../../App';
 import  { selectForm, setFormFields, setForm, addField } from '../../features/formSlice';
 import { createNewForm, updateForm } from '../../features/formsListSlice';
 // import { selectFields, setFields} from '../../features/fieldSlice';
+import { selectField } from '../../features/fieldSlice';
 
 
 // MUI
@@ -27,6 +28,7 @@ import FormView from '../FormView';
   
    const form = useSelector(selectForm);
     const formFields = form?.form_fields || [];
+    
  
 
   const [selectedField, setSelectedField] = useState(null);
@@ -126,15 +128,7 @@ const handleDragOver = (e) => {
 
   const handleFieldClick = (field) => {
      setSelectedField(field);
-    
-  
-    
-    
-    // setValidation({
-    //   fieldType: field.type,
-    //   required: field.required,
-    //   customValidation: field.customValidation || '',
-    // });
+   
   };
 
   const handleDeleteField = (fieldId) => {
@@ -161,7 +155,9 @@ const handleDragOver = (e) => {
      
       dispatch(createNewForm(newForm))
     }
-    else if(context === 'editing') dispatch(updateForm(newForm));
+    else if(context === 'editing')
+      {console.log('updating', newForm); dispatch(updateForm(newForm));
+  }
     
     
      
@@ -276,8 +272,7 @@ const handleDragOver = (e) => {
             setFormFields={setFormFields}/>
 
             {/* Right Column - Validations */}
-            <ValidationsPanel
-            selectedField={selectedField}/>
+            <ValidationsPanel/>
 
         
           </Box>

@@ -72,7 +72,7 @@ return response()->json($newForm->load('formFields'));
             'form_fields' => 'required|array|min:1',
             'form_fields.*.id' => 'nullable|integer|exists:form_fields,id',
             'form_fields.*.label' => 'required|string|max:255',
-            'form_fields.*.type' => 'required|string|in:text,email,number,textarea,select,checkbox,radio,date',
+            'form_fields.*.type' => 'required|string|in:text,email,number,textarea,select,checkbox,radio,date,time,select',
             'form_fields.*.required' => 'boolean',
             'form_fields.*.order' => 'nullable|integer'
         ])->validate();
@@ -80,10 +80,7 @@ return response()->json($newForm->load('formFields'));
         logger()->info('3 - Validation passed', ['validated' => $validated]);
         
     } catch (\Illuminate\Validation\ValidationException $e) {
-        logger()->error('❌ VALIDATION FAILED', [
-            'errors' => $e->errors(),
-            'input_data' => $data
-        ]);
+        
         
         return response()->json([
             'message' => 'Validation failed',

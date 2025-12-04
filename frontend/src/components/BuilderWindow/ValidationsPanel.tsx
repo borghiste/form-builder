@@ -15,8 +15,8 @@ import {
 } from '@mui/material';
 //REDUX
 // import{  updateField} from '../../features/fieldSlice';
-import { useDispatch } from 'react-redux';
-import { fieldTypes } from './FieldTypesColumn';
+import { useDispatch, useSelector } from 'react-redux';
+import { FieldState, selectField } from '../../features/fieldSlice';
 
 interface Validation {
   fieldType: string;
@@ -30,12 +30,16 @@ interface Props {
   setValidation: React.Dispatch<React.SetStateAction<Validation>>;
 }
 
- export default function  ValidationPanel({selectedField, validations}) {
+ export default function  ValidationPanel({ validations}) {
   
   const dispatch = useDispatch();
+   const selectedField = useSelector(FieldState)
   const fieldType = selectedField?.type
   
-  const [localLabel, SetLocalLabel] = useState('')
+  const handleChange = (e: SelectChangeEvent) => {
+    dispatch(selectField({...field, type: e.target.value as string}))
+  };
+ 
   
 
   return (
@@ -54,6 +58,7 @@ interface Props {
              <InputLabel id="field-type-label">Field Type</InputLabel> 
              <Select
               labelId="field-type-label"
+              onChange={handleChange}
               value={selectedField?.type}>
               <MenuItem value="text">Text</MenuItem>
               <MenuItem value="text area">Text area</MenuItem>

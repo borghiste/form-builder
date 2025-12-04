@@ -22,7 +22,6 @@
 ### Open Issues
 
 - Minor UI inconsistency on mobile devices
-- correct date format and date display on form list
 
 ---
 

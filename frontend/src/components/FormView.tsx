@@ -1,11 +1,11 @@
-import React, { use, useEffect } from "react";
-import { useState } from "react";
+import React from "react";
+
 //COMPONENTS
 import BasicButton from './UI/BasicButton';
 //REDUX
 
 import { useDispatch, useSelector } from "react-redux";
-import { selectList } from "../features/formsListSlice";
+
 import { selectForm } from '../features/formSlice';
 import { selectStatus } from "../features/formSlice";
 
@@ -18,16 +18,14 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Container,
+  
   Paper,
   Grid,
   FormControlLabel,
   Checkbox,
-  Divider,
-  Chip,
   TextareaAutosize
 } from "@mui/material";
-import { RootState } from "../app/store";
+
 
 const renderedComponent = {
   text: (props) => <TextField type="text" {...props}/>,

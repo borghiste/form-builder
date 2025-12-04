@@ -12,7 +12,8 @@ import {
   FormControlLabel,
   InputLabel,
   Select,
-  MenuItem
+  MenuItem,
+  TextareaAutosize
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useDispatch, useSelector } from "react-redux";
@@ -95,12 +96,15 @@ export default function DraggableCard({
                      )}
                    </Typography>
 
-                   {['text', 'text area', 'email', 'number', 'phone', 'password', 'time', 'date'].includes(field.type) && ( <TextField type={field.type} disabled label={field.label}/>)}
+                   {['text', 'email', 'number', 'phone', 'password', 'time', 'date'].includes(field.type) && ( <TextField type={field.type} disabled label={field.label}/>)}
 
-                   {field.type == 'selectlist' && (
+                   {field.type == 'textarea' && (<TextareaAutosize/>)}
+
+                   {field.type == 'select' && (
                    <FormControl fullWidth>
                    <InputLabel id="demo-simple-select-label">{field.label}</InputLabel>
                    <Select
+                   disabled
                      labelId="demo-simple-select-label"
                      id="demo-simple-select"
                     
@@ -111,6 +115,7 @@ export default function DraggableCard({
                    </Select>
                  </FormControl> 
                    )
+                   
                    }
                
 
