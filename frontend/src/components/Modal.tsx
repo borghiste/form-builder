@@ -41,10 +41,7 @@ export default function FormBuilderModal({modalIsOpen, handleModalClose }){
      transform: 'translate(-50%, -50%)',
      maxWidth: '100%',
      mazHeight:'100%',
-     
-     border: '1px solid #000',
      boxShadow: 24,
-     
      p: 0,
      
   }
@@ -62,7 +59,7 @@ export default function FormBuilderModal({modalIsOpen, handleModalClose }){
                       
                        
                         <Divider/>
-                        <Box sx={{display:'flex', flexDirection:{xs:'column',sm:'row'}}}>
+                        <Box sx={{display:'flex', flexDirection:{xs:'column',sm:'row',                  }}}>
 
                         
                         {

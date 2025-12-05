@@ -13,9 +13,7 @@ export default configureStore({
     forms: formsReducer,
     form: formReducer,
     validationsDrawer: validationsDrawerReducer,
-    field: fieldReducer,
-    
-    
+    field: fieldReducer
   },
 })
 

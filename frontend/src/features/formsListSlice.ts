@@ -53,11 +53,12 @@ export const createNewForm = createAsyncThunk<FormData, FormData>(
   "forms/createNewForm",
   async (newFormData) => {
  
-    const sanitized = {
+    const cleanedData = {
       ...newFormData,
       form_fields: newFormData.form_fields.map(({ name, description, id, icon, ...rest }) => rest),
 
     };
+    
 
     
   ;
@@ -65,7 +66,7 @@ export const createNewForm = createAsyncThunk<FormData, FormData>(
     const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/forms`, {
       method: "POST",
       headers: { "Content-Type": "application/json"},
-      body: JSON.stringify(sanitized),
+      body: JSON.stringify(cleanedData),
     });
 
     if (!res.ok) throw new Error("Error creating new form");
@@ -115,17 +116,17 @@ export const getForm = createAsyncThunk<FormData, string>(
  export const updateForm = createAsyncThunk<FormData, FormData>(
     "forms/updateForm",
     async (updateFormData) => {
-      const sanitized = {
+      const cleanedData = {
         ...updateFormData,
         form_fields: updateFormData.form_fields.map(({ name, description, id, icon, ...rest }) => rest),
       };
-
+      
       const res = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}/api/forms/${updateFormData.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(sanitized),
+          body: JSON.stringify(cleanedData),
         }
       );
       

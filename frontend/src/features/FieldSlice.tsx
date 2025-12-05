@@ -1,65 +1,28 @@
  import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+ import { RootState } from "../app/store";
 
 interface FieldState {
   id: string;
   label: string;
   type: string;
   required: boolean;
-}
+} 
 
-const initialState: FieldState =  {id: '',
-  label: '',
-  type: '',
-  required: false
-}
+const initialState: FieldState | null =  null
 
  const fieldSlice = createSlice({
   name:'field',
   initialState,
-  reducers: {}
+  reducers: {
+    setField(state, action: PayloadAction<FieldState>) {
+      return action.payload;
+    }
+    
+  }
  })
 
+ export const {setField} = fieldSlice.actions;
+ export const selectField = (state: RootState) => state.field;
  export default fieldSlice.reducer;
-// interface FieldState {
-//   id: string;
-//   type: string;
-//   label: string;
-//   validations?: Record<string, any> | null;
-// }
-
-// interface FieldsState {
-//   fields: FieldState[];
-// }
-
-// const initialState: FieldsState = {
-//   fields: [],
-// };
-
-// const fieldSlice = createSlice({
-//   name: "fields",
-//   initialState,
-//   reducers: {
-//     setSelectedField(state, action: PayloadAction<FieldState>){
-
-//     },
-//     addField(state, action: PayloadAction<FieldState>) {
-//       state.fields.push(action.payload);
-//     },
-//     updateField(state, action: PayloadAction<{ id: string; updates: Partial<FieldState> }>) {
-//       const field = state.fields.find(f => f.id === action.payload.id);
-//       if (field) Object.assign(field, action.payload.updates);
-//     },
-//     removeField(state, action: PayloadAction<string>) {
-//       state.fields = state.fields.filter(f => f.id !== action.payload);
-//     },
-//     setFields(state, action: PayloadAction<FieldState[]>) {
-//       state.fields = action.payload;
-//     },
-//   },
-// });
-
-// export const { addField, updateField, removeField, setFields } = fieldSlice.actions;
-// export default fieldSlice.reducer;
-// export const selectFields = (state: { fields: FieldsState }) => state.fields?.fields;
 
 

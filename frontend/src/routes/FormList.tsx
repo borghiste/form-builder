@@ -77,7 +77,8 @@ export default function FormsList() {
       <Container sx={{ minHeight: "100vh", mt: 4 }}>
     
 
-        <TableContainer component={Paper} sx={{ mt: 2, bgcolor:'background.default' }}>
+        <TableContainer component={Paper} sx={{ mt: 2, 
+           bgcolor:'background.default' }}>
           <Table sx={{ minWidth: 650 }} aria-label="forms table">
             <TableHead>
               <TableRow>
