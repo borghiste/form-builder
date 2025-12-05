@@ -101,7 +101,7 @@ export default function FieldsList({
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             
             {formFields?.map((field, index) => (
-              <React.Fragment key={`${field.id || field.type}-${index}`}>
+              <React.Fragment key={`${field.id}`}>
                 {/* Drop zone */}
                 <Box
                 data-testid={`field-${field.id}`}
@@ -110,7 +110,7 @@ export default function FieldsList({
                   sx={{
                     height: targetIndex === index ? 20 : 10, 
                     backgroundColor: targetIndex === index ? 'cyan.main' : 'transparent',
-                    borderRadius: 8,
+                    borderradius: 8,
                     transition: 'all 0.2s'
                   }}
                 />

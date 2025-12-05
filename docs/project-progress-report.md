@@ -12,6 +12,7 @@
 ### Completed Features
 - User authentication 
 - Forms List loaded from db
+- add edit field feature
 
 
 ### Work in Progress
@@ -30,12 +31,13 @@
 ### Timeline
 10-27-2025: add functional drag and drop system
 11-02-2025: add edit form feature
-
+5-12-2025: add edit field feature
 
 ### Todo
-- add editable field feature
-- refine UI on builder window
-- add field edit feature
+- add record table
+- add validations
+
+
 
 
 ---
@@ -45,6 +47,7 @@
 ### Completed Milestones
 - add editable field feature
 - refine UI on builder window
+- add edit field feature
 
 ### Upcoming Milestones
 

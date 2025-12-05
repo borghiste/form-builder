@@ -56,7 +56,7 @@ export default function DraggableCard({
       sx={{
         width: "100%",
         cursor: "grab",
-        borderRadius: 2,
+       
         backgroundColor: "background.default",
         p: 2,
         "&:hover": { boxShadow: 3 },

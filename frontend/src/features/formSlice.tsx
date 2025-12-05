@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../app/store";
 
-type formField = {
+export type formField = {
     id: string,
     label: string,
     value?: string,
