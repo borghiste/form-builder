@@ -4,7 +4,7 @@ import { RootState } from "../app/store";
 export type formField = {
     id: string,
     label: string,
-    value?: string,
+    required: boolean,
     type: string,
     
     validations?: { [key: string]: any }

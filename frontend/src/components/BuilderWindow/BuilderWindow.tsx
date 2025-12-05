@@ -163,10 +163,12 @@ export default function BuilderWindow({ handleModalClose }) {
    */
   const handleSaveForm = async () => {
     const formToSave = { ...form };
+    console.log('formToSave', formToSave)
 
     if (context === CONTEXT_TYPES.NEW_FORM) {
       dispatch(createNewForm(formToSave));
     } else if (context === CONTEXT_TYPES.EDITING) {
+      console.log('updating', formToSave.form_fields)
       dispatch(updateForm(formToSave));
     }
 

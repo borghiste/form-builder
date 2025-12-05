@@ -15,12 +15,14 @@ import { TextField,
   MenuItem,
   FormControlLabel,
   Switch,
-  Button
+  Button,
+  FormLabel
 } from "@mui/material";
 
 export default function ValidationPanel() {
   const dispatch = useDispatch();
   const selectedField = useSelector(selectField);
+  
 
   if (!selectedField) {
     return (
@@ -32,7 +34,7 @@ export default function ValidationPanel() {
 
   const fieldType = selectedField.type;
 
-  // Funzione globale per tutti i cambiamenti del field
+  // field changes global function
   const handleFieldChange = (key: keyof formField, value: any) => {
     dispatch(updateField({
       id: selectedField.id,
@@ -41,11 +43,12 @@ export default function ValidationPanel() {
   };
 
   return (
+  
     <Box>
       <Typography variant="h6" mb={2} fontWeight={600}>
         Set Validations
       </Typography>
-
+    
       <Box display="flex" flexDirection="column" gap={3}>
         {/* Field Type */}
         <FormControl fullWidth>
@@ -78,13 +81,10 @@ export default function ValidationPanel() {
         <FormControlLabel
           control={
             <Switch
-              checked={!!selectedField.validations?.required}
+            
               onChange={(e) =>
-                handleFieldChange('validations', {
-                  ...selectedField.validations,
-                  required: e.target.checked
-                })
-              }
+                handleFieldChange('required', e.target.checked)}
+              
               color="primary"
             />
           }
@@ -163,5 +163,5 @@ export default function ValidationPanel() {
         </Button>
       </Box>
     </Box>
-  );
+        );
 }

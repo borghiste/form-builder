@@ -6,13 +6,9 @@ interface FieldState {
   label: string;
   type: string;
   required: boolean;
-}
+} 
 
-const initialState: FieldState =  {id: '',
-  label: '',
-  type: '',
-  required: false
-}
+const initialState: FieldState | null =  null
 
  const fieldSlice = createSlice({
   name:'field',
