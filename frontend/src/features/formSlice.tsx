@@ -50,6 +50,14 @@ const formSlice = createSlice({
                 state.form.form_fields.push(action.payload);
             }
         },
+        updateField(state, action: PayloadAction<{ id: string; changes: Partial<formField> }>) {
+            if (state.form) {
+                state.form.form_fields = state.form.form_fields.map(field =>
+                    field.id === action.payload.id ? { ...field, ...action.payload.changes } : field
+                );
+            }
+        }
+        
 
       
 
@@ -61,4 +69,4 @@ export default formSlice.reducer;
 
 export const selectForm = (state: RootState) => state.form.form;
 export const selectStatus = (state: RootState) => state.form.status;
-export const { setForm, addField, setFormFields } = formSlice.actions;
+export const { setForm, addField, setFormFields, updateField } = formSlice.actions;

@@ -14,9 +14,10 @@ import {
   FormLabel
 } from '@mui/material';
 //REDUX
-// import{  updateField} from '../../features/fieldSlice';
+
 import { useDispatch, useSelector } from 'react-redux';
-import { FieldState, selectField } from '../../features/fieldSlice';
+import { updateField } from '../../features/formSlice';
+import { selectField, setField } from '../../features/fieldSlice';
 
 interface Validation {
   fieldType: string;
@@ -30,17 +31,18 @@ interface Props {
   setValidation: React.Dispatch<React.SetStateAction<Validation>>;
 }
 
- export default function  ValidationPanel({ validations}) {
+ export default function  ValidationPanel() {
   
   const dispatch = useDispatch();
-   const selectedField = useSelector(FieldState)
+   const selectedField = useSelector(selectField)
+   
   const fieldType = selectedField?.type
   
   const handleChange = (e: SelectChangeEvent) => {
-    dispatch(selectField({...field, type: e.target.value as string}))
+    dispatch(setField({...selectedField, type: e.target.value as string}))
   };
  
-  
+
 
   return (
     <Box>
@@ -60,20 +62,23 @@ interface Props {
               labelId="field-type-label"
               onChange={handleChange}
               value={selectedField?.type}>
+                {}
               <MenuItem value="text">Text</MenuItem>
               <MenuItem value="text area">Text area</MenuItem>
               <MenuItem value="email">Email</MenuItem>
               <MenuItem value="number">Number</MenuItem>
               <MenuItem value="telephone">Telephone</MenuItem>
-              <MenuItem value="date">Date</MenuItem>
+              <MenuItem value="date">date</MenuItem>
+              <MenuItem value="time">time</MenuItem>
+
               </Select> 
           </FormControl>
           
               {/* edit field label */}
           <TextField 
           type='text'
-label={selectedField?.label}
-          />
+        // placeholder={selectedField?.label}
+        onChange={(e) => {dispatch(updateField({ id: selectedField.id, changes: { label: e.target.value } }))}}/>
 
           {/* Required Field */}
           <FormControlLabel
@@ -81,10 +86,8 @@ label={selectedField?.label}
             control={
               <Switch
                 // checked={validation.required}
-                onChange={(e) => dispatch(updateField({
-                  id: selectedField?.id,
-                  updates:{ validations: {...validations, required: e.target.value}}
-                }))}
+                onChange={(e) => dispatch(setField({...selectedField, required: e.target.value}))}
+              
                 color="primary"/>
             }
             label="Required field"

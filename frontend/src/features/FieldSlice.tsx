@@ -18,16 +18,15 @@ const initialState: FieldState =  {id: '',
   name:'field',
   initialState,
   reducers: {
-    selectField(state, action: PayloadAction){
-      state.field = action.payload
-    } 
-
-
+    setField(state, action: PayloadAction<FieldState>) {
+      return action.payload;
+    }
+    
   }
  })
 
- export const {selectField} = fieldSlice.actions;
- export const FieldState = (state: RootState) => state.field.field;
+ export const {setField} = fieldSlice.actions;
+ export const selectField = (state: RootState) => state.field;
  export default fieldSlice.reducer;
 
 

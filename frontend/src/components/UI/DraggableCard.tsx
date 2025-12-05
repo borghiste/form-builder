@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 /// MUI
 import {
   Card,
@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useDispatch, useSelector } from "react-redux";
-// import { selectFields } from "../../features/fieldSlice";
+import { selectField, setField } from "../../features/fieldSlice";
 
 type Field = { id: string; label: string; required?: boolean };
 
@@ -34,7 +34,6 @@ type DraggableCardProps = {
 
 export default function DraggableCard({
   field,
-  selectedField,
   handleFieldClick,
   handleDeleteField,
   onDragStart,
@@ -42,28 +41,17 @@ export default function DraggableCard({
   handleDrop,
 }: DraggableCardProps) {
   
+  const selectedField = useSelector(selectField);
   const dispatch = useDispatch();
   
 
-  const handleLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLocalLabel(e.target.value);
-  };
 
-  const handleLabelSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      dispatch(setFieldLabel(localLabel));
-    
-
-      setLabelIsClicked(false);
-    }
-  };
 
   return (
     <Card
       draggable
       onDragStart={onDragStart}
-      onClick={() => handleFieldClick(field)}
+      onClick={() => {dispatch(setField(field))}}
       elevation={selectedField?.id === field.id ? 4 : 1}
       sx={{
         width: "100%",
@@ -88,17 +76,20 @@ export default function DraggableCard({
                      fontWeight: 500,
                      mb: 1,
                      zIndex: 9}}>
-                     {field.label}
+                     { field.label}
                      {!!field.required && (
                        <Box component="span" sx={{ color: "red" }}>
                           *
                        </Box>
-                     )}
+                     ) }
                    </Typography>
 
-                   {['text', 'email', 'number', 'phone', 'password', 'time', 'date'].includes(field.type) && ( <TextField type={field.type} disabled label={field.label}/>)}
+                   {['text', 'email', 'number', 'phone', 'password'].includes(field.type) && ( <TextField type={field.type} disabled label={field.label}/>)}
 
                    {field.type == 'textarea' && (<TextareaAutosize/>)}
+
+                   {
+                   ['time', 'date'].includes(field.type) && (<TextField type={field.type} disabled/>)}
 
                    {field.type == 'select' && (
                    <FormControl fullWidth>
@@ -120,7 +111,7 @@ export default function DraggableCard({
                
 
                    {
-                   field.type == 'checkbox' && <FormControlLabel control={<Checkbox defaultChecked disabled />} label={ field.label} />
+                   field.type == 'checkbox' && <FormControlLabel control={<Checkbox  disabled />} label={ field.label} />
                    }
                      </>
                   

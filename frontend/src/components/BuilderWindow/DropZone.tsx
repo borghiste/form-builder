@@ -76,6 +76,9 @@ export default function FieldsList({
         <Typography variant='h4' sx={{justifySelf:'start', alignSelf:'start', textAlign:'center'}}>
           {form?.name}
         </Typography>
+        <Typography sx={{justifySelf:'start', alignSelf:'start', textAlign:'center'}}>
+          {form?.description}
+        </Typography>
       </Box>
 
       {formFields?.length === 0 ? (
