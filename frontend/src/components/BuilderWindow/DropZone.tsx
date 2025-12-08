@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { Box, Typography, TextField, Paper, IconButton } from '@mui/material';
+import { Box, Typography} from '@mui/material';
 // COMPONENTS
 import DraggableCard from '../UI/DraggableCard';
 // REDUX

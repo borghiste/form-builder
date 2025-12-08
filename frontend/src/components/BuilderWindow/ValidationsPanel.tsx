@@ -15,7 +15,7 @@ import { TextField,
   MenuItem,
   FormControlLabel,
   Switch,
-  Button,
+
   FormLabel
 } from "@mui/material";
 
@@ -23,8 +23,8 @@ export default function ValidationPanel() {
   const dispatch = useDispatch();
   const selectedField = useSelector(selectField);
   
-
-  if (!selectedField) {
+  
+  if (selectedField === null) {
     return (
       <Typography textAlign="center" mt={4}>
         Select a field to edit validations
@@ -137,7 +137,7 @@ export default function ValidationPanel() {
         )}
 
         {/* Custom Validations */}
-        <TextField
+        {/* <TextField
           label="Custom Validations"
           multiline
           rows={3}
@@ -150,17 +150,17 @@ export default function ValidationPanel() {
           }
           fullWidth
           variant="outlined"
-        />
+        /> */}
 
         {/* Apply Button */}
-        <Button
+        {/* <Button
           variant="contained"
           color="primary"
           fullWidth
           sx={{ fontWeight: 600 }}
         >
           APPLY
-        </Button>
+        </Button> */}
       </Box>
     </Box>
         );

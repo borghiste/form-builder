@@ -27,6 +27,7 @@
 
 export default function FormBuilderModal({modalIsOpen, handleModalClose }){
   const {context} = useContext(modalContext);
+  
 
 
 //   // MODAL STYLE
@@ -41,7 +42,7 @@ export default function FormBuilderModal({modalIsOpen, handleModalClose }){
      transform: 'translate(-50%, -50%)',
      maxWidth: '100%',
      mazHeight:'100%',
-     boxShadow: 24,
+     
      p: 0,
      
   }
