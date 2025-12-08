@@ -34,6 +34,7 @@
 5-12-2025: add edit field feature
 
 ### Todo
+- fix reset fields
 - add record table
 - add validations
 

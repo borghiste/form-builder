@@ -24,7 +24,7 @@ import { AppDispatch } from "../app/store";
 import { selectUser } from "../features/UserSlice";
 import { fetchFormsList, deleteForm, getForm } from "../features/formsListSlice";
 import { selectForms } from "../features/formsListSlice";
-import { setFormFields, setFormName, setForm } from "../features/formSlice";
+import { setFormFields, selectForm, setForm } from "../features/formSlice";
 import { modalContext } from "../App";
 
 
@@ -33,7 +33,7 @@ export default function FormsList() {
   const forms = useSelector(selectForms);
   const User = useSelector(selectUser);
   const { setContext } = useContext(modalContext);
-
+  const form = useSelector(selectForm);
   const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
@@ -43,6 +43,7 @@ export default function FormsList() {
   const handleModalClose = () => {
     setModalOpen(false);
     setContext(null);
+    dispatch(setForm({ ...form, name: '' }));
   };
 
   const handleNewFormClick = () => {
