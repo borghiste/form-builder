@@ -14,8 +14,10 @@ import Home from '../src/routes/Home';
 import FormsList from './routes/FormList';
 import Login from '../src/routes/LoginPage';
 import ProtectedRoute from './routes/ProtectedRoute';
+import RecordsList from './routes/FormEntries';
 //REDUX
 import { selectUser } from './features/UserSlice';
+import FormEntriesTable from './routes/FormEntries';
 
 export const modalContext = createContext<any>(null);
 
@@ -32,8 +34,6 @@ export default function App(){
         <ThemeProvider theme={ themeState ? DarkTheme : LightTheme }>
             <modalContext.Provider value={{context, setContext}}>
 
-
-        
          <BrowserRouter>
              <Layout>
 
@@ -47,6 +47,9 @@ export default function App(){
                 <FormsList/>  </ProtectedRoute>
                 }>
                
+            </Route>
+            <Route path='/FormEntries' element={<ProtectedRoute><FormEntriesTable/></ProtectedRoute>}>
+
             </Route>
             
          

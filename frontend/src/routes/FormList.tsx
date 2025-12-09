@@ -32,13 +32,14 @@ export default function FormsList() {
   const dispatch = useDispatch<AppDispatch>();
   const forms = useSelector(selectForms);
   const User = useSelector(selectUser);
-  const { setContext } = useContext(modalContext);
+   const { setContext } = useContext(modalContext);
   const form = useSelector(selectForm);
   const [modalOpen, setModalOpen] = useState(false);
+  
 
   useEffect(() => {
     dispatch(fetchFormsList());
-  }, [forms]);
+  }, []);
 
   const handleModalClose = () => {
     setModalOpen(false);
@@ -60,6 +61,7 @@ export default function FormsList() {
     }))
     setModalOpen(true);
     setContext('view');
+
     
   };
 
@@ -72,8 +74,9 @@ export default function FormsList() {
   };
 
   return (
+    
     <>
-      <Modal modalIsOpen={modalOpen} handleModalClose={handleModalClose} />
+       <Modal modalIsOpen={modalOpen} handleModalClose={handleModalClose} /> 
 
       <Container sx={{ minHeight: "100vh", mt: 4 }}>
     

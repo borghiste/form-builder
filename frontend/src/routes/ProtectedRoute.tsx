@@ -1,6 +1,6 @@
 import React from "react";
 import { selectUser } from "../features/UserSlice";
-import { useSelector, UseSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 export default function ProtectedRoute({children}){
     const User= useSelector(selectUser);
