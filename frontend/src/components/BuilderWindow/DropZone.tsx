@@ -130,6 +130,7 @@ export default function FieldsList({
 
           {/* Drop zone finale */}
           <Box
+          
             onDragOver={(e) => {e.preventDefault(); setTargetIndex(formFields.length); }}
             onDrop={handleEndDrop}
             sx={{

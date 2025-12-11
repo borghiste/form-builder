@@ -58,6 +58,8 @@ export default function BuilderModal({modalIsOpen, handleModalClose }){
                           context === 'newForm' || context === 'editing' ? <BuilderWindow handleModalClose={handleModalClose} /> 
                             : <FormView/>
                           }
+
+                          {context === 'created' && 'created'}
                         
                         </Box>
                         

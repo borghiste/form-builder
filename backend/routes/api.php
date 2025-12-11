@@ -34,7 +34,14 @@ Route::get('forms', [FormListController::class, 'getFormList']);
 
 // delete form: delete existing form
 
-Route::delete('forms/{id}', [FormListController::class, 'deleteForm']);
+Route::delete('forms/{formId}', [FormListController::class, 'deleteForm']);
 
 // UPDATE FORM
 Route::put('forms/{id}', [FormController::class, 'updateForm']);
+
+// FORM ENTRIES
+
+//SUBMIT FORM
+Route::post('forms/submit', function (){
+    return response()->json(['message' => 'recevied']);
+});

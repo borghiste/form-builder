@@ -25,7 +25,7 @@ export default function App(){
 
     const themeState = useSelector(selectMode); 
      const User = useSelector(selectUser); 
-    const [context, setContext] = useState< 'newForm' | 'editing' | 'view' | null>(null);
+    const [context, setContext] = useState< 'newForm' | 'editing' | 'view' | 'created' |null>(null);
     
 
    
