@@ -17,7 +17,8 @@ class FormEntry extends Model
     ];
 
     protected $casts = [
-        'data' => 'array', // Se vuoi gestire JSON automaticamente
+        'data' => 'array', 
+        
     ];
 
     public function form()

@@ -6,7 +6,7 @@ import BasicButton from './UI/BasicButton';
 
 import { useDispatch, useSelector } from "react-redux";
 import { selectForm } from '../features/formSlice';
-import {submitFormEntry} from '../features/FormEntriesSlice';
+// import {submitFormEntry} from '../features/FormEntriesSlice';
 
 
 import {
@@ -70,23 +70,32 @@ export default function FormView({disabledFields}) {
   const dispatch = useDispatch();
   const form = useSelector(selectForm);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
   
+    
+  
     try {
-      console.log('Submitting form...');
-      const resultAction = await dispatch(submitFormEntry());
+      const resultAction = await dispatch(
+        submitFormEntry({
+          form_id: 9,
+          data: {
+            name: "stefano",
+            email: "test@test.com",
+          },
+        })
+      );
   
       if (submitFormEntry.fulfilled.match(resultAction)) {
-        console.log('Form submitted successfully:', resultAction.payload);
+        console.log("Form submitted successfully:", resultAction.payload);
       } else {
-        console.error('Form submission failed:', resultAction.error);
+        console.error("Form submission failed:", resultAction.error);
       }
-  
     } catch (err) {
-      console.error('Unexpected error during submission:', err);
+      console.error("Unexpected error during submission:", err);
     }
   };
+  
   
 
   // const handleSubmit = async (e: React.FormEvent) => {
@@ -144,10 +153,7 @@ export default function FormView({disabledFields}) {
           <BasicButton text={'reset'} variant={'outlined'}/>
 
 
-      
-        
 
-          
 
            
        

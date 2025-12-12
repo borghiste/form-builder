@@ -1,22 +1,38 @@
 <?php
 
 namespace Database\Factories;
-use App\Models\FormEntry;
+
 use App\Models\Form;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class FormEntryFactory extends Factory
 {
-    protected $model = FormEntry::class;
-
     public function definition(): array
     {
         return [
-            'form_id' => Form::factory(), // genera un form collegato
+            'form_id' => Form::factory(),
             'data' => [
                 'name' => $this->faker->name(),
                 'email' => $this->faker->email(),
-                'data' => $this->faker->sentence(),
+                'role' => $this->faker->randomElement(['user', 'admin']),
+                'form' => [
+                    'name' => 'feedback form',
+                    'description' => $this->faker->sentence(),
+                    'fields' => [
+                        [
+                            'label' => 'Input 1',
+                            'type' => 'text',
+                            'value' => $this->faker->word()
+                        ],
+                        [
+                            'label' => 'Input 2',
+                            'type' => 'email',
+                            'value' => $this->faker->email()
+                        ]
+                    ]
+                ],
+                
+                
             ],
         ];
     }

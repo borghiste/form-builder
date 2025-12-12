@@ -12,17 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('form_entries', function (Blueprint $table) {
-            $table->id(); // id INT AUTO_INCREMENT PRIMARY KEY
-            $table->unsignedBigInteger('form_id'); // foreign key
-            $table->text('data'); //  text 
-            $table->timestamps(); // created_at e updated_at automatic
-
-            // Foreign key
-            $table->foreign('form_id')
-                  ->references('id')
-                  ->on('forms')
-                  ->onDelete('cascade')
-                  ->onUpdate('cascade');
+            $table->id();
+            $table->foreignId('form_id')->constrained()->onDelete('cascade');
+            $table->json('data'); 
+            $table->timestamps();
         });
     }
     

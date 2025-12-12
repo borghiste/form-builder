@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\Form;
 use App\Http\Controllers\FormListController;
+use App\Http\Controllers\FormEntryController;
+use App\Http\Controllers\FormEntriesController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -22,7 +24,8 @@ Route::get('forms', [FormListController::class, 'getFormList']);
 
  Route::post('forms', [FormListController::class, 'addNewForm']);
 
-
+//GET ENTRIES
+Route::get('forms/entries', [FormEntriesController::class, 'getFormsEntries']);
 
 // single form action routes
 
@@ -41,7 +44,7 @@ Route::put('forms/{id}', [FormController::class, 'updateForm']);
 
 // FORM ENTRIES
 
+//GET ENTRIES
+Route::get('forms/entries', [FormEntriesController::class, 'getFormsEntries']);
+
 //SUBMIT FORM
-Route::post('forms/submit', function (){
-    return response()->json(['message' => 'recevied']);
-});

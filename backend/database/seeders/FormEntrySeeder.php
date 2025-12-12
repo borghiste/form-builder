@@ -16,9 +16,13 @@ class FormEntrySeeder extends Seeder
             'data' => json_encode([
                 'name' => 'Mario Rossi',
                 'email' => 'mario@example.com',
-                'age' => 30,
-                'newsletter' => true,
-                'satisfaction' => 80
+                'role' => 'user',
+                'form' => ['name' => 'feedback form',
+                'description',
+                'fields' => [
+                    'label' => 'input 1',
+                    'type' => 'text',
+                    'value' => 'test 1'] ]
             ]),
             'created_at' => now(),
             'updated_at' => now(),

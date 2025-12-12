@@ -16,7 +16,7 @@
 // //MUI
  import { Divider } from "@mui/material";
 
-export default function BuilderModal({modalIsOpen, handleModalClose }){
+export default function ModalWindow({modalIsOpen, handleModalClose }){
    const {context} = useContext(modalContext);
   
 
@@ -42,7 +42,7 @@ export default function BuilderModal({modalIsOpen, handleModalClose }){
     <>
     <Modal
                      open={modalIsOpen}
-                     onClose={handleModalClose}
+                     
                      // aria-labelledby="modal-modal-title"
                      // aria-describedby="modal-modal-description"
                      sx={{zIndex:1, overflow:'scroll'}}>
@@ -54,13 +54,15 @@ export default function BuilderModal({modalIsOpen, handleModalClose }){
                         <Box sx={{display:'flex', flexDirection:{xs:'column',sm:'row',                  }}}>
 
                         
-                        {
+                         {
                           context === 'newForm' || context === 'editing' ? <BuilderWindow handleModalClose={handleModalClose} /> 
                             : <FormView/>
-                          }
+                          } 
 
                           {context === 'created' && 'created'}
-                        
+
+                          
+                      
                         </Box>
                         
                       

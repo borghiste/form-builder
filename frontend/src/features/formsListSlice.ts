@@ -170,9 +170,9 @@ export const formsListSlice = createSlice({
       })
       .addCase(createNewForm.fulfilled, (state, action: PayloadAction<FormData>) => {
         state.status = "succeeded";
-        console.log('action payload', action.payload.form)
+        
         state.forms.push(action.payload.form); 
-        console.log(action.payload)
+        
         
       })
       .addCase(createNewForm.rejected, (state, action) => {

@@ -28,18 +28,17 @@ import { setFormFields, selectForm, setForm } from "../features/formSlice";
 import { modalContext } from "../App";
 
 
-export default function FormsList() {
+export default function FormsList({setModalOpen, modalOpen}) {
   const dispatch = useDispatch<AppDispatch>();
   const forms = useSelector(selectForms);
   const User = useSelector(selectUser);
    const { setContext } = useContext(modalContext);
   const form = useSelector(selectForm);
-  const [modalOpen, setModalOpen] = useState(false);
   
 
   useEffect(() => {
     dispatch(fetchFormsList());
-  }, []);
+  }, forms);
 
   const handleModalClose = () => {
     setModalOpen(false);
