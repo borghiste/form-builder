@@ -1,13 +1,13 @@
  import React from 'react';
  import { useState } from 'react';
- import { Box, Switch, Divider, Button, Typography, ListItem, ListItemText, List, AppBar, Link } from '@mui/material';
+ import { Box, Switch, Button, Typography, AppBar, Link } from '@mui/material';
  import MenuIcon from '@mui/icons-material/Menu';
   import LightModeIcon from '@mui/icons-material/LightMode';
  import DarkModeIcon from '@mui/icons-material/DarkMode';
  // REDUX
   import { useDispatch, useSelector } from 'react-redux';
   import { Logout } from '../features/UserSlice';
-   import { selectUser, UserState } from '../features/UserSlice';
+   import { selectUser} from '../features/UserSlice';
     import { switchToDarkMode } from '../features/themeSlice';
 
 import { selectMode } from '../features/themeSlice';
@@ -34,7 +34,21 @@ export default function Header(){
   const User = useSelector(selectUser); 
   const darkModeIsOn= useSelector(selectMode);
 
-  const pages = [{name:'home', path: '/'}, ...(userisLogged.id  ? [{name:'logout', path:'/login', onClick: () =>{handleLogout()}}] : [{name:'login', path:'/login'}]), {name: 'forms', path: '/forms'}, {name:'about', path:'/about'}];
+  const pages = [
+    { name: 'home', path: '/' },
+    ...(userisLogged.id 
+        ? [
+            { name: 'logout', path: '/login', onClick: () => handleLogout() },
+            { name: 'forms', path: '/forms' },
+            ...(userisLogged.role === 'admin' 
+                ? [{ name: 'entries', path: '/FormEntries' }] 
+                : [])
+          ]
+        : [{ name: 'login', path: '/login' }]
+    ),
+    { name: 'about', path: '/about' }
+  ];
+  
 
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
@@ -185,11 +199,11 @@ export default function Header(){
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
+              {/* {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
                   <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
                 </MenuItem>
-              ))}
+              ))} */}
             </Menu>
           </Box>
         </Toolbar>

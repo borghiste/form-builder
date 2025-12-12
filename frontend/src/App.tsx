@@ -1,5 +1,4 @@
-import React from 'react';
-import { createContext, useState } from 'react';
+import React, { createContext, useState } from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from './components/Layout';
 import { ThemeProvider } from '@emotion/react';
@@ -14,8 +13,10 @@ import Home from '../src/routes/Home';
 import FormsList from './routes/FormList';
 import Login from '../src/routes/LoginPage';
 import ProtectedRoute from './routes/ProtectedRoute';
+import RecordsList from './routes/FormEntriesTable';
 //REDUX
 import { selectUser } from './features/UserSlice';
+import FormEntriesTable from './routes/FormEntriesTable';
 
 export const modalContext = createContext<any>(null);
 
@@ -23,8 +24,8 @@ export default function App(){
 
     const themeState = useSelector(selectMode); 
      const User = useSelector(selectUser); 
-    const [context, setContext] = useState< 'newForm' | 'editing' | 'view' | null>(null);
-    
+    const [context, setContext] = useState< 'newForm' | 'editing' | 'view' | 'created' | 'submission' | null>(null);
+      const [modalOpen, setModalOpen] = useState(false);
 
    
     return(
@@ -32,8 +33,6 @@ export default function App(){
         <ThemeProvider theme={ themeState ? DarkTheme : LightTheme }>
             <modalContext.Provider value={{context, setContext}}>
 
-
-        
          <BrowserRouter>
              <Layout>
 
@@ -44,9 +43,13 @@ export default function App(){
             <Route path='/login' element={ User.id !== null ? null : <Login/> }>
             </Route>
             <Route path='/forms' element={ <ProtectedRoute>
-                <FormsList/>  </ProtectedRoute>
+                <FormsList modalOpen={modalOpen} setModalOpen={setModalOpen}/>  </ProtectedRoute>
                 }>
                
+            </Route>
+            <Route path='/FormEntries' element={<ProtectedRoute><FormEntriesTable setModalOpen={setModalOpen}
+            modalOpen={modalOpen}/></ProtectedRoute>}>
+
             </Route>
             
          

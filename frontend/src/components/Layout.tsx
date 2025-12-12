@@ -10,6 +10,7 @@ export default function Layout({children}){
     return(
         <Box   sx={{bgcolor: 'background.default', height:'100'}}>
         <Header/>
+        
         {children}
         <Footer/>
         </Box>

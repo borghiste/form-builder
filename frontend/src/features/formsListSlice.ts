@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 
+
+
 // ===== TYPES =====
 export type FormField = {
   name: string;
@@ -17,6 +19,8 @@ export type FormData = {
   data: {
   id: string;
   name: string;
+  created_at: string;
+  updated_at: string;
   form_fields: FormField[];
 }
 };
@@ -33,6 +37,7 @@ const initialState: FormListState = {
   status: "idle",
   error: null,
 };
+
 
 // ===== THUNKS =====
 
@@ -70,6 +75,7 @@ export const createNewForm = createAsyncThunk<FormData, FormData>(
     });
 
     if (!res.ok) throw new Error("Error creating new form");
+   
     
     return (await res.json()) as FormData;
   }
@@ -83,15 +89,16 @@ export const deleteForm = createAsyncThunk<string, string>(
       `${import.meta.env.VITE_BACKEND_URL}/api/forms/${formId}`,
       {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: formId }),
+        
+        
+       
       });
       
       
 
-    if (!res.ok) throw new Error("Error deleting form");
-
-    return formId; 
+      if (!res.ok) throw new Error("Error deleting form");
+      
+      
   }
 );
 
@@ -163,7 +170,9 @@ export const formsListSlice = createSlice({
       })
       .addCase(createNewForm.fulfilled, (state, action: PayloadAction<FormData>) => {
         state.status = "succeeded";
-        state.forms.push(action.payload); 
+        
+        state.forms.push(action.payload.form); 
+        
         
       })
       .addCase(createNewForm.rejected, (state, action) => {

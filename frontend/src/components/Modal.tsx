@@ -1,32 +1,23 @@
- import React, { useRef, useState, useContext } from "react";
+ import React, { useContext } from "react";
   import  {modalContext }  from '../App';  
 
 //MUI
 
- import Box from '@mui/material/Box';
- import Button from '@mui/material/Button';
- import Typography from '@mui/material/Typography';
+ import { Box, Modal} from '@mui/material';
  //COMPONENTS
- import Modal from '@mui/material/Modal';
- import BasicButton from "./UI/BasicButton";
 
- import LabeledTextField from "./UI/LabeledTextField";
- 
  import BuilderWindow from "../components/BuilderWindow/BuilderWindow";
- ;
-
+ 
  import FormView from "../components/FormView";
+
  //REDUX
- import { selectForm } from '../features/formSlice';
-
-
- import { useDispatch, useSelector } from "react-redux";
+ 
 
 // //MUI
  import { Divider } from "@mui/material";
 
-export default function FormBuilderModal({modalIsOpen, handleModalClose }){
-  const {context} = useContext(modalContext);
+export default function ModalWindow({modalIsOpen, handleModalClose }){
+   const {context} = useContext(modalContext);
   
 
 
@@ -51,7 +42,7 @@ export default function FormBuilderModal({modalIsOpen, handleModalClose }){
     <>
     <Modal
                      open={modalIsOpen}
-                     onClose={handleModalClose}
+                     
                      // aria-labelledby="modal-modal-title"
                      // aria-describedby="modal-modal-description"
                      sx={{zIndex:1, overflow:'scroll'}}>
@@ -63,11 +54,15 @@ export default function FormBuilderModal({modalIsOpen, handleModalClose }){
                         <Box sx={{display:'flex', flexDirection:{xs:'column',sm:'row',                  }}}>
 
                         
-                        {
-                          context === 'newForm' | context === 'editing' ? <BuilderWindow handleModalClose={handleModalClose} /> 
+                         {
+                          context === 'newForm' || context === 'editing' ? <BuilderWindow handleModalClose={handleModalClose} /> 
                             : <FormView/>
-                          }
-                        
+                          } 
+
+                          {context === 'created' && 'created'}
+
+                          
+                      
                         </Box>
                         
                       

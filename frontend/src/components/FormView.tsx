@@ -5,13 +5,13 @@ import BasicButton from './UI/BasicButton';
 //REDUX
 
 import { useDispatch, useSelector } from "react-redux";
-
 import { selectForm } from '../features/formSlice';
-import { selectStatus } from "../features/formSlice";
+// import {submitFormEntry} from '../features/FormEntriesSlice';
+
 
 import {
   TextField,
-  Button,
+  
   Box,
   Typography,
   FormControl,
@@ -25,6 +25,14 @@ import {
   TextareaAutosize
 } from "@mui/material";
 
+
+interface Field {
+  id: string;
+  name: string;
+  type: string;
+  required?: boolean;
+  options?: string[];
+}
 
 const renderedComponent = {
   text: (props) => <TextField type="text" {...props}/>,
@@ -43,7 +51,7 @@ const renderedComponent = {
     id="demo-simple-select"
     value={age}
     label="Age"
-    onChange={handleChange}
+    // onChange={handleChange}
   >
     <MenuItem value={10}></MenuItem>
     <MenuItem value={20}></MenuItem>
@@ -56,20 +64,69 @@ const renderedComponent = {
 
 
 export default function FormView({disabledFields}) {
+  
+
 
   const dispatch = useDispatch();
-
-  
   const form = useSelector(selectForm);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
   
-  const status = useSelector(selectStatus)
+    
+  
+    try {
+      const resultAction = await dispatch(
+        submitFormEntry({
+          form_id: 9,
+          data: {
+            name: "stefano",
+            email: "test@test.com",
+          },
+        })
+      );
+  
+      if (submitFormEntry.fulfilled.match(resultAction)) {
+        console.log("Form submitted successfully:", resultAction.payload);
+      } else {
+        console.error("Form submission failed:", resultAction.error);
+      }
+    } catch (err) {
+      console.error("Unexpected error during submission:", err);
+    }
+  };
+  
+  
+
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+
+  //   console.log("Submitting dynamic form:", formData);
+
+  //   try {
+  //     const res = await fetch("http://localhost:8000/api/forms/submit", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(formData),
+  //     });
+
+  //     if (!res.ok) throw new Error("Errore durante il submit");
+
+  //     console.log("Form submitted  successfully!");
+  //   } catch (err) {
+  //     console.error("Submit error:", err);
+  //   }
+  // };
+
   
 
   return (
 
   <>
 
-      <Paper sx={{ p: 4, borderRadius: 3,display:'flex', flexDirection:'column', backgroundColor: 'background.default'}}  elevation={3}>
+      <Paper
+      sx={{ p: 4, borderRadius: 3,display:'flex', flexDirection:'column', backgroundColor: 'background.default'}}  elevation={3}
+      onSubmit={handleSubmit}>
         <Typography variant="h5" component="h1" gutterBottom>
           {form?.name}
         </Typography>
@@ -90,15 +147,13 @@ export default function FormView({disabledFields}) {
           }
           {/* submit button */}
           <BasicButton text={'submit'}
+          type={'submit'}
           color={'cyan.main'} textColor={'white'}/>
           {/* reset button */}
           <BasicButton text={'reset'} variant={'outlined'}/>
 
 
-      
-        
 
-          
 
            
        

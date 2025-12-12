@@ -39,7 +39,9 @@ foreach($validate['form_fields'] as $index => $field){
         'order'=> $index
     ]);
 };
-return response()->json($newForm->load('formFields'));
+return response()->json([
+    'message' => 'form created sucessfully',
+    'form' => $newForm->load('formFields')]);
 
     }
 
