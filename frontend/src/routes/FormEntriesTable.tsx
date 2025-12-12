@@ -29,17 +29,22 @@ export default function FormEntriesTable({setModalOpen, modalOpen}) {
    
     dispatch(fetchFormEntries())
   
+  
     
-  }, [dispatch])
+  }, [])
 
-  const viewSubmission = () => {
+  const handleModalClose = () => {
+    setModalOpen(false)
+  }
+  const viewSubmission = (entry) => {
   
     setContext('submission')
     
     setModalOpen(true)
   }
   
-  useEffect(() => {console.log(context)}, [context])
+  
+  
   
 
   if (!entries) return <div>No entries</div>;
@@ -49,7 +54,7 @@ export default function FormEntriesTable({setModalOpen, modalOpen}) {
   return (
     <>
     <ModalWindow modalIsOpen={modalOpen}
-    handleModalClose={() => setModalOpen(false)}/>
+    handleModalClose={handleModalClose} />
     <Container sx={{ minHeight: "100vh", mt: 4 }}>
     <TableContainer component={Paper}>
       <Table stickyHeader>
@@ -65,8 +70,8 @@ export default function FormEntriesTable({setModalOpen, modalOpen}) {
         </TableHead>
         <TableBody>
           {
-            
-            entries.map((entry) => {
+           
+            entries?.map((entry) => {
               
               const submitDate = new Date(entry.created_at).toISOString().slice(0, 10);
               const updatedDate = new Date(entry.updated_at).toISOString().slice(0, 10);
@@ -78,7 +83,7 @@ export default function FormEntriesTable({setModalOpen, modalOpen}) {
               <TableCell>{entry.data.name}</TableCell>
               <TableCell>{entry.data.role}</TableCell>
               <TableCell><BasicButton text={'view'}
-              onClick={() => viewSubmission()}/></TableCell>
+              onClick={() => viewSubmission(entry)}/></TableCell>
             </TableRow>
           )})
         }  

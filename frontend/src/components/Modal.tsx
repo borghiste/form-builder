@@ -42,26 +42,34 @@ export default function ModalWindow({modalIsOpen, handleModalClose }){
     <>
     <Modal
                      open={modalIsOpen}
-                     
+                     onClose={handleModalClose}
                      // aria-labelledby="modal-modal-title"
                      // aria-describedby="modal-modal-description"
                      sx={{zIndex:1, overflow:'scroll'}}>
                       
                       <Box sx={boxStyle}>
-                      
-                       
                         <Divider/>
                         <Box sx={{display:'flex', flexDirection:{xs:'column',sm:'row',                  }}}>
 
                         
                          {
-                          context === 'newForm' || context === 'editing' ? <BuilderWindow handleModalClose={handleModalClose} /> 
-                            : <FormView/>
+                          (context === 'newForm' || context === 'editing') && <BuilderWindow handleModalClose={handleModalClose} /> 
+                            
                           } 
+                          {context === 'view' && <FormView disabledFields={false}/>}
 
-                          {context === 'created' && 'created'}
+                          {/* {context === 'created' && 'created'} */}
 
-                          
+                          {context === 'submission' && <FormView entries={[
+  {
+    id: 1,
+    data: {
+      name: "Stefano",
+      email: "stefano@example.com",
+      message: "Hello world",
+      newsletter: true,
+      gender: "Male"
+    }}]}/>}
                       
                         </Box>
                         
