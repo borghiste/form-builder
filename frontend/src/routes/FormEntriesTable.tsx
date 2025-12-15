@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
 //COMPONENTS
-import ModalWindow from "../components/Modal";
+import ModalWindow from "../components/ModalWindow";
 //REDUX
 
 import { selectEntries, fetchFormEntries} from '../features/FormEntriesSlice';
@@ -56,8 +56,8 @@ export default function FormEntriesTable({setModalOpen, modalOpen}) {
     <ModalWindow modalIsOpen={modalOpen}
     handleModalClose={handleModalClose} />
     <Container sx={{ minHeight: "100vh", mt: 4 }}>
-    <TableContainer component={Paper}>
-      <Table stickyHeader>
+    <TableContainer component={Paper} sx={{bgcolor:'background.default'}}>
+      <Table>
         <TableHead>
           <TableRow>
             <TableCell>ID</TableCell>
@@ -73,6 +73,7 @@ export default function FormEntriesTable({setModalOpen, modalOpen}) {
            
             entries?.map((entry) => {
               
+            
               const submitDate = new Date(entry.created_at).toISOString().slice(0, 10);
               const updatedDate = new Date(entry.updated_at).toISOString().slice(0, 10);
               return (

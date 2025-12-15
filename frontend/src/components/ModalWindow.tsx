@@ -6,9 +6,10 @@
  import { Box, Modal} from '@mui/material';
  //COMPONENTS
 
- import BuilderWindow from "../components/BuilderWindow/BuilderWindow";
+ import BuilderWindow from "./BuilderWindow/BuilderWindow";
+ import FormEntry from './FormEntry';
  
- import FormView from "../components/FormView";
+ import FormView from "./FormView";
 
  //REDUX
  
@@ -60,7 +61,7 @@ export default function ModalWindow({modalIsOpen, handleModalClose }){
 
                           {/* {context === 'created' && 'created'} */}
 
-                          {context === 'submission' && <FormView entries={[
+                          {context === 'submission' && <FormEntry entry={[
   {
     id: 1,
     data: {

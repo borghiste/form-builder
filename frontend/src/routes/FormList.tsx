@@ -16,7 +16,7 @@ import {
 
 // COMPONENTS
 import BasicButton from "../components/UI/BasicButton";
-import Modal from "../components/Modal";
+import Modal from "../components/ModalWindow";
 
 // REDUX
 import { useSelector, useDispatch } from "react-redux";

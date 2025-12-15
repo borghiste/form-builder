@@ -11,7 +11,6 @@ import { selectForm } from '../features/formSlice';
 
 import {
   TextField,
-  
   Box,
   Typography,
   FormControl,
@@ -34,13 +33,7 @@ interface Field {
   options?: string[];
 }
 
-const formFields = [
-  { id: "name", label: "Name", type: "text" },
-  { id: "email", label: "Email", type: "email" },
-  { id: "message", label: "Message", type: "textarea" },
-  { id: "newsletter", label: "Subscribe to newsletter", type: "checkbox" },
-  { id: "gender", label: "Gender", type: "selectList", options: ["Male", "Female", "Other"] }
-];
+
 
 const renderedComponent = {
   text: (props) => <TextField type="text" {...props}/>,
@@ -146,29 +139,7 @@ export default function FormView({disabledFields, entries}) {
           </Grid> 
         </Box>
         
-
-        {/* ENTRIES */}
-      <Box>
-        <Typography variant="h6" gutterBottom>Previous Entries</Typography>
-        {entries?.map(entry => (
-          <Paper key={entry.id} sx={{ p: 2, mb: 2 }}>
-            <Grid container spacing={1}>
-              {formFields.map(field => (
-                <Grid item xs={12} sm={6} key={field.id}>
-                  <Typography variant="subtitle2">{field.label}:</Typography>
-                  <Typography>
-                    {field.type === "checkbox"
-                      ? entry.data[field.id] ? "Yes" : "No"
-                      : entry.data[field.id]}
-                  </Typography>
-                </Grid>
-              ))}
-            </Grid>
-            
-          </Paper>
-          
-        ))}
-      </Box>
+     
       </Box>
       </Paper>
    
