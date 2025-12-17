@@ -26,17 +26,19 @@ export default function FormEntriesTable({setModalOpen, modalOpen}) {
   const entries = useSelector(selectEntries);
   const {context, setContext} = useContext(modalContext);
   useEffect(() => {
+  
    
     dispatch(fetchFormEntries())
   
   
     
-  }, [])
+  }, entries)
 
   const handleModalClose = () => {
     setModalOpen(false)
   }
   const viewSubmission = (entry) => {
+    console.log('entry',entry)
   
     setContext('submission')
     
@@ -47,7 +49,7 @@ export default function FormEntriesTable({setModalOpen, modalOpen}) {
   
   
 
-  if (!entries) return <div>No entries</div>;
+  if (entries.length === 0) return <div>No entries</div>;
 
   
 
@@ -65,15 +67,16 @@ export default function FormEntriesTable({setModalOpen, modalOpen}) {
             <TableCell>Update date</TableCell>
             <TableCell>name</TableCell>
             <TableCell>role</TableCell>
-            <TableCell>submissions</TableCell>
+            <TableCell>submission</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {
            
             entries?.map((entry) => {
+              console.log(entry.data)
               
-            
+           
               const submitDate = new Date(entry.created_at).toISOString().slice(0, 10);
               const updatedDate = new Date(entry.updated_at).toISOString().slice(0, 10);
               return (

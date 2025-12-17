@@ -55,7 +55,7 @@ export default function FormsList({setModalOpen, modalOpen}) {
   const handleViewForm = async (formId: number) => {
     const selectedForm = await dispatch(getForm(formId)).unwrap();
    
-    dispatch(setForm({name:selectedForm.name,
+    dispatch(setForm({id: selectedForm.id,name:selectedForm.name,
                   form_fields: selectedForm?.form_fields
     }))
     setModalOpen(true);

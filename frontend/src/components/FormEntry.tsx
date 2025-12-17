@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Box,
   Container,
@@ -24,6 +24,7 @@ import {
 } from '@mui/icons-material';
 
 export default function SubmissionDetail({entry}) {
+
   return (
     <Box sx={{ bgcolor: 'background.default', py: 4}}>
       <Container sx={{overflow:'auto'}}>

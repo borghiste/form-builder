@@ -45,6 +45,8 @@ Route::put('forms/{id}', [FormController::class, 'updateForm']);
 // FORM ENTRIES
 
 //GET ENTRIES
-Route::get('forms/entries', [FormEntriesController::class, 'getFormsEntries']);
+Route::get('entries', [FormEntriesController::class, 'getFormsEntries']);
 
 //SUBMIT FORM
+Route::post('forms/entries/submit', [FormEntryController::class, 'submitFormEntry']
+);

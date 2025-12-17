@@ -11,13 +11,13 @@ class FormController extends Controller
     public function getForm( string $formId){
         $form = Form::with('formFields')->findOrFail($formId);
         return response()->json($form);
-         
+
     }
 
 
     // create a new form
     public function createNewForm( Request $request){
-        // implementation od creating a new form
+        //  creating a new form
 
         $validate = $request->validate([
             'name'=> 'required|string|max:255',
@@ -119,7 +119,7 @@ return response()->json([
                 ->whereNotIn('id', $incomingIds)
                 ->delete();
         } else {
-            // Se non ci sono ID esistenti, elimina tutti i campi vecchi
+            
             $deletedCount = $form->formFields()->delete();
         }
         
