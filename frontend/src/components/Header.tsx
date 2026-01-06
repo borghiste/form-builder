@@ -13,7 +13,6 @@
 import { selectMode } from '../features/themeSlice';
 
 
-
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 
@@ -24,7 +23,6 @@ import Container from '@mui/material/Container';
 import MenuItem from '@mui/material/MenuItem';
 
 
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 export default function Header(){
   
   const userisLogged = useSelector(selectUser);
@@ -46,7 +44,7 @@ export default function Header(){
           ]
         : [{ name: 'login', path: '/login' }]
     ),
-    { name: 'about', path: '/about' }
+   
   ];
   
 
@@ -117,7 +115,7 @@ export default function Header(){
               
             }}
           >
-            FormBuilder
+            Formitekt
           </Typography>
    
 

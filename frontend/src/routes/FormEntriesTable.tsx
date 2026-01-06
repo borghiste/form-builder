@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
 //COMPONENTS
-import ModalWindow from "../components/Modal";
+import ModalWindow from "../components/ModalWindow";
 //REDUX
 
 import { selectEntries, fetchFormEntries} from '../features/FormEntriesSlice';
@@ -24,35 +24,42 @@ import { modalContext } from "../App";
 export default function FormEntriesTable({setModalOpen, modalOpen}) {
   const dispatch = useDispatch();
   const entries = useSelector(selectEntries);
-  const {context, setContext} = useContext(modalContext);
+  const {mode, setMode} = useContext(modalContext);
   useEffect(() => {
+  
    
     dispatch(fetchFormEntries())
   
-    
-  }, [dispatch])
-
-  const viewSubmission = () => {
   
-    setContext('submission')
+    
+  }, entries)
+
+  const handleModalClose = () => {
+    setModalOpen(false)
+  }
+  const viewSubmission = (entry) => {
+  
+  
+    setMode('submission', entry)
     
     setModalOpen(true)
   }
   
-  useEffect(() => {console.log(context)}, [context])
+  
+  
   
 
-  if (!entries) return <div>No entries</div>;
+  if (entries.length === 0) return <div>No entries</div>;
 
   
 
   return (
     <>
     <ModalWindow modalIsOpen={modalOpen}
-    handleModalClose={() => setModalOpen(false)}/>
+    handleModalClose={handleModalClose} />
     <Container sx={{ minHeight: "100vh", mt: 4 }}>
-    <TableContainer component={Paper}>
-      <Table stickyHeader>
+    <TableContainer component={Paper} sx={{bgcolor:'background.default'}}>
+      <Table>
         <TableHead>
           <TableRow>
             <TableCell>ID</TableCell>
@@ -60,14 +67,15 @@ export default function FormEntriesTable({setModalOpen, modalOpen}) {
             <TableCell>Update date</TableCell>
             <TableCell>name</TableCell>
             <TableCell>role</TableCell>
-            <TableCell>submissions</TableCell>
+            <TableCell>submission</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {
-            
-            entries.map((entry) => {
+           
+            entries?.map((entry) => {
               
+           
               const submitDate = new Date(entry.created_at).toISOString().slice(0, 10);
               const updatedDate = new Date(entry.updated_at).toISOString().slice(0, 10);
               return (
@@ -78,7 +86,7 @@ export default function FormEntriesTable({setModalOpen, modalOpen}) {
               <TableCell>{entry.data.name}</TableCell>
               <TableCell>{entry.data.role}</TableCell>
               <TableCell><BasicButton text={'view'}
-              onClick={() => viewSubmission()}/></TableCell>
+              onClick={() => viewSubmission(entry)}/></TableCell>
             </TableRow>
           )})
         }  

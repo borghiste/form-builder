@@ -2,7 +2,7 @@
 import React from 'react';
 import { Box, Container, Typography, Link } from '@mui/material';
 
-const Footer = () => {
+export default function Footer(){
   const currentYear = new Date().getFullYear();
 
   return (
@@ -58,7 +58,7 @@ const Footer = () => {
               Privacy Policy
             </Link>
             <Link
-              href="#"
+              href="/about"
               underline="hover"
               color="text.secondary"
               variant="body2"
@@ -68,7 +68,7 @@ const Footer = () => {
                 },
               }}
             >
-              Terms of Service
+              About
             </Link>
           </Box>
         </Box>
@@ -77,4 +77,4 @@ const Footer = () => {
   );
 };
 
-export default Footer;
+ 

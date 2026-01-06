@@ -1,17 +1,13 @@
-import React from "react";
-
+import React, { useState } from "react";
 //COMPONENTS
 import BasicButton from './UI/BasicButton';
 //REDUX
-
 import { useDispatch, useSelector } from "react-redux";
+import { submitNewEntry } from '../features/FormEntriesSlice';
 import { selectForm } from '../features/formSlice';
-// import {submitFormEntry} from '../features/FormEntriesSlice';
-
-
+import { selectUser } from "../features/UserSlice";
 import {
   TextField,
-  
   Box,
   Typography,
   FormControl,
@@ -25,147 +21,154 @@ import {
   TextareaAutosize
 } from "@mui/material";
 
-
 interface Field {
   id: string;
   name: string;
   type: string;
+  label: string;
   required?: boolean;
   options?: string[];
 }
 
 const renderedComponent = {
-  text: (props) => <TextField type="text" {...props}/>,
-  textarea: (props) => <TextareaAutosize {...props}/>,
-  email: (props) => <TextField type="email" {...props}/>,
-  number: (props) => <TextField type="number" {...props}/>,
-  phone: (props) => <TextField type="tel" {...props}/>,
-  password: (props) => <TextField type="password" {...props}/>,
-  date: (props) => <TextField type="date" InputLabelProps={{ shrink: true }}  {...props}/>,
-  time: (props) => <TextField type="time" {...props}/>,
+  text: (props) => <TextField type="text" {...props} />,
+  textarea: (props) => (
+    <TextField
+      multiline
+      rows={4}
+      {...props}
+    />
+  ),
+  email: (props) => <TextField type="email" {...props} />,
+  number: (props) => <TextField type="number" {...props} />,
+  phone: (props) => <TextField type="tel" {...props} />,
+  password: (props) => <TextField type="password" {...props} />,
+  date: (props) => <TextField type="date" InputLabelProps={{ shrink: true }} {...props} />,
+  time: (props) => <TextField type="time" InputLabelProps={{ shrink: true }} {...props} />,
   selectList: (props) => (
     <FormControl fullWidth>
-  <InputLabel id="demo-simple-select-label">{props.label}</InputLabel>
-  <Select
-    labelId="demo-simple-select-label"
-    id="demo-simple-select"
-    value={age}
-    label="Age"
-    // onChange={handleChange}
-  >
-    <MenuItem value={10}></MenuItem>
-    <MenuItem value={20}></MenuItem>
-    <MenuItem value={30}></MenuItem>
-  </Select>
-</FormControl>
+      <InputLabel id={`${props.name}-label`}>{props.label}</InputLabel>
+      <Select
+        labelId={`${props.name}-label`}
+        id={props.name}
+        name={props.name}
+        value={props.value || ''}
+        label={props.label}
+        onChange={props.onChange}
+        disabled={props.disabled}
+        required={props.required}
+      >
+        {props.options?.map((option, index) => (
+          <MenuItem key={index} value={option}>
+            {option}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   ),
-  checkbox: (props) => (<FormControlLabel control={<Checkbox label={props.label}/>} {...props}/>)
-}
+  checkbox: (props) => (
+    <FormControlLabel
+      control={
+        <Checkbox
+          name={props.name}
+          checked={props.value || false}
+          onChange={props.onChange}
+          disabled={props.disabled}
+          required={props.required}
+        />
+      }
+      label={props.label}
+    />
+  )
+};
 
-
-export default function FormView({disabledFields}) {
-  
-
-
+export default function FormView({ disabledFields, entries }) {
   const dispatch = useDispatch();
   const form = useSelector(selectForm);
+  const user = useSelector(selectUser);
+  const [entryData, setEntryData] = useState({form_fields: entries || {} });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-  
-    
-  
-    try {
-      const resultAction = await dispatch(
-        submitFormEntry({
-          form_id: 9,
-          data: {
-            name: "stefano",
-            email: "test@test.com",
-          },
-        })
-      );
-  
-      if (submitFormEntry.fulfilled.match(resultAction)) {
-        console.log("Form submitted successfully:", resultAction.payload);
-      } else {
-        console.error("Form submission failed:", resultAction.error);
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setEntryData(prev => ({
+      ...prev,
+      
+      form_fields: {name: user.name,
+        ...prev.form_fields,
+        [name]: type === 'checkbox' ? checked : value
       }
-    } catch (err) {
-      console.error("Unexpected error during submission:", err);
-    }
+    }));
+    console.log('user.name', user.name);
+
   };
-  
-  
 
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(submitNewEntry({ entryData, form_id: form.id }));
+  };
 
-  //   console.log("Submitting dynamic form:", formData);
-
-  //   try {
-  //     const res = await fetch("http://localhost:8000/api/forms/submit", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify(formData),
-  //     });
-
-  //     if (!res.ok) throw new Error("Errore durante il submit");
-
-  //     console.log("Form submitted  successfully!");
-  //   } catch (err) {
-  //     console.error("Submit error:", err);
-  //   }
-  // };
-
-  
+  const handleReset = () => {
+    setFormData({ form_fields: entries || {} });
+  };
 
   return (
-
-  <>
-
-      <Paper
-      sx={{ p: 4, borderRadius: 3,display:'flex', flexDirection:'column', backgroundColor: 'background.default'}}  elevation={3}
-      onSubmit={handleSubmit}>
+    <Paper
+      sx={{
+        p: 4,
+        borderRadius: 3,
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: 'background.default'
+      }}
+      elevation={3}
+    >
+      <Box>
         <Typography variant="h5" component="h1" gutterBottom>
           {form?.name}
         </Typography>
-
         <Typography>
           {form?.description || 'No description provided.'}
         </Typography>
-
-        <Box component="form"  noValidate>
-          <Grid container spacing={2} sx={{display:'flex', flexDirection:'column'}}>
-          {
-            form?.form_fields?.map((field) => {
-            
-             
-          const Component = renderedComponent[field.type];
-          return ( <Component label={field.label} disabled={disabledFields}/>)
-            })
-          }
-          {/* submit button */}
-          <BasicButton text={'submit'}
-          type={'submit'}
-          color={'cyan.main'} textColor={'white'}/>
-          {/* reset button */}
-          <BasicButton text={'reset'} variant={'outlined'}/>
-
-
-
-
-           
-       
-          </Grid> 
+        <Box component="form" onSubmit={handleSubmit}>
+          <Grid container spacing={2} sx={{ display: 'flex', flexDirection: 'column' }}>
+            {form?.form_fields?.map((field) => {
+              const Component = renderedComponent[field.type];
+              return (
+                <Grid item key={field.id}>
+                  <Component
+                    label={field.label}
+                    name={field.name || field.id}
+                    value={entryData.form_fields[field.name || field.id] || ''}
+                    onChange={handleChange}
+                    disabled={disabledFields}
+                    required={field.required}
+                    options={field.options}
+                    fullWidth
+                  />
+                </Grid>
+              );
+            })}
+            {/* submit button */}
+            <Grid item>
+              <BasicButton
+                text={'submit'}
+                type={'submit'}
+                color={'cyan.main'}
+                textColor={'white'}
+              />
+            </Grid>
+            {/* reset button */}
+            <Grid item>
+              <BasicButton
+                text={'reset'}
+                variant={'outlined'}
+                onClick={handleReset}
+                type={'button'}
+              />
+            </Grid>
+          </Grid>
         </Box>
-      </Paper>
-   
- 
-
-
-
-  </>
-
-  )
+      </Box>
+    </Paper>
+  );
 }

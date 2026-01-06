@@ -1,7 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 
-
-
 // ===== TYPES =====
 export type FormField = {
   name: string;
@@ -60,7 +58,7 @@ export const createNewForm = createAsyncThunk<FormData, FormData>(
  
     const cleanedData = {
       ...newFormData,
-      form_fields: newFormData.form_fields.map(({ name, description, id, icon, ...rest }) => rest),
+      form_fields: newFormData.form_fields.map(({ name, description, id, icon, ...rest}) => rest),
 
     };
     
@@ -74,9 +72,7 @@ export const createNewForm = createAsyncThunk<FormData, FormData>(
       body: JSON.stringify(cleanedData),
     });
 
-    if (!res.ok) throw new Error("Error creating new form");
-   
-    
+    if (!res.ok) throw new Error("Error creating new form"); 
     return (await res.json()) as FormData;
   }
 );
