@@ -37,7 +37,6 @@
 - add submission feature
 - add select list builder
 - fix reset fields
-
 - add validations
 
 
@@ -52,7 +51,7 @@
 - refine UI on builder window
 - add edit field feature
 
-### Upcoming Milestones
+
 
 
 ---

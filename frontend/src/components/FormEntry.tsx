@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { use, useEffect, useContext } from 'react';
+
 import {
   Box,
   Container,
@@ -23,7 +24,10 @@ import {
   ArrowForward as ArrowForwardIcon
 } from '@mui/icons-material';
 
-export default function SubmissionDetail({entry}) {
+export default function SubmissionDetail() {
+  const {entryObj} = useContext(modalContext);
+  console.log('entry from context', entryObj)
+  // console.log('entry in detail', entry)
 
   return (
     <Box sx={{ bgcolor: 'background.default', py: 4}}>
@@ -34,18 +38,18 @@ export default function SubmissionDetail({entry}) {
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start'}}>
           <Box>
             <Typography variant="h3" fontWeight={600} gutterBottom>
-              Submission #{entry[0].id}
+              {/* Submission #{entry[0].id} */}
             </Typography>
             
           </Box>
           <Box sx={{ display: 'flex', gap: 1.5 }}>
-            <Button
+            {/* <Button
               variant="outlined"
               startIcon={<PrintIcon />}
               sx={{ fontWeight: 700 }}
             >
               Print
-            </Button>
+            </Button> */}
             <Button
               variant="contained"
               startIcon={<DeleteIcon />}
@@ -58,7 +62,7 @@ export default function SubmissionDetail({entry}) {
         </Box>
 
         {/* Main Detail Card */}
-        <Paper elevation={1} sx={{ borderRadius: 3, overflow: 'hidden' }}>
+        <Paper elevation={1} sx={{ borderRadius: 3, overflow: 'hidden', backgroundColor: 'background.paper', mt: 4 }}>
           {/* Card Header */}
           <Box
             sx={{

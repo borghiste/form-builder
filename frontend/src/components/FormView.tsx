@@ -93,7 +93,7 @@ export default function FormView({ disabledFields, entries }) {
     setEntryData(prev => ({
       ...prev,
       
-      form_fields: {name: 'test name',
+      form_fields: {name: user.name,
         ...prev.form_fields,
         [name]: type === 'checkbox' ? checked : value
       }

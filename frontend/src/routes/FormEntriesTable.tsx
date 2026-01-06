@@ -24,7 +24,7 @@ import { modalContext } from "../App";
 export default function FormEntriesTable({setModalOpen, modalOpen}) {
   const dispatch = useDispatch();
   const entries = useSelector(selectEntries);
-  const {context, setContext} = useContext(modalContext);
+  const {mode, setMode} = useContext(modalContext);
   useEffect(() => {
   
    
@@ -38,9 +38,9 @@ export default function FormEntriesTable({setModalOpen, modalOpen}) {
     setModalOpen(false)
   }
   const viewSubmission = (entry) => {
-    console.log('entry',entry)
   
-    setContext('submission')
+  
+    setMode('submission', entry)
     
     setModalOpen(true)
   }
@@ -74,7 +74,6 @@ export default function FormEntriesTable({setModalOpen, modalOpen}) {
           {
            
             entries?.map((entry) => {
-              console.log(entry.data)
               
            
               const submitDate = new Date(entry.created_at).toISOString().slice(0, 10);

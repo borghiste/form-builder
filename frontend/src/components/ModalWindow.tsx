@@ -18,7 +18,7 @@
  import { Divider } from "@mui/material";
 
 export default function ModalWindow({modalIsOpen, handleModalClose }){
-   const {context} = useContext(modalContext);
+   const {mode} = useContext(modalContext);
   
 
 
@@ -54,23 +54,14 @@ export default function ModalWindow({modalIsOpen, handleModalClose }){
 
                         
                          {
-                          (context === 'newForm' || context === 'editing') && <BuilderWindow handleModalClose={handleModalClose} /> 
+                          (mode === 'newForm' || mode === 'editing') && <BuilderWindow handleModalClose={handleModalClose} /> 
                             
                           } 
-                          {context === 'view' && <FormView disabledFields={false}/>}
+                          {mode === 'view' && <FormView disabledFields={false}/>}
 
                           {/* {context === 'created' && 'created'} */}
 
-                          {context === 'submission' && <FormEntry entry={[
-  {
-    id: 1,
-    data: {
-      name: "Stefano",
-      email: "stefano@example.com",
-      message: "Hello world",
-      newsletter: true,
-      gender: "Male"
-    }}]}/>}
+                          {mode === 'submission' && <FormEntry  />}
                       
                         </Box>
                         

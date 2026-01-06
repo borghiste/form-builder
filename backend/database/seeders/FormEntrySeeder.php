@@ -13,6 +13,7 @@ class FormEntrySeeder extends Seeder
     public function run(): void
     {
         FormEntry::factory()->create([
+            'form_version' => 1,
             'data' => json_encode([
                 'name' => 'Mario Rossi',
                 'email' => 'mario@example.com',
