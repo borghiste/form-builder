@@ -45,7 +45,7 @@ export default function App() {
   const [modalOpen, setModalOpen] = useState(false);
 
   return (
-    <modalContext.Provider value={{ modalOpen, setModalOpen }}>
+    <modalContext.Provider value={{ modalOpen, setModalOpen, setMode: () => {}, setEntryObj: () => {}, mode: null }}>
       <ThemeProvider theme={ themeState ? DarkTheme : LightTheme}>
         <BrowserRouter>
           <Layout>

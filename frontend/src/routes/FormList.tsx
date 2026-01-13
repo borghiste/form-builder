@@ -16,7 +16,7 @@ import {
 
 // COMPONENTS
 import BasicButton from "../components/UI/BasicButton";
-import Modal from "../components/ModalWindow";
+import ModalWindow from "../components/ModalWindow";
 
 // REDUX
 import { useSelector, useDispatch } from "react-redux";
@@ -28,11 +28,11 @@ import { setFormFields, selectForm, setForm } from "../features/formSlice";
 import { modalContext } from "../App";
 
 
-export default function FormsList({setModalOpen, modalOpen}) {
+export default function FormsList() {
   const dispatch = useDispatch<AppDispatch>();
   const forms = useSelector(selectForms);
   const User = useSelector(selectUser);
-   const { setContext } = useContext(modalContext);
+   const { mode, setMode, setModalOpen, modalOpen} = useContext(modalContext);
   const form = useSelector(selectForm);
   
 
@@ -42,12 +42,16 @@ export default function FormsList({setModalOpen, modalOpen}) {
 
   const handleModalClose = () => {
     setModalOpen(false);
-    setContext(null);
+    setMode(null);
     dispatch(setForm({ ...form, name: '' }));
   };
 
   const handleNewFormClick = () => {
-    setContext('newForm');
+  
+
+      setMode('newForm');
+    
+    console.log(mode)
     setModalOpen(true);
     dispatch(setFormFields([]));
   };
@@ -75,7 +79,7 @@ export default function FormsList({setModalOpen, modalOpen}) {
   return (
     
     <>
-       <Modal modalIsOpen={modalOpen} handleModalClose={handleModalClose} /> 
+       <ModalWindow/> 
 
       <Container sx={{ minHeight: "100vh", mt: 4 }}>
     

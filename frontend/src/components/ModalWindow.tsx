@@ -17,12 +17,11 @@
 // //MUI
  import { Divider } from "@mui/material";
 
-export default function ModalWindow({modalIsOpen, handleModalClose }){
-   const {mode} = useContext(modalContext);
+export default function ModalWindow(){
+   const {mode, setModalOpen, modalOpen} = useContext(modalContext);
   
 
-
-//   // MODAL STYLE
+ // MODAL STYLE
 
   const boxStyle = {
      position: 'absolute',
@@ -42,8 +41,8 @@ export default function ModalWindow({modalIsOpen, handleModalClose }){
   return(
     <>
     <Modal
-                     open={modalIsOpen}
-                     onClose={handleModalClose}
+                     open={modalOpen}
+                     onClose={() => setModalOpen(false)}
                      // aria-labelledby="modal-modal-title"
                      // aria-describedby="modal-modal-description"
                      sx={{zIndex:1, overflow:'scroll'}}>
@@ -54,7 +53,7 @@ export default function ModalWindow({modalIsOpen, handleModalClose }){
 
                         
                          {
-                          (mode === 'newForm' || mode === 'editing') && <BuilderWindow handleModalClose={handleModalClose} /> 
+                          (mode === 'newForm' || mode === 'editing') && <BuilderWindow/> 
                             
                           } 
                           {mode === 'view' && <FormView disabledFields={false}/>}

@@ -1,4 +1,7 @@
 import React from "react";
+// COMPONENTS
+import BasicButton from "../UI/BasicButton";
+// MUI
 import {
     Box,
     Button,
@@ -11,6 +14,10 @@ import {
   } from "@mui/material";
   
   export default function RegisterForm() {
+    // Registration form component
+    // name, email,company, password, confirm password, terms checkbox
+
+    function registration() {}
     return (
       <Box
         component={'form'}
@@ -18,17 +25,28 @@ import {
         mt={8}
         p={4}
         boxShadow={3}
-        borderRadius={2}>
+        borderRadius={2}
+        maxWidth={'auto'}>
         <Stack spacing={3}>
           <Typography variant="h5" fontWeight="bold" textAlign="center">
             Create your account
           </Typography>
   
+          <TextField type="text"
+          label="Full Name"/>
+
           <TextField
             label="Email"
             type="email"
             fullWidth
             required
+          />
+  
+  
+          <TextField
+            label="Company Name"
+            type="text"
+            fullWidth
           />
   
           <TextField
@@ -37,43 +55,25 @@ import {
             fullWidth
             required
           />
-  
-          <TextField
-            label="Company Name"
-            type="text"
+
+<TextField
+            label="Confirm Password"
+            type="password"
             fullWidth
+            required
           />
-  
+
           <FormControlLabel
             control={<Checkbox required />}
-            label="Accetto Terms & Privacy"
+            label="Accept Terms & Privacy"
           />
+          <BasicButton text='register'
+          color='cyan.main'
+          textColor='white'
+          type='submit'
+          onClick={() => registration()} />
   
-          <Button
-            variant="contained"
-            size="large"
-            fullWidth
-          >
-            Registrati con Email
-          </Button>
-  
-          {/* <Divider>o</Divider>
-  
-          <Button
-            variant="outlined"
-            size="large"
-            fullWidth
-          >
-            Continua con Google
-          </Button>
-  
-          <Button
-            variant="outlined"
-            size="large"
-            fullWidth
-          >
-            Continua con Microsoft
-          </Button> */}
+          
         </Stack>
       </Box>
     );

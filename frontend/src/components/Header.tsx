@@ -25,7 +25,7 @@ import MenuItem from '@mui/material/MenuItem';
 
 export default function Header(){
   
-  const userisLogged = useSelector(selectUser);
+ 
   
   const [menuIconisClicked, setMenuIconisClicked] = useState(false);
   const dispatch = useDispatch(); 
@@ -34,11 +34,11 @@ export default function Header(){
 
   const pages = [
     { name: 'home', path: '/' },
-    ...(userisLogged.id 
+    ...(User?.id 
         ? [
             { name: 'logout', path: '/login', onClick: () => handleLogout() },
             { name: 'forms', path: '/forms' },
-            ...(userisLogged.role === 'admin' 
+            ...(User?.role === 'admin' 
                 ? [{ name: 'entries', path: '/FormEntries' }] 
                 : [])
           ]
@@ -68,23 +68,24 @@ export default function Header(){
 
 
 
-          function handleLogout(){
+          // function handleLogout(){
         
 
-                      fetch(`${import.meta.env.VITE_BACKEND_URL}/api/logout`, {
-                          method: 'POST',
-                          headers: {
-                              'Content-Type': 'application/json',
-                             'Accept': 'application/json'
-                          }
-                      })
-                      .then(res => {
+          //             fetch(`${import.meta.env.VITE_BACKEND_URL}/api/logout`, {
+          //                 method: 'POST',
+          //                 headers: {
+          //                     'Content-Type': 'application/json',
+          //                    'Accept': 'application/json'
+          //                 }
+          //             })
+          //             .then(res => {
                      
-                          return res.json()
-                      })
-                      .then(data => console.log(data))
-                      dispatch(Logout())
-                    }
+          //                 return res.json()
+          //             })
+          //             .then(data => { console.log(data)
+          //               dispatch(Logout())}
+          //             )
+          //           }
 
     return(
         <Box component={'header'} sx={{overflow:'clip'}}>
@@ -179,7 +180,7 @@ export default function Header(){
             <Switch  color='primary' onChange={()=> {dispatch(switchToDarkMode(!darkModeIsOn))}} /> 
         <DarkModeIcon/>
             
-            { User.id !== null  ? <Typography component={'h6'}  sx={{padding:0, textJustify:'auto', color:'text.primary'}}> Welcome,{User?.name}</Typography>  : null}
+            { User.id !== null  ? <Typography component={'h6'}  sx={{padding:0, textJustify:'auto', color:'text.primary'}}> Welcome,{User ? User.name : null}</Typography>  : null}
 
             <Menu
               sx={{ mt: '45px' }}
