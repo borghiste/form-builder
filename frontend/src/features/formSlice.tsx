@@ -10,7 +10,7 @@ export type formField = {
     validations?: { [key: string]: any }
 }
 
-type formData = {
+export type formData = {
     id: string,
     name: string,
     description: string,

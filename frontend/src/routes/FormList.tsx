@@ -25,14 +25,14 @@ import { selectUser } from "../features/UserSlice";
 import { fetchFormsList, deleteForm, getForm } from "../features/formsListSlice";
 import { selectForms } from "../features/formsListSlice";
 import { setFormFields, selectForm, setForm } from "../features/formSlice";
-import { modalContext } from "../App";
+import { setModalOpen, setMode } from "../features/ModalSlice";
+
 
 
 export default function FormsList() {
   const dispatch = useDispatch<AppDispatch>();
   const forms = useSelector(selectForms);
   const User = useSelector(selectUser);
-   const { mode, setMode, setModalOpen, modalOpen} = useContext(modalContext);
   const form = useSelector(selectForm);
   
 
@@ -49,10 +49,10 @@ export default function FormsList() {
   const handleNewFormClick = () => {
   
 
-      setMode('newForm');
+      dispatch(setMode('newForm'));
+
     
-    console.log(mode)
-    setModalOpen(true);
+    dispatch(setModalOpen(true));
     dispatch(setFormFields([]));
   };
 
@@ -63,7 +63,7 @@ export default function FormsList() {
                   form_fields: selectedForm?.form_fields
     }))
     setModalOpen(true);
-    setContext('view');
+    setMode('view');
 
     
   };
