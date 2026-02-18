@@ -4,19 +4,19 @@ import React, { useState } from "react";
 import { Box, ButtonGroup, Typography, Grid, Card, CardContent } from "@mui/material";
 // COMPONENTS
 import BasicButton from "../components/UI/BasicButton";
-import RegisterForm from "../components/UI/RegistrationForm";
-import DragDropAnimation from "../components/UI/Drag&DropAnimation";
+
 import homeImg1 from '../assets/images/home-1.png';
+import SignUpButton from "../components/UI/SignUpButton";
 
 
 export default function Home(){
-  const [showRegisterForm, setShowRegisterForm ] = useState(false);
-
+  
+  console.log('home');
 
   return(
     <Box
       variant='main'
-      sx={{minHeight:'100vh', display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center', pb:8}}>
+      sx={{ display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center', pb:8}}>
       
       <Box component={'div'} sx={{display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center', gap:2, textAlign:'center', maxWidth:'1200px', px:2}}>
 
@@ -46,13 +46,7 @@ export default function Home(){
           </Box>
         </Box> 
 
-        <BasicButton
-          text={'Sign Up'} 
-          color={'cyan.main'}
-          size={'large'} 
-          textColor={'white'} 
-          onClick={() => setShowRegisterForm(true)}
-        />
+        <SignUpButton/>
 
         {/* Beneficio 2 */}
         <Box component={'div'} sx={{display:'flex', flexDirection:{xs:'column', md:'row-reverse'}, justifyContent:'center', alignItems:'center', gap:4, mt:6}}>
@@ -236,8 +230,8 @@ export default function Home(){
 
       </Box>
 
-      {showRegisterForm && <RegisterForm />}
-      <DragDropAnimation />
+      
+      
     </Box>
 
     

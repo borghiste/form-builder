@@ -2,14 +2,14 @@ import React from "react";
 import BasicButton from "../UI/BasicButton";
 
 
-export default function SignUpButton(props: { text: string; color: string; size: "small" | "medium" | "large"; textColor: string; onClick?: () => void }) {
+export default function SignUpButton() {
     return(
         <BasicButton
           text={'Sign Up'} 
           color={'cyan.main'}
-          
+          href={'signup'}
           textColor={'white'} 
-          onClick={() =>{console.log('ggg')} }
+          
       />
     );
 }

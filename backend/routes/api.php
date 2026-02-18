@@ -13,6 +13,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// FIRST SIGN UP
+Route::post('register', [AuthController::class, 'register']);
+
 
 // users actions routes
 Route::post('login', [AuthController::class, 'login']);

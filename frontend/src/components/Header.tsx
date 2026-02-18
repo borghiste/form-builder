@@ -47,7 +47,8 @@ export default function Header() {
     { name: 'Home', path: '/' },
     ...(user?.id
       ? [
-          { name: 'Forms', path: '/forms' },
+          { name: 'forms', path: '/forms' },
+          {name:'signup', path:'signup'},
           ...(user?.role === 'admin'
             ? [{ name: 'Entries', path: '/FormEntries' }]
             : []
@@ -209,18 +210,18 @@ export default function Header() {
           >
             <LightModeIcon
               sx={{
-                color: darkModeIsOn ? 'text.secondary' : 'warning.main',
+                color: darkModeIsOn ? 'primary.main' : 'warning.main',
               }}
             />
             <Switch
               color="primary"
               checked={darkModeIsOn}
               onChange={handleThemeToggle}
-              inputProps={{ 'aria-label': 'Cambia tema scuro/chiaro' }}
+              inputProps={{ 'aria-label': 'change light/dark theme' }}
             />
             <DarkModeIcon
               sx={{
-                color: darkModeIsOn ? 'primary.main' : 'text.secondary',
+                color: darkModeIsOn ? 'primary.main' : 'text.primary',
               }}
             />
 
