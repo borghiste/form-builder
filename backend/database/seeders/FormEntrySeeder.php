@@ -15,8 +15,8 @@ class FormEntrySeeder extends Seeder
         FormEntry::factory()->create([
             'form_version' => 1,
             'data' => json_encode([
-                'name' => 'Mario Rossi',
-                'email' => 'mario@example.com',
+                'name' => 'Jon Doe',
+                'email' => 'Jon@example.com',
                 'role' => 'user',
                 'form' => ['name' => 'feedback form',
                 'description',

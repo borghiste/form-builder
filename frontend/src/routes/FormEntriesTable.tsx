@@ -1,10 +1,14 @@
 import React, { useContext, useEffect } from "react";
 //COMPONENTS
 import ModalWindow from "../components/ModalWindow";
-//REDUX
 
+//MUI
+
+//REDUX
 import { selectEntries, fetchFormEntries} from '../features/FormEntriesSlice';
 import { useDispatch, useSelector } from "react-redux";
+import { setEntryObj, setMode,  setModalOpen, selectModalOpen} from "../features/ModalSlice";
+
 import {
   Table,
   TableHead,
@@ -16,15 +20,17 @@ import {
   Container
 } from "@mui/material";
 import BasicButton from "../components/UI/BasicButton";
-import { modalContext } from "../App";
 
 
 
 
-export default function FormEntriesTable({setModalOpen, modalOpen}) {
+
+export default function FormEntriesTable() {
   const dispatch = useDispatch();
   const entries = useSelector(selectEntries);
-  const {mode, setMode} = useContext(modalContext);
+  const modalOpen = useSelector(selectModalOpen);
+
+  
   useEffect(() => {
   
    
@@ -38,9 +44,11 @@ export default function FormEntriesTable({setModalOpen, modalOpen}) {
     setModalOpen(false)
   }
   const viewSubmission = (entry) => {
+    dispatch(setModalOpen(true));
   
   
-    setMode('submission', entry)
+    dispatch(setMode('submission'));
+    dispatch(setEntryObj(entry));
     
     setModalOpen(true)
   }

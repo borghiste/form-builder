@@ -5,6 +5,7 @@ import formsReducer from '../features/formsListSlice';
 import formReducer from '../features/formSlice';
 import fieldReducer from '../features/fieldSlice';
 import formsEntriesReducer from '../features/FormEntriesSlice';
+import modalReducer from '../features/ModalSlice';
 
 export default configureStore({
   reducer: {
@@ -13,7 +14,8 @@ export default configureStore({
     forms: formsReducer,
     form: formReducer,
     field: fieldReducer,
-    entries: formsEntriesReducer
+    entries: formsEntriesReducer,
+    modal: modalReducer 
   },
 })
 

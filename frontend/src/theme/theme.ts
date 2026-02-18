@@ -45,42 +45,52 @@ export const LightTheme = createTheme({
         
       }
     },
+    
   
   }
 });
 
 export const DarkTheme = createTheme({
   palette: {
-    mode: 'dark',
-    primary: { main: '#F2F2F2' },
+    mode: "dark",
     background: {
-      default: '#05080D',
-      paper: '#F2F2F2',
+      default: "#05080D",
+      paper: "#1C2026",
     },
-    magenta: {
-      main: '#AB6262',
-      dark: '#8C1B24'
+    text: {
+      primary: "#C7D2D9",
+      secondary: "#8C95A4",
     },
     cyan: {
-      main: '#3D71D9',
-      dark: '#0540F2'
+      main: "#3D71D9",
+      dark: "#0540F2",
     },
-    gray: { main: '#1C2026' },
-    text: {
-      primary: '#C7D2D9',
-      secondary: '#8C95A4'
+    magenta: {
+      main: "#AB6262",
+      dark: "#8C1B24",
+    },
+    gray: {
+      main: "#1C2026",
     },
   },
-  components: {
-   
-   MuiListItemText: {
-    styleOverrides: {
-      
-      root: ({theme}) => ({
-      color: theme.palette.text.primary,
 
-    })
-  }
-   }
-    }
-  });
+  components: {
+    MuiListItemText: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          color: theme.palette.text.primary,
+        }),
+      },
+    },
+
+    MuiTab: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          "&.Mui-selected": {
+            color: theme.palette.text.primary,
+          },
+        }),
+      },
+    },
+  },
+});

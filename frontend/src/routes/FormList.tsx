@@ -16,7 +16,7 @@ import {
 
 // COMPONENTS
 import BasicButton from "../components/UI/BasicButton";
-import Modal from "../components/ModalWindow";
+import ModalWindow from "../components/ModalWindow";
 
 // REDUX
 import { useSelector, useDispatch } from "react-redux";
@@ -25,14 +25,14 @@ import { selectUser } from "../features/UserSlice";
 import { fetchFormsList, deleteForm, getForm } from "../features/formsListSlice";
 import { selectForms } from "../features/formsListSlice";
 import { setFormFields, selectForm, setForm } from "../features/formSlice";
-import { modalContext } from "../App";
+import { setModalOpen, setMode } from "../features/ModalSlice";
 
 
-export default function FormsList({setModalOpen, modalOpen}) {
+
+export default function FormsList() {
   const dispatch = useDispatch<AppDispatch>();
   const forms = useSelector(selectForms);
   const User = useSelector(selectUser);
-   const { setContext } = useContext(modalContext);
   const form = useSelector(selectForm);
   
 
@@ -42,13 +42,17 @@ export default function FormsList({setModalOpen, modalOpen}) {
 
   const handleModalClose = () => {
     setModalOpen(false);
-    setContext(null);
+    setMode(null);
     dispatch(setForm({ ...form, name: '' }));
   };
 
   const handleNewFormClick = () => {
-    setContext('newForm');
-    setModalOpen(true);
+  
+
+      dispatch(setMode('newForm'));
+
+    
+    dispatch(setModalOpen(true));
     dispatch(setFormFields([]));
   };
 
@@ -59,7 +63,7 @@ export default function FormsList({setModalOpen, modalOpen}) {
                   form_fields: selectedForm?.form_fields
     }))
     setModalOpen(true);
-    setContext('view');
+    setMode('view');
 
     
   };
@@ -75,7 +79,7 @@ export default function FormsList({setModalOpen, modalOpen}) {
   return (
     
     <>
-       <Modal modalIsOpen={modalOpen} handleModalClose={handleModalClose} /> 
+       <ModalWindow/> 
 
       <Container sx={{ minHeight: "100vh", mt: 4 }}>
     

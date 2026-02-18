@@ -28,10 +28,12 @@ export const UserSlice = createSlice({
 
             },
             Logout: (state) => {
-                state.id = null,
-                state.name = null,
-                state.role = null,
-                sessionStorage.removeItem('user')
+                state.id = null
+                state.name = null
+                state.role = null
+                console.log('USER STATE AFTER LOGOUT', User)
+
+               
             }
         },
     

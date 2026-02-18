@@ -25,9 +25,8 @@ import {
 } from '@mui/icons-material';
 
 export default function SubmissionDetail() {
-  const {entryObj} = useContext(modalContext);
-  console.log('entry from context', entryObj)
-  // console.log('entry in detail', entry)
+  
+
 
   return (
     <Box sx={{ bgcolor: 'background.default', py: 4}}>

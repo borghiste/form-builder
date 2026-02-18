@@ -12,17 +12,21 @@
  import FormView from "./FormView";
 
  //REDUX
- 
+
+ import {selectModalMode, setModalOpen, selectModalOpen } from "../features/ModalSlice";
 
 // //MUI
  import { Divider } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
 
-export default function ModalWindow({modalIsOpen, handleModalClose }){
-   const {mode} = useContext(modalContext);
+export default function ModalWindow(){
+  const dispatch = useDispatch();
+  const ModalMode = useSelector(selectModalMode);
+  const modalOpen = useSelector(selectModalOpen);
+  
   
 
-
-//   // MODAL STYLE
+ // MODAL STYLE
 
   const boxStyle = {
      position: 'absolute',
@@ -42,8 +46,8 @@ export default function ModalWindow({modalIsOpen, handleModalClose }){
   return(
     <>
     <Modal
-                     open={modalIsOpen}
-                     onClose={handleModalClose}
+                     open={modalOpen}
+                     onClose={() => dispatch(setModalOpen(false))}
                      // aria-labelledby="modal-modal-title"
                      // aria-describedby="modal-modal-description"
                      sx={{zIndex:1, overflow:'scroll'}}>
@@ -54,14 +58,14 @@ export default function ModalWindow({modalIsOpen, handleModalClose }){
 
                         
                          {
-                          (mode === 'newForm' || mode === 'editing') && <BuilderWindow handleModalClose={handleModalClose} /> 
+                          (ModalMode === 'newForm' || ModalMode === 'editing') && <BuilderWindow/> 
                             
                           } 
-                          {mode === 'view' && <FormView disabledFields={false}/>}
+                          {ModalMode=== 'view' && <FormView disabledFields={false}/>}
 
                           {/* {context === 'created' && 'created'} */}
 
-                          {mode === 'submission' && <FormEntry  />}
+                          { ModalMode === 'submission' && <FormEntry  />}
                       
                         </Box>
                         

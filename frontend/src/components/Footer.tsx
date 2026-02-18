@@ -33,7 +33,7 @@ export default function Footer(){
           <Typography variant="body2" color="text.secondary">
             © {currentYear} · Developed by{' '}
             <Link
-              href="http://www.linkedin.com/in/borghi-stefano"
+              href="https://www.linkedin.com/in/borghi-stefano"
               target="_blank"
               underline="hover"
               color="primary"
@@ -45,7 +45,8 @@ export default function Footer(){
 
           <Box sx={{ display: 'flex', gap: 3 }}>
             <Link
-              href="#"
+              href="/terms-and-privacy"
+              target="_blank"
               underline="hover"
               color="text.secondary"
               variant="body2"
