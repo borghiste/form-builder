@@ -1,10 +1,10 @@
 <?php
 
+use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FormController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Models\Form;
 use App\Http\Controllers\FormListController;
 use App\Http\Controllers\FormEntryController;
 use App\Http\Controllers\FormEntriesController;
@@ -14,7 +14,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 // FIRST SIGN UP
-Route::post('register', [AuthController::class, 'register']);
+Route::post('register', [RegisterController::class, 'register']);
 
 
 // users actions routes
