@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 // COMPONENTS
-import BasicButton from "../UI/BasicButton";
+import BasicButton from "../components/UI/BasicButton";
 // MUI
 import {
   Box,
@@ -12,6 +12,8 @@ import {
   Typography,
 } from "@mui/material";
 import { Link } from "react-router-dom";
+// STORE
+import { useRegistration } from "../stores/useRegistrationStore";
 
 type RegisterFormData = {
   fullName: string;
@@ -24,83 +26,17 @@ type RegisterFormData = {
 
 type RegisterErrors = Partial<Record<keyof RegisterFormData, string>>;
 
-export default function RegisterForm() {
-  const [formData, setFormData] = useState<RegisterFormData>({
-    fullName: "",
-    email: "",
-    company: "",
-    password: "",
-    confirmPassword: "",
-    acceptedTerms: false,
-  });
+export default function RegistrationForm() {
+  const {name, email, password, loading, error, success, setField, register} = useRegistration();
+
 
   const [errors, setErrors] = useState<RegisterErrors>({});
-  const [loading, setLoading] = useState(false);
 
-  // 🔹 Handle change
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const { name, value, type, checked } = e.target;
 
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
-  };
-
-  // 🔹 Validation
-  function validate(): RegisterErrors {
-    const newErrors: RegisterErrors = {};
-
-    if (!formData.fullName.trim())
-      newErrors.fullName = "Full name is required";
-
-    if (!formData.email.trim())
-      newErrors.email = "Email is required";
-    else if (!/^\S+@\S+\.\S+$/.test(formData.email))
-      newErrors.email = "Invalid email";
-
-    if (!formData.password)
-      newErrors.password = "Password is required";
-    else if (formData.password.length < 8)
-      newErrors.password = "Password must be at least 8 characters";
-
-    if (formData.confirmPassword !== formData.password)
-      newErrors.confirmPassword = "Passwords do not match";
-
-    if (!formData.acceptedTerms)
-      newErrors.acceptedTerms = "You must accept terms";
-
-    return newErrors;
-  }
-
-  // 🔹 Submit
-  async function handleRegistration(
-    e: React.FormEvent<HTMLFormElement>
-  ) {
-    e.preventDefault();
-
-    const validationErrors = validate();
-
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
-
-    try {
-      setLoading(true);
-      setErrors({});
-
-      console.log("Submitting:", formData);
-
-      // 👉 Qui andrà la tua chiamata API Laravel
-
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
+  //  Submit
+  async function handleRegistration(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault(); 
+    await register();
   }
 
   return (
@@ -127,8 +63,8 @@ export default function RegisterForm() {
         <TextField
           name="fullName"
           label="Full Name"
-          value={formData.fullName}
-          onChange={handleChange}
+          
+          onChange={(e) => setField('fullName', e.target.value)}
           error={!!errors.fullName}
           helperText={errors.fullName}
           fullWidth
@@ -138,8 +74,8 @@ export default function RegisterForm() {
           name="email"
           label="Email"
           type="email"
-          value={formData.email}
-          onChange={handleChange}
+         
+          onChange={(e) => setField('email', e.target.value)}
           error={!!errors.email}
           helperText={errors.email}
           fullWidth
@@ -148,8 +84,8 @@ export default function RegisterForm() {
         <TextField
           name="company"
           label="Company Name"
-          value={formData.company}
-          onChange={handleChange}
+          
+          onChange={(e) => setField('company', e.target.value)}
           fullWidth
         />
 
@@ -157,8 +93,8 @@ export default function RegisterForm() {
           name="password"
           label="Password"
           type="password"
-          value={formData.password}
-          onChange={handleChange}
+          
+          onChange={(e) => setField('password', e.target.value)}
           error={!!errors.password}
           helperText={errors.password}
           fullWidth
@@ -168,8 +104,8 @@ export default function RegisterForm() {
           name="confirmPassword"
           label="Confirm Password"
           type="password"
-          value={formData.confirmPassword}
-          onChange={handleChange}
+          
+          onChange={(e) => setField('confirmPassword', e.target.value)}
           error={!!errors.confirmPassword}
           helperText={errors.confirmPassword}
           fullWidth
@@ -179,8 +115,8 @@ export default function RegisterForm() {
           control={
             <Checkbox
               name="acceptedTerms"
-              checked={formData.acceptedTerms}
-              onChange={handleChange}
+              
+              onChange={(e) => setField('termsAccepted', e.target.value)}
             />
           }
           label={

@@ -14,7 +14,7 @@ import Login from '../src/routes/LoginPage';
 import ProtectedRoute from './routes/ProtectedRoute';
 import FormEntriesTable from './routes/FormEntriesTable';
 import AboutPage from './routes/AboutPage';
-import RegisterForm from './components/UI/RegistrationForm';
+import RegisterForm from './routes/RegistrationForm';
 import TermsAndPrivacy from './routes/TermsandPrivacy';
 
 

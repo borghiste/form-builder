@@ -16,6 +16,7 @@ export default defineConfig({
   server: {
     port: env.VITE_PORT || 5173
   },
+  test:'./tests' 
 });
 
 
