@@ -19,8 +19,6 @@ return new class extends Migration
             $table->integer('max_users')->default(1);
             $table->integer('max_forms')->default(3);
             $table->integer('max_responses_per_month')->default(100);
-            $table->string('logo_url')->nullable();
-            $table->json('custom_branding')->nullable(); // colori, font, etc
             $table->json('settings')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamp('trial_ends_at')->nullable();
