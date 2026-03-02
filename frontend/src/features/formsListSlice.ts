@@ -207,11 +207,11 @@ export const formsListSlice = createSlice({
       builder.addCase(updateForm.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(updateForm.fulfilled, (state, action) => {
+      builder.addCase(updateForm.fulfilled, (state, action) => {
         state.status = 'succeeded';
         const index = state.forms.findIndex(f => f.id === action.payload.data.id);
     })
-    .addCase(updateForm.rejected), (state, action) => {
+    builder.addCase(updateForm.rejected), (state, action) => {
       state.status = 'failed';
       state.error = action.error.message || "Failed to update form";
     }
