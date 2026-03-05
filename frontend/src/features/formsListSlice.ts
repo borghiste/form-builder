@@ -211,10 +211,10 @@ export const formsListSlice = createSlice({
         state.status = 'succeeded';
         const index = state.forms.findIndex(f => f.id === action.payload.data.id);
     })
-    builder.addCase(updateForm.rejected), (state, action) => {
+    builder.addCase(updateForm.rejected, (state, action) => {
       state.status = 'failed';
       state.error = action.error.message || "Failed to update form";
-    }
+    })
     
   },
 });

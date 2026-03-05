@@ -9,10 +9,11 @@ use App\Http\Controllers\FormListController;
 use App\Http\Controllers\FormEntryController;
 use App\Http\Controllers\FormEntriesController;
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
+/*
+|--------------------------------------------------------------------------
+| Public Routes (no tenant required)
+|--------------------------------------------------------------------------
+*/
 // FIRST SIGN UP
 Route::post('register', [RegistrationController::class, 'register']);
 

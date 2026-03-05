@@ -27,7 +27,7 @@ type RegisterFormData = {
 type RegisterErrors = Partial<Record<keyof RegisterFormData, string>>;
 
 export default function RegistrationForm() {
-  const {name, email, password, loading, error, success, setField, register} = useRegistration();
+  const {fullName, email, password, loading, error, success, setField, register} = useRegistration();
 
 
   const [errors, setErrors] = useState<RegisterErrors>({});
@@ -36,7 +36,9 @@ export default function RegistrationForm() {
   //  Submit
   async function handleRegistration(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault(); 
-    await register();
+    console.log('sending', fullName, email, password);
+    const result = await register();
+    console.log(result.message)
   }
 
   return (
@@ -116,7 +118,7 @@ export default function RegistrationForm() {
             <Checkbox
               name="acceptedTerms"
               
-              onChange={(e) => setField('termsAccepted', e.target.value)}
+              onChange={(e) => setField('acceptedTerms', e.target.checked)}
             />
           }
           label={
