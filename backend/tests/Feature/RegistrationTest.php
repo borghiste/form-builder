@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Mail;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -14,6 +15,7 @@ class RegistrationTest extends TestCase
      */
     public function test_registration(): void
     {
+        Mail::fake();
             $response = $this->postJson('/api/register', [
                 'organization_name' => 'acme Organization',
                 'subdomain' => 'acme',
@@ -22,21 +24,13 @@ class RegistrationTest extends TestCase
                 'password' => 'password123',
                 'password_confirmation' => 'password123',
                 'email' => 'test@example.com']);
-               
+
                 $response->assertStatus(200);
-    }
-    /**
-     * Get the maximum number of users allowed for a given plan.
-     */
-    private function getMaxUsers(array $plan): int
-    {
-        // Example logic for returning max users based on the plan
-        return $plan[0] === 'free' ? 10 : 100;
+                
+                Mail::assertSent(\App\Mail\WelcomeEmail::class, function ($mail) {
+                    return $mail->hasTo('test@example.com');
+                });
+            }
     }
 
-    private function getMaxForms(array $plan): int
-    {
-        // Example logic for returning max forms based on the plan
-        return $plan[0] === 'free' ? 5 : 50;
-    }
-}
+ 

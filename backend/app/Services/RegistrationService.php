@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class RegistrationService
 {
@@ -13,17 +14,18 @@ class RegistrationService
 
     public function execute(array $data): array
     {
+        Log::info('Creating organization');
         return DB::transaction(function () use ($data) {
 
             $plan = $data['plan'] ?? 'free';
+            $subdomain = Str::slug($data['organization_name']);
 
             $organization = Organization::create([
                 'name' => $data['organization_name'],
-                'subdomain' => $data['subdomain'],
-                'slug' => Str::slug($data['organization_name']),
-                'plan' => $plan,
-                'max_users' => $this->getMaxUsers($plan),
-                'max_forms' => $this->getMaxForms($plan),
+                'subdomain' => $subdomain,
+                'slug' => $subdomain,
+                'max_users' => 3,
+                'max_forms' => 3,
                 'trial_ends_at' => now()->addDays(14),
             ]);
 
@@ -33,8 +35,8 @@ class RegistrationService
                 'email' => $data['email'],
                 'password' => Hash::make($data['password']),
                 'role' => 'owner',
-                'is_active' => true,
-                'email_verified_at' => now(),
+                'is_active' => true
+                
             ]);
 
             $token = $user->createToken('auth-token')->plainTextToken;
