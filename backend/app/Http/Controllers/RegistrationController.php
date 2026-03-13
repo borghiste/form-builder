@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\WelcomeEmail;
 use Illuminate\Validation\Exception;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Validation\Rule;
 class RegistrationController extends Controller
 {
 
@@ -30,29 +30,30 @@ class RegistrationController extends Controller
 
      public function register(Request $request)
      {
-        Log::info('Registration attempt for email: ' . $request->input('email'));
-        Log::info('validating data');
+       
         $validated = $request->validate([
             'organization_name' => 'required|string|max:255',
             'owner_name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
-        
+
         ]);
-        Log::info('validated');
+        
         try {
-        $result = $this ->registrationService->execute($validated);
+        $result = $this ->registrationService->registration($validated);
         } catch (\Exception $e)
         {
             return response()->json(['Registration failed, please try again'],500);
         }
 
-        Mail::to($result['user']->email)->queue(new WelcomeEmail());
+        
+     
         
         return response()->json([
             'message' => 'Organization created successfully',
             'Organization' => $result['organization']
         ]);
+
 
      }
 }

@@ -41,7 +41,7 @@ export const useRegistration = create<RegistrationState>((set, get) => ({
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message || 'Errore nella registrazione');
+        throw new Error(data.message || 'Registration failed, please try again');
       }
 
       set({ loading: false, success: true });

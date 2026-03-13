@@ -83,7 +83,7 @@ export default function Header() {
               textDecoration: 'none',
             }}
           >
-            FormAtion
+            PickForm
           </Typography>
 
           {/* Menu Mobile */}
@@ -157,7 +157,7 @@ export default function Header() {
               textDecoration: 'none',
             }}
           >
-             FormAtion
+             PickForm
           </Typography>
           <ButtonGroup sx={{display:{xs:'flex', md:'none'}, alignItems:'center', justifyContent:'center'}}>
           <SignUpButton/>
@@ -234,7 +234,7 @@ export default function Header() {
                   color: 'text.primary',
                 }}
               >
-                Benvenuto, {user.name}
+                Welcome, {user.name}
               </Typography>
             )}
           </Box>

@@ -14,8 +14,13 @@ class WelcomeEmail extends Mailable
     use Queueable, SerializesModels;
 
     public function __construct(
-        public string $userName
-    ) {}
+        public string $userName,
+       public string $magicLink
+        ) {}
+
+
+        
+     
 
     public function envelope(): Envelope
     {
@@ -28,7 +33,8 @@ class WelcomeEmail extends Mailable
     {
         return new Content(
             view: 'emails.welcomeMail',
-            with: ['userName' => $this->userName],
+            with: ['userName' => $this->userName,
+                'url' => $this->magicLink],
         );
     }
 

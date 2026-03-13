@@ -9,6 +9,7 @@ use App\Http\Controllers\FormListController;
 use App\Http\Controllers\FormEntryController;
 use App\Http\Controllers\FormEntriesController;
 
+
 /*
 |--------------------------------------------------------------------------
 | Public Routes (no tenant required)
@@ -16,6 +17,9 @@ use App\Http\Controllers\FormEntriesController;
 */
 // FIRST SIGN UP
 Route::post('register', [RegistrationController::class, 'register']);
+
+//VERIFY EMAIL
+Route::get('/verify-email/{user}', [AuthController::class, 'verify'])->name('login.verify');
 
 
 // users actions routes

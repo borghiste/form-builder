@@ -22,7 +22,7 @@ export default function Home(){
 
         {/* Hero Section */}
         <Typography variant="h1" sx={{color:'text.primary', mt:8}}>
-          FormAtion
+          PickForm
         </Typography>
 
         <Typography variant="h2" sx={{color:'text.secondary' }}>
