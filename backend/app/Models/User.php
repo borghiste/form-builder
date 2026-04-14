@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,7 +13,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, Notifiable, SoftDeletes;
+    use HasApiTokens, Notifiable, SoftDeletes, HasFactory;
 
     protected $fillable = [
         'organization_id',
@@ -23,8 +24,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'is_active',
         'invited_by',
         'last_login_at',
-        'last_login_ip',
-        'preferences',
         'email_verified_at'
     ];
 

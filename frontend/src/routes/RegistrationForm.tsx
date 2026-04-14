@@ -16,18 +16,18 @@ import { Link } from "react-router-dom";
 import { useRegistration } from "../stores/useRegistrationStore";
 
 type RegisterFormData = {
-  fullName: string;
+  owner_name: string;
   email: string;
-  company: string;
+  organization_name: string;
   password: string;
-  confirmPassword: string;
+  password_confirmation: string;
   acceptedTerms: boolean;
 };
 
 type RegisterErrors = Partial<Record<keyof RegisterFormData, string>>;
 
 export default function RegistrationForm() {
-  const {fullName, email, password, loading, error, success, setField, register} = useRegistration();
+  const {owner_name, email, password, loading, error, success, setField, register} = useRegistration();
 
 
   const [errors, setErrors] = useState<RegisterErrors>({});
@@ -36,9 +36,14 @@ export default function RegistrationForm() {
   //  Submit
   async function handleRegistration(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault(); 
-    console.log('sending', fullName, email, password);
+    let attempt = 0;
+    
+
+    
     const result = await register();
-    console.log(result.message)
+    console.log(result)
+   
+    
   }
 
   return (
@@ -66,9 +71,9 @@ export default function RegistrationForm() {
           name="fullName"
           label="Full Name"
           
-          onChange={(e) => setField('fullName', e.target.value)}
-          error={!!errors.fullName}
-          helperText={errors.fullName}
+          onChange={(e) => setField('owner_name', e.target.value)}
+          error={!!errors.owner_name}
+          helperText={errors.owner_name}
           fullWidth
         />
 
@@ -87,7 +92,7 @@ export default function RegistrationForm() {
           name="company"
           label="Company Name"
           
-          onChange={(e) => setField('company', e.target.value)}
+          onChange={(e) => setField('organization_name', e.target.value)}
           fullWidth
         />
 
@@ -107,7 +112,7 @@ export default function RegistrationForm() {
           label="Confirm Password"
           type="password"
           
-          onChange={(e) => setField('confirmPassword', e.target.value)}
+          onChange={(e) => setField('password_confirmation', e.target.value)}
           error={!!errors.confirmPassword}
           helperText={errors.confirmPassword}
           fullWidth

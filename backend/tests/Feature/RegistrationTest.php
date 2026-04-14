@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Validation\Rules\Unique;
+
 use Mail;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -28,12 +28,8 @@ class RegistrationTest extends TestCase
                 'password' => 'password123',
                 'password_confirmation' => 'password123'];
 
-     
-
       $response = $this->postJson('/api/register', $data);
 
-  
-    
 
       // db verification
       $this->assertDatabaseHas('organizations', [
@@ -56,6 +52,5 @@ class RegistrationTest extends TestCase
         $response->assertStatus(200);
        
     }
-
 
 }

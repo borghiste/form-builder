@@ -1,11 +1,11 @@
 import { create } from 'zustand';
 
 type RegistrationState = {
-  fullName: string;
+  owner_name: string;
   email: string;
-  company: string;
+  organization_name: string;
   password: string;
-  confirmPassword: string;
+  password_confirmation: string;
   acceptedTerms: boolean;
   loading: boolean;
   error: string | null;
@@ -15,11 +15,11 @@ type RegistrationState = {
 };
 
 export const useRegistration = create<RegistrationState>((set, get) => ({
-  fullName: '',
+  owner_name: '',
   email: '',
-  company: '',
+  organization_name: '',
   password: '',
-  confirmPassword: '',
+  password_confirmation: '',
   acceptedTerms: false,
   loading: false,
   error: null,
@@ -28,14 +28,14 @@ export const useRegistration = create<RegistrationState>((set, get) => ({
   setField: (field, value) => set({ [field]: value }),
 
   register: async () => {
-    const { fullName, email, company, password, confirmPassword, acceptedTerms } = get();
+    const {  owner_name, email, organization_name, password, password_confirmation, acceptedTerms } = get();
     set({ loading: true, error: null, success: false });
 
     try {
       const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fullName, email, company, password, confirmPassword, acceptedTerms }),
+        body: JSON.stringify({ owner_name, email, organization_name, password, password_confirmation, acceptedTerms }),
       });
 
       const data = await res.json();

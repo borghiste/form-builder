@@ -33,7 +33,7 @@ export default function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/signup" element={User?.id ? <Login/> : <RegisterForm/>} />
-              <Route path="/login" element={User?.id ? null : <Login />} />
+              <Route path="/login" element={User?.id ? null : <Login/>} />
               <Route
                 path="/forms"
                 element={
@@ -61,4 +61,3 @@ export default function App() {
   );
 }
 
-// ---------------------- END APP ----------------------
