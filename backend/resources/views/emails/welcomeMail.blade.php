@@ -109,13 +109,13 @@
     <div class="container">
 
         <div class="header">
-            <span class="logo">{{ config('PickForm') }}</span>
+            <span class="logo">{{ config('app.name') }}</span>
         </div>
 
         <div class="body">
             <h1 class="title">Ciao, {{ $userName }}!</h1>
             <p class="text">
-                Benvenuto su {{ config('app.name') }}. Il tuo account è stato creato con successo.
+                We su {{ config('app.name') }}. Il tuo account è stato creato con successo.
                 Da adesso puoi iniziare a costruire i tuoi form.
             </p>
 

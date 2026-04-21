@@ -9,6 +9,7 @@ type RegistrationState = {
   acceptedTerms: boolean;
   loading: boolean;
   error: string | null;
+  errors: Record<string, string[]>;
   success: boolean;
   setField: (field: keyof Omit<RegistrationState, 'loading' | 'error' | 'success' | 'setField' | 'register'>, value: string | boolean) => void;
   register: () => Promise<any>;
@@ -23,8 +24,8 @@ export const useRegistration = create<RegistrationState>((set, get) => ({
   acceptedTerms: false,
   loading: false,
   error: null,
+  errors: {},
   success: false,
-
   setField: (field, value) => set({ [field]: value }),
 
   register: async () => {
@@ -40,14 +41,20 @@ export const useRegistration = create<RegistrationState>((set, get) => ({
 
       const data = await res.json();
 
-      if (!res.ok) {
-        throw new Error(data.message || 'Registration failed, please try again');
+      if(res.status = 422) {
+        set({ loading: false, errors: data.errors});
+        return;
       }
 
       set({ loading: false, success: true });
       return data;
 
-    } catch (e: any) {
+    } 
+    
+    catch (e: any) {
+      if (e.response.status = 429) {
+        set({error: 'Too many registration attempts. Please try again later.'});
+      }
       set({ loading: false, error: e.message });
     }
   },

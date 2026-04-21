@@ -53,13 +53,13 @@ class RegistrationController extends Controller
         $result = $this ->registrationService->registration($validated);
         } catch (\Exception $e)
         {
-            return response()->json(['Registration failed, please try again'],500);
+            return response()->json(['Registration failed, please try again', 'error' => $e->getMessage()],500);
         }
 
 
         
         return response()->json([
-            'message' => 'Organization created successfully',
+            'message' => 'Organization created successfully. You\'ll be redirect to login page.',
             'Organization' => $result['organization']
         ]);
 
