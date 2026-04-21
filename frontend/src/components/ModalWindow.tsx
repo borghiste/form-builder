@@ -1,5 +1,5 @@
  import React, { useContext } from "react";
-  import  {modalContext }  from '../App';  
+import { useModalStore } from "../stores/useModalStore";  
 
 //MUI
 
@@ -11,18 +11,17 @@
  
  import FormView from "./FormView";
 
- //REDUX
 
- import {selectModalMode, setModalOpen, selectModalOpen } from "../features/ModalSlice";
 
 // //MUI
  import { Divider } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
+import { useModalStore } from "../stores/useModalStore";
 
-export default function ModalWindow(){
+export default function ModalWindow({message}:{message:string}) {
   const dispatch = useDispatch();
-  const ModalMode = useSelector(selectModalMode);
-  const modalOpen = useSelector(selectModalOpen);
+  const {modalMode} = useModalStore();
+  const {modalOpen, setModalOpen} = useModalStore();
   
   
 
@@ -47,25 +46,26 @@ export default function ModalWindow(){
     <>
     <Modal
                      open={modalOpen}
-                     onClose={() => dispatch(setModalOpen(false))}
+                     onClose={() => setModalOpen(false)}
                      // aria-labelledby="modal-modal-title"
                      // aria-describedby="modal-modal-description"
                      sx={{zIndex:1, overflow:'scroll'}}>
                       
                       <Box sx={boxStyle}>
+                        {message}
                         <Divider/>
-                        <Box sx={{display:'flex', flexDirection:{xs:'column',sm:'row',                  }}}>
+                        <Box sx={{display:'flex', flexDirection:{xs:'column',sm:'row'}}}>
 
                         
                          {
-                          (ModalMode === 'newForm' || ModalMode === 'editing') && <BuilderWindow/> 
+                          (modalMode === 'newForm' || modalMode === 'editing') && <BuilderWindow/> 
                             
                           } 
-                          {ModalMode=== 'view' && <FormView disabledFields={false}/>}
+                          {modalMode=== 'view' && <FormView disabledFields={false}/>}
 
                           {/* {context === 'created' && 'created'} */}
 
-                          { ModalMode === 'submission' && <FormEntry  />}
+                          { modalMode === 'submission' && <FormEntry  />}
                       
                         </Box>
                         

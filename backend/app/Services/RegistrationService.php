@@ -1,21 +1,25 @@
 <?php
 
 namespace App\Services;
+use App\Mail\WelcomeEmail;
 use App\Models\Organization;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Mail;
 
 class RegistrationService
 {
     //* Handle the registration of a new organization and its owner.
 
-    public function execute(array $data): array
+    public function registration(array $data): array
     {
-        Log::info('Creating organization');
+       
         return DB::transaction(function () use ($data) {
+           
 
             $plan = $data['plan'] ?? 'free';
             $subdomain = Str::slug($data['organization_name']);
@@ -39,28 +43,18 @@ class RegistrationService
                 
             ]);
 
-            $token = $user->createToken('auth-token')->plainTextToken;
+            $magicLink = URL::temporarySignedRoute(
+                'login.verify',
+                now()->addMinutes(15),
+                ['user' => $user->id]
+            );
 
-            return compact('organization', 'user', 'token');
+            // $token = $user->createToken('auth-token')->plainTextToken;
+
+
+        Mail::to($user->email)->queue(new WelcomeEmail($user->name, $magicLink));
+            return compact('organization', 'user', 'magicLink');
         });
     }
 
-    private function getMaxUsers(string $plan): int
-    {
-        return match($plan) {
-            'free' => 1,
-            'pro' => 5,
-            'enterprise' => 999,
-            default => 1
-        };
-    }
-    private function getMaxForms(string $plan): int
-          {
-              return match($plan) {
-                  'free' => 3,
-                  'pro' => 50,
-                  'enterprise' => 999,
-                  default => 3
-              };
-}
 }

@@ -3,7 +3,6 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
@@ -14,13 +13,14 @@ class WelcomeEmail extends Mailable
     use Queueable, SerializesModels;
 
     public function __construct(
-        public string $userName
+        public string $userName,
+        public string $magicLink,
     ) {}
 
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Welcome to our service!',
+            subject: 'Welcome to PickForm!',
         );
     }
 
@@ -28,7 +28,7 @@ class WelcomeEmail extends Mailable
     {
         return new Content(
             view: 'emails.welcomeMail',
-            with: ['userName' => $this->userName],
+            with: ['url' => $this->magicLink],
         );
     }
 
