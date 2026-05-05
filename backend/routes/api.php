@@ -16,10 +16,15 @@ use App\Http\Controllers\FormEntriesController;
 |--------------------------------------------------------------------------
 */
 // FIRST SIGN UP
+// ths route points to the register method of the RegistrationController, which is responsible for handling user registration and creating the associated organization. When a user sends a POST request to this route with the necessary data for registration, the register method of the RegistrationController is called to process the request, create the user and organization, and send a verification email to the user.
 Route::post('register', [RegistrationController::class, 'register']);
 
-//VERIFY EMAIL
-Route::get('/verify-email/{user}', [AuthController::class, 'verify'])->name('login.verify');
+// AUTHENTICATION
+
+Route::get('user', [AuthController::class, 'getAuthenticatedUser']);
+
+
+
 
 
 // users actions routes

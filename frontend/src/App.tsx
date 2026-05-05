@@ -6,6 +6,7 @@ import { LightTheme, DarkTheme } from '../src/theme/theme';
 import { useSelector } from 'react-redux';
 import { selectMode } from './features/themeSlice';
 import { selectUser } from './features/UserSlice';
+import { useAuthStore } from './stores/useAuthStore';
 
 // COMPONENTS
 import Home from '../src/routes/Home';
@@ -22,7 +23,8 @@ import TermsAndPrivacy from './routes/TermsandPrivacy';
 // ---------------------- APP ----------------------
 export default function App() {
   const themeState = useSelector(selectMode); 
-  const User = useSelector(selectUser); 
+  const {user, organization} = useAuthStore();
+  const subdomain = organization?.subdomain;
 
 
   return (
@@ -31,11 +33,11 @@ export default function App() {
         <BrowserRouter>
           <Layout>
             <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/signup" element={User?.id ? <Login/> : <RegisterForm/>} />
-              <Route path="/login" element={User?.id ? null : <Login/>} />
+              <Route path={`/`} element={<Home />} />
+              <Route path="/signup" element={user?.id ? <Login/> : <RegisterForm/>} />
+              <Route path="/login" element={user?.id ? null : <Login/>} />
               <Route
-                path="/forms"
+                path={`/${subdomain}/forms`}
                 element={
                   <ProtectedRoute>
                     <FormsList/>

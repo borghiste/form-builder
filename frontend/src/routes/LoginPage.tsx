@@ -5,7 +5,7 @@ import { Container, Paper, Box, Typography, TextField, InputLabel, FormControl, 
 import BasicButton from "../components/UI/BasicButton";
 
 import { Login } from "../features/UserSlice";
-import { useDispatch, useDispatch, useSelector, Provider } from "react-redux";
+import {  useSelector, Provider } from "react-redux";
 import { UserState, selectUser  } from "../features/UserSlice";
 import { Store } from "@reduxjs/toolkit";
 
@@ -13,14 +13,12 @@ import { Store } from "@reduxjs/toolkit";
 
 
 
-
 export default function LoginPage(){
-const dispatch = useDispatch();
+
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const User = useSelector(selectUser);
- 
+
   const [HelperText, setHelperText] = useState('');
 
 

@@ -27,6 +27,7 @@ return [
     */
 
     'env' => env('APP_ENV', 'production'),
+    'frontend_url' => env('APP_FRONTEND_URL'),
 
     /*
     |--------------------------------------------------------------------------

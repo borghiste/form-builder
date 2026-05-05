@@ -39,7 +39,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'preferences' => 'array',
     ];
 
-    // Relazioni
+    // Relationships
     public function organization(): BelongsTo
     {
         return $this->belongsTo(Organization::class);

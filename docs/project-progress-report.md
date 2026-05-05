@@ -39,6 +39,7 @@
 - add editable field feature
 - refine UI on builder window
 - add edit field feature
+- add registration to service feature
 
 
 

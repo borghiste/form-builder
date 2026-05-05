@@ -3,14 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
-use Illuminate\Support\Facades\DB;
 use App\Services\RegistrationService;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\WelcomeEmail;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\Rule;
+
 class RegistrationController extends Controller
 {
 
@@ -26,13 +22,12 @@ class RegistrationController extends Controller
   
      *  Owner Registration + Organization
      */
+    // il metodo register del RegistrationController gestisce la registrazione di un nuovo utente e la creazione dell'organizzazione associata. 
 
      public function register(Request $request)
      {
-        Log::info('Received registration request', ['request' => $request->all()]);
-
-        Log::info('Validating registration data', ['data' => $request->all()]);
-
+       
+        // prova validazioine dei dati di input ricevuti dalla richiesta. Se la validazione fallisce, viene registrato un messaggio di log con i dettagli degli errori e viene rilanciata l'eccezione di validazione. 
         try {
        
         $validated = $request->validate([
@@ -50,17 +45,20 @@ class RegistrationController extends Controller
         Log::info('validated', ['validated' => $validated]);
         
         try {
+            // se la validazione dei dati di input è riuscita, viene chiamato il metodo registration del servizio di registrazione per creare l'utente e l'organizzazione. Se si verifica un'eccezione durante questo processo, viene restituita una risposta JSON con un messaggio di errore e i dettagli dell'eccezione.
         $result = $this ->registrationService->registration($validated);
         } catch (\Exception $e)
         {
-            return response()->json(['Registration failed, please try again', 'error' => $e->getMessage()],500);
+            return response()->json([
+                'message' => 'Registration failed, please try again', 
+                'error' => $e->getMessage()], 500);
         }
 
 
-        
+        // se la registrazione è riuscita, viene restituita una risposta JSON con un messaggio di successo.
         return response()->json([
-            'message' => 'Organization created successfully. You\'ll be redirect to login page.',
-            'Organization' => $result['organization']
+            'message' => 'Organization created successfully. You\'ll  receive an email with a link to verify your email and access your dashboard.',
+            
         ]);
 
 
