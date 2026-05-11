@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 
 // COMPONENTS
 import BasicButton from "../components/UI/BasicButton";
-import ModalWindow from "../components/ModalWindow";
+
 // MUI
 import {
   Box,
@@ -31,9 +31,9 @@ type RegisterFormData = {
 
 
 export default function RegistrationForm() {
+  // prendi i dati e funzioni dallo store
   const {owner_name, email, password, loading, error, errors,  success, setField, register} = useRegistration();
   const navigate = useNavigate();
-
   const {modalOpen, setModalMode, setModalOpen} = useModalStore();
 const [message, setMessage] = useState('');
 const attempt = useRef(0);
@@ -42,20 +42,26 @@ const attempt = useRef(0);
 
   //  Submit
   async function handleRegistration(e: React.FormEvent<HTMLFormElement>) {
+    // 1. previeni comportamento di default
     e.preventDefault(); 
-
+    
+    // 2. se ci sono già stati 5 tentativi di registrazione, mostra un messaggio di errore e non permettere ulteriori tentativi
     if (attempt.current >= 5) {
       setMessage('Too many registration attempts. Please try again later.');
     }
     
-
     
+    
+    // 3. chiama la funzione di registrazione dallo store, attendi risposta dal backend
     const response = await register();
     
+    // 4. se la registrazione ha successo, mostra messaggio di successo direttamente nel form e reindirizza alla pagina di login dopo 3 secondi
     if (response) {
-      setModalOpen(true);
-      console.log(useModalStore.getState().modalOpen);
+      
+      
+      console.log(response);
       setMessage(response.message);
+     
       setTimeout(() => {
         navigate('/login')}, 3000);
 
@@ -63,17 +69,12 @@ const attempt = useRef(0);
     }
     attempt.current++;
    
-   
-    
 
-   
-   
-    
   }
 
   return (
     <>
-    {/* <ModalWindow message={message}/> */}
+    
     <Box
       component="form"
       onSubmit={handleRegistration}
@@ -190,7 +191,7 @@ const attempt = useRef(0);
           type="submit"
           />
         <Typography variant="body2" textAlign="center" color={error ? 'red' : 'text.secondary'}>
-          {error || "Already have an account? "}
+          { "Already have an account? "}
           <Link to="/login" style={{ color: "cyan.main", textDecoration: "none" }}>
             Login
           </Link>

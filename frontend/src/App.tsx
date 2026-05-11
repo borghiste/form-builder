@@ -5,7 +5,8 @@ import { ThemeProvider } from '@emotion/react';
 import { LightTheme, DarkTheme } from '../src/theme/theme';
 import { useSelector } from 'react-redux';
 import { selectMode } from './features/themeSlice';
-import { selectUser } from './features/UserSlice';
+
+import { useAuthentication } from './stores/useAuthStore';
 
 // COMPONENTS
 import Home from '../src/routes/Home';
@@ -16,13 +17,16 @@ import FormEntriesTable from './routes/FormEntriesTable';
 import AboutPage from './routes/AboutPage';
 import RegisterForm from './routes/RegistrationForm';
 import TermsAndPrivacy from './routes/TermsandPrivacy';
+import NotFound from './routes/NotFound';
 
 
 
 // ---------------------- APP ----------------------
 export default function App() {
   const themeState = useSelector(selectMode); 
-  const User = useSelector(selectUser); 
+  const { organization, subdomain, user} = useAuthentication();
+
+  
 
 
   return (
@@ -31,11 +35,11 @@ export default function App() {
         <BrowserRouter>
           <Layout>
             <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/signup" element={User?.id ? <Login/> : <RegisterForm/>} />
-              <Route path="/login" element={User?.id ? null : <Login/>} />
+              <Route path={`/`} element={<Home />} />
+              <Route path="/signup" element={ user == null ? <Login/> : <RegisterForm/>} />
+              <Route path="/login" element={user?.id ? null : <Login/>} />
               <Route
-                path="/forms"
+                path={`/${subdomain}/forms`}
                 element={
                   <ProtectedRoute>
                     <FormsList/>
@@ -53,6 +57,7 @@ export default function App() {
 
 <Route path='terms-and-privacy' element={<TermsAndPrivacy/>}/>
               <Route path="/about" element={<AboutPage />} />
+              <Route path="*" element={<NotFound/>} />
             </Routes>
           </Layout>
         </BrowserRouter>

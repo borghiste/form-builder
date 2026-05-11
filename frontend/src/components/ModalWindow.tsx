@@ -1,4 +1,4 @@
- import React, { useContext } from "react";
+ import React from "react";
 import { useModalStore } from "../stores/useModalStore";  
 
 //MUI
@@ -15,7 +15,7 @@ import { useModalStore } from "../stores/useModalStore";
 
 // //MUI
  import { Divider } from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useModalStore } from "../stores/useModalStore";
 
 export default function ModalWindow({message}:{message:string}) {

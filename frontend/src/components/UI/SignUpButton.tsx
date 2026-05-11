@@ -2,13 +2,14 @@ import React from "react";
 import BasicButton from "../UI/BasicButton";
 
 
-export default function SignUpButton() {
+export default function SignUpButton({size}) {
     return(
         <BasicButton
           text={'Sign Up'} 
           color={'cyan.main'}
-          href={'signup'}
-          textColor={'white'} 
+          size={size}
+          textColor={'white'}
+          href={'/signup'} 
           
       />
     );

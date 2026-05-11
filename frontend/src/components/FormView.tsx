@@ -5,7 +5,7 @@ import BasicButton from './UI/BasicButton';
 import { useDispatch, useSelector } from "react-redux";
 import { submitNewEntry } from '../features/FormEntriesSlice';
 import { selectForm } from '../features/formSlice';
-import { selectUser } from "../features/UserSlice";
+
 import {
   TextField,
   Box,

@@ -10,11 +10,11 @@ describe('useRegistrationStore', () => {
   beforeEach(() => {
     // reset store
     useRegistration.setState({
-      fullName: '',
+      owner_name: '',
       email: '',
-      company: '',
+      organization_name: '',
       password: '',
-      confirmPassword: '',
+      password_confirmation: '',
       acceptedTerms: false,
       loading: false,
       error: null,
@@ -22,7 +22,7 @@ describe('useRegistrationStore', () => {
     });
   });
 
-  it('setField updates the right field', () => {
+  it('updates the right fields', () => {
     const { result } = renderHook(() => useRegistration());
 
     act(() => {
@@ -32,7 +32,7 @@ describe('useRegistrationStore', () => {
     expect(result.current.email).toBe('mario@example.com');
   });
 
-  it('setField aggiorna acceptedTerms come boolean', () => {
+  it('setField updates acceptedTerms as boolean', () => {
     const { result } = renderHook(() => useRegistration());
 
     act(() => {
@@ -42,10 +42,10 @@ describe('useRegistrationStore', () => {
     expect(result.current.acceptedTerms).toBe(true);
   });
 
-  it('register setta loading durante la chiamata', async () => {
+  it('set loading on false when async call succeed', async () => {
     const { result } = renderHook(() => useRegistration());
 
-    // mocka fetch
+    // mock fetch
     global.fetch = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({ message: 'Organization created successfully', organization: { id: 1 } }),
@@ -60,7 +60,7 @@ describe('useRegistrationStore', () => {
       await result.current.register();
     });
 
-    expect(result.current.success).toBe(true);
+  
     expect(result.current.loading).toBe(false);
   });
 

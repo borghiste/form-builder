@@ -1,17 +1,64 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 //MUI
 import { Box, ButtonGroup, Typography, Grid, Card, CardContent } from "@mui/material";
 // COMPONENTS
-import BasicButton from "../components/UI/BasicButton";
+
 
 import homeImg1 from '../assets/images/home-1.png';
 import SignUpButton from "../components/UI/SignUpButton";
 
 
+
+// Hook per triggerare l'animazione quando la sezione entra nel viewport
+function useIntersectionAnimation(threshold = 0.15) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); observer.disconnect(); } },
+      { threshold }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [threshold]);
+
+  return { ref, visible };
+}
+
+// Stili CSS iniettati una volta sola
+const ANIMATION_STYLES = `
+  .feat-card {
+    opacity: 0;
+    transition: opacity 0.6s ease, transform 12s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .feat-card.from-left  { transform: translateX(-80px); }
+  .feat-card.from-bottom { transform: translateY(60px); }
+  .feat-card.from-right { transform: translateX(80px); }
+  .feat-card.visible {
+    opacity: 1 !important;
+    transform: translate(0, 0) !important;
+  }
+`;
+
+let stylesInjected = false;
+function injectStyles() {
+  if (stylesInjected) return;
+  stylesInjected = true;
+  const style = document.createElement('style');
+  style.textContent = ANIMATION_STYLES;
+  document.head.appendChild(style);
+}
+
 export default function Home(){
+
   
-  console.log('home');
+ 
+
+  useEffect(() => { injectStyles(); }, []);
+  const { ref: featRef, visible: featVisible } = useIntersectionAnimation(0.1);
 
   return(
     <Box
@@ -31,12 +78,12 @@ export default function Home(){
 
         {/* Beneficio 1 */}
        
-         <Box component={'div'} sx={{display:'flex', flexDirection:{xs:'column', md:'row'}, justifyContent:'center', alignItems:'center', gap:4, mt:6}}>
+         <Box component={'div'} sx={{display:'flex', flexDirection:{xs:'column', md:'row'}, justifyContent:'center', alignItems:'center'}}>
          <img src={homeImg1}/>
 
 
-          <Box sx={{display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center', gap:2}}>
-            <Typography variant="h2" sx={{color:'text.primary', fontSize:40}}>
+          <Box sx={{display:'flex', flexDirection:'column', justifyContent:'center',  flexWrap: 'wrap', gap:2}}>
+            <Typography variant="h2" sx={{color:'text.primary', fontSize:{md: 40}, flexWrap:'wrap'}}>
              Intuitive interface
             </Typography>
             <Typography variant="body1" sx={{color:'text.secondary', maxWidth:300}}>
@@ -46,7 +93,7 @@ export default function Home(){
           </Box>
         </Box> 
 
-        <SignUpButton/>
+        <SignUpButton size={'large'}/>
 
         {/* Beneficio 2 */}
         <Box component={'div'} sx={{display:'flex', flexDirection:{xs:'column', md:'row-reverse'}, justifyContent:'center', alignItems:'center', gap:4, mt:6}}>
@@ -69,161 +116,90 @@ export default function Home(){
               Custom validations
             </Typography>
             <Typography variant="body1" sx={{color:'text.secondary', maxWidth:300}}>
-              Integra i tuoi moduli con i servizi che usi quotidianamente: email, CRM, database e molto altro.
+              Ensure data quality with custom validation rules and error messages.
             </Typography>
           </Box>
         </Box>
 
         {/* Features Grid Section */}
-        <Box sx={{mt:10, width:'100%'}}>
+        <Box ref={featRef} sx={{mt:10, width:'100%'}}>
           <Typography variant="h3" sx={{color:'text.primary', mb:6, textAlign:'center'}}>
-            Funzionalità Principali
+            Main features
           </Typography>
           
           <Grid container spacing={3} sx={{mb:6}}>
-            <Grid item xs={12} sm={6} md={4}>
-              <Card sx={{height:'100%', textAlign:'center', p:2}}>
+            <Grid item xs={12} sm={6} md={4} flexDirection={'column'} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+              <Card
+                className={`feat-card from-left${featVisible ? ' visible' : ''}`}
+                style={{ transitionDelay: '0ms' }}
+                sx={{height:'100%', textAlign:'center', p:2}}
+              >
                 <CardContent>
-                  <Typography variant="h5" sx={{color:'text.primary', mb:2}}>
+                  <Typography variant="h5" sx={{color:'text.primary'}}>
                     📱 Responsive Design
                   </Typography>
                   <Typography variant="body2" sx={{color:'text.secondary'}}>
-                    I tuoi moduli si adattano perfettamente a qualsiasi dispositivo
+                    your forms will look great on any device, from desktop to mobile, ensuring a seamless user experience
                   </Typography>
                 </CardContent>
               </Card>
             </Grid>
 
             <Grid item xs={12} sm={6} md={4}>
-              <Card sx={{height:'100%', textAlign:'center', p:2}}>
+              <Card
+                className={`feat-card from-bottom${featVisible ? ' visible' : ''}`}
+                style={{ transitionDelay: '150ms' }}
+                sx={{height:'100%', textAlign:'center', p:2}}
+              >
                 <CardContent>
                   <Typography variant="h5" sx={{color:'text.primary', mb:2}}>
                     📊 Analytics Real-time
                   </Typography>
                   <Typography variant="body2" sx={{color:'text.secondary'}}>
-                    Monitora le risposte in tempo reale con dashboard interattive
+                    track form performance with real-time analytics and gain insights into user behavior
                   </Typography>
                 </CardContent>
               </Card>
             </Grid>
 
             <Grid item xs={12} sm={6} md={4}>
-              <Card sx={{height:'100%', textAlign:'center', p:2}}>
+              <Card
+                className={`feat-card from-right${featVisible ? ' visible' : ''}`}
+                style={{ transitionDelay: '300ms' }}
+                sx={{height:'100%', textAlign:'center', p:2}}
+              >
                 <CardContent>
                   <Typography variant="h5" sx={{color:'text.primary', mb:2}}>
-                    🎨 Template Library
+                    🤖 Automations
                   </Typography>
                   <Typography variant="body2" sx={{color:'text.secondary'}}>
-                    Scegli tra centinaia di template professionali pronti all'uso
+                    automate repetitive tasks with powerful workflow automations
                   </Typography>
                 </CardContent>
               </Card>
             </Grid>
 
-            <Grid item xs={12} sm={6} md={4}>
-              <Card sx={{height:'100%', textAlign:'center', p:2}}>
-                <CardContent>
-                  <Typography variant="h5" sx={{color:'text.primary', mb:2}}>
-                    🔒 Sicurezza Enterprise
-                  </Typography>
-                  <Typography variant="body2" sx={{color:'text.secondary'}}>
-                    Crittografia end-to-end e conformità GDPR garantite
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-
-            <Grid item xs={12} sm={6} md={4}>
-              <Card sx={{height:'100%', textAlign:'center', p:2}}>
-                <CardContent>
-                  <Typography variant="h5" sx={{color:'text.primary', mb:2}}>
-                    🤖 Automazioni
-                  </Typography>
-                  <Typography variant="body2" sx={{color:'text.secondary'}}>
-                    Automatizza i flussi di lavoro con trigger e azioni personalizzate
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-
-            <Grid item xs={12} sm={6} md={4}>
-              <Card sx={{height:'100%', textAlign:'center', p:2}}>
-                <CardContent>
-                  <Typography variant="h5" sx={{color:'text.primary', mb:2}}>
-                    👥 Collaborazione
-                  </Typography>
-                  <Typography variant="body2" sx={{color:'text.secondary'}}>
-                    Lavora in team con permessi e ruoli personalizzabili
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
+           
           </Grid>
         </Box>
 
-        {/* Testimonials Section */}
-        <Box sx={{mt:8, width:'100%'}}>
-          <Typography variant="h3" sx={{color:'text.primary', mb:6, textAlign:'center'}}>
-            Cosa dicono i nostri clienti
-          </Typography>
-          
-          <Grid container spacing={3} sx={{mb:6}}>
-            <Grid item xs={12} md={4}>
-              <Card sx={{height:'100%', p:3}}>
-                <CardContent>
-                  <Typography variant="body1" sx={{color:'text.secondary', mb:2, fontStyle:'italic'}}>
-                    "Formitekt ha rivoluzionato il modo in cui raccogliamo feedback dai clienti. Intuitivo e potente!"
-                  </Typography>
-                  <Typography variant="subtitle2" sx={{color:'text.primary', fontWeight:'bold'}}>
-                    - Marco Rossi, CEO TechStart
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-
-            <Grid item xs={12} md={4}>
-              <Card sx={{height:'100%', p:3}}>
-                <CardContent>
-                  <Typography variant="body1" sx={{color:'text.secondary', mb:2, fontStyle:'italic'}}>
-                    "L'integrazione con i nostri sistemi è stata semplicissima. Risparmiamo ore di lavoro ogni settimana."
-                  </Typography>
-                  <Typography variant="subtitle2" sx={{color:'text.primary', fontWeight:'bold'}}>
-                    - Laura Bianchi, Marketing Manager
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-
-            <Grid item xs={12} md={4}>
-              <Card sx={{height:'100%', p:3}}>
-                <CardContent>
-                  <Typography variant="body1" sx={{color:'text.secondary', mb:2, fontStyle:'italic'}}>
-                    "Il miglior form builder che abbiamo mai usato. Il supporto clienti è eccezionale!"
-                  </Typography>
-                  <Typography variant="subtitle2" sx={{color:'text.primary', fontWeight:'bold'}}>
-                    - Andrea Verdi, Product Owner
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          </Grid>
-        </Box>
 
         {/* Final CTA Section */}
         <Box sx={{mt:10, textAlign:'center', width:'100%', bgcolor:'rgba(0,188,212,0.1)', borderRadius:2, p:6}}>
           <Typography variant="h3" sx={{color:'text.primary', mb:2}}>
-            Pronto a iniziare?
+            ready to get started?
           </Typography>
           <Typography variant="h6" sx={{color:'text.secondary', mb:4}}>
-            Crea il tuo primo modulo in meno di 5 minuti. Nessuna carta di credito richiesta.
+            Try PickForm for free and experience the power of effortless form building.
           </Typography>
           <ButtonGroup>
-            <BasicButton
-              text={'Inizia Gratis'} 
+            <SignUpButton
+              text={'Try for free'} 
               color={'cyan.main'}
               size={'large'} 
-              textColor={'white'} 
-              onClick={() => setShowRegisterForm(true)}
+              textColor={'white'}
+              href={'/signup'} 
+              
             />
           </ButtonGroup>
         </Box>
