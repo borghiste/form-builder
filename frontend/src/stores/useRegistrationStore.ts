@@ -41,13 +41,13 @@ export const useRegistration = create<RegistrationState>((set, get) => ({
         body: JSON.stringify({ owner_name, email, organization_name, password, password_confirmation, acceptedTerms }),
       });
       
-      const data = await res.json();
-
+      
       
       if(res.status = 422) {
         set({ loading: false, errors: data.errors});
         return;
       }
+      const data = await res.json();
       
       set({ loading: false, success: true });
       return data;
@@ -61,7 +61,7 @@ export const useRegistration = create<RegistrationState>((set, get) => ({
         
 
       }
-      set({ loading: false, error: e.message });
+      set({ loading: false, success: false, error: e.message });
     }
   },
 }));

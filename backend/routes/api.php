@@ -18,21 +18,19 @@ use App\Http\Controllers\FormEntriesController;
 // FIRST SIGN UP
 // ths route points to the register method of the RegistrationController, which is responsible for handling user registration and creating the associated organization. When a user sends a POST request to this route with the necessary data for registration, the register method of the RegistrationController is called to process the request, create the user and organization, and send a verification email to the user.
 Route::post('register', [RegistrationController::class, 'register']);
-
 // AUTHENTICATION
 
-Route::get('user', [AuthController::class, 'getAuthenticatedUser']);
-
-
-
-
-
-// users actions routes
 Route::post('login', [AuthController::class, 'login']);
+
+
+
+Route::middleware('auth:sanctum')->group(function () {
+
+    // This route points to the getAuthenticatedUser method of the AuthController, which is responsible for retrieving the currently authenticated user's information. When a user sends a GET request to this route, the getAuthenticatedUser method is called to return the user's details in a JSON response. This route is protected by the auth:sanctum middleware, which ensures that only authenticated users can access it.
+Route::get('user', [AuthController::class, 'getAuthenticatedUser']);
 Route::post('logout', [AuthController::class, 'logout']);
 
-
-// forms action routes
+// fORMS ACTION ROUTES
 Route::get('forms', [FormListController::class, 'getFormList']);
 
  Route::post('forms', [FormListController::class, 'addNewForm']);
@@ -63,3 +61,5 @@ Route::get('entries', [FormEntriesController::class, 'getFormsEntries']);
 //SUBMIT FORM
 Route::post('forms/entries/submit', [FormEntryController::class, 'submitFormEntry']
 );
+});
+

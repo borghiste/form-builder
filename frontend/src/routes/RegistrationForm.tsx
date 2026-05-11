@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 // COMPONENTS
 import BasicButton from "../components/UI/BasicButton";
-import ModalWindow from "../components/ModalWindow";
+
 // MUI
 import {
   Box,

@@ -9,6 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Services\RegistrationService;
 
 
+
 class RegistrationTest extends TestCase
 {
     // test per verificare la funzionalità di registrazione dell'organizzazione e dell'utente al servizio.
@@ -22,7 +23,8 @@ class RegistrationTest extends TestCase
     {
 // viene utilizzato Mail::fake() per simulare l'invio delle email, consentendo di verificare se le email vengono inviate correttamente senza effettivamente inviarle.
         Mail::fake();
-      $this->app->instance(RegistrationService::class, new RegistrationService());
+        
+      
 
       // viene creato un array di dati di input per la registrazione, che include il nome dell'organizzazione, il nome del proprietario, l'email e la password.
       $data = ['organization_name' => 'acme organization',

@@ -1,10 +1,8 @@
-import React from "react";
-import { selectUser } from "../features/UserSlice";
-import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
+import { useAuthentication } from "../stores/useAuthStore";
 export default function ProtectedRoute({children}){
-    const User= useSelector(selectUser);
+    const {user } = useAuthentication();
 
-    return User?.id !== null ?children :  <Navigate to='/login' replace/>
+    return user?.id !== null ?children :  <Navigate to='/login' replace/>
     
 }

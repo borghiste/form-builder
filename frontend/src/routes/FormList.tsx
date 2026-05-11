@@ -21,18 +21,22 @@ import ModalWindow from "../components/ModalWindow";
 // REDUX
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch } from "../app/store";
-import { selectUser } from "../features/UserSlice";
+
 import { fetchFormsList, deleteForm, getForm } from "../features/formsListSlice";
 import { selectForms } from "../features/formsListSlice";
 import { setFormFields, selectForm, setForm } from "../features/formSlice";
-import { setModalOpen, setMode } from "../features/ModalSlice";
+import { selectModalMode, setModalOpen, setMode } from "../features/ModalSlice";
+import { useModalStore } from "../stores/useModalStore";
+import { useAuthentication } from "../stores/useAuthStore";
 
 
 
 export default function FormsList() {
+  const {setModalOpen} = useModalStore();
   const dispatch = useDispatch<AppDispatch>();
   const forms = useSelector(selectForms);
-  const User = useSelector(selectUser);
+  const {user} = useAuthentication();
+  
   const form = useSelector(selectForm);
   
 
@@ -47,12 +51,14 @@ export default function FormsList() {
   };
 
   const handleNewFormClick = () => {
+    selectModalMode('newForm');
+    setModalOpen(true);
   
 
-      dispatch(setMode('newForm'));
+     
 
     
-    dispatch(setModalOpen(true));
+    
     dispatch(setFormFields([]));
   };
 
@@ -93,7 +99,7 @@ export default function FormsList() {
                 <TableCell><b>Created Time</b></TableCell>
                 <TableCell><b>Updated Time</b></TableCell>
                 <TableCell sx={{display:'flex', justifyContent:'space-between', alignItems:'center'}}><b>Actions</b>
-                {User.role === "admin" && (
+                {user.role === "admin" && (
           <BasicButton
             text="+ NEW FORM"
             variant="contained"
@@ -125,7 +131,7 @@ export default function FormsList() {
                           textColor="white"
                           onClick={() => handleViewForm(form.id)}
                         />
-                        {User.role === "admin" && (
+                        {user.role === "admin" && (
                           <>
                             <BasicButton
                               text="Edit"

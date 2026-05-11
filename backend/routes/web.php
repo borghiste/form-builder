@@ -9,6 +9,9 @@ use App\Http\Controllers\AuthController;
 Route::get('/verify.email/{user}', [AuthController::class, 'verify'])->name('verify.email')->middleware('signed');
 
 
+
+
+
 Route::get('/', function () {
     return view('welcome');
 });

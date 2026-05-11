@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 //MUI
 import { Box, ButtonGroup, Typography, Grid, Card, CardContent } from "@mui/material";
 // COMPONENTS
-import BasicButton from "../components/UI/BasicButton";
+
 
 import homeImg1 from '../assets/images/home-1.png';
 import SignUpButton from "../components/UI/SignUpButton";

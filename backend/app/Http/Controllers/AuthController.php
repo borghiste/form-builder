@@ -7,7 +7,9 @@ use Illuminate\Http\Request;
 use App\Services\VerifyService;
 use App\Models\User;
 use App\Services\LoginService;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Validation\ValidationException;
+
 
 
 
@@ -17,16 +19,18 @@ class AuthController extends Controller
 {
  
     private LoginService $loginService;
+    private VerifyService $verifyService;
+
     public function __construct()
     {
         $this->loginService = new LoginService();
-        $this->VerifyService = new VerifyService();
-    
+        $this->verifyService = new VerifyService();
     }
-    // funzione per verificare l'email dell'utente. Viene chiamata quando l'utente clicca sul magic link di verifica inviato via email. Controlla se il tag di verifica corrisponde al timestamp dell'ultimo login dell'utente. Se la verifica ha successo, aggiorna il timestamp dell'ultimo login e la data di verifica dell'email, e reindirizza l'utente al subdominio appropriato del frontend in base alla sua organizzazione.
+  
     public function verify(Request $request, User $user)
     {
-        return $this->VerifyService->verify($request, $user);
+        return $this->verifyService->verify($request, $user);
+       
     }
 
     public function getAuthenticatedUser(Request $request)
@@ -49,24 +53,33 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         try {
-            $validated = $request->validate([
+            //valiidate the incoming request data to ensure that the email and password fields are present and correctly formatted. If the validation fails, a ValidationException will be thrown, which is caught in the catch block to return a JSON response with the validation errors and a 422 status code.
+            $credentials = $request->validate([
                 'email' => 'required|email',
-                'password' => 'required|string',
+                'password' => 'required|string|min:8',
             ]);
-        } catch (ValidationException $e) {
-            return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 422);
+
+            $result = $this->loginService->login($request, $credentials);
+
+            return response()->json([
+                'message' => 'Login successful',
+                'user' => $result['user'],
+                'organization' => $result['organization']
+            ], 200);
+            
+        } 
+        catch (ValidationException $e) {
+            return response()->json(['message' => $e->getMessage(), 'errors' => $e->errors()], 422);
         }
 
-        try {
-            $result = $this->loginService->login($validated);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Login failed, please try again', 'error' => $e->getMessage()], 500);
+        catch (AuthenticationException $e) {
+            return response()->json(['message' => $e->getMessage()], 401);
         }
 
-        return response()->json([
-            'message' => 'Login successful',
-            'user' => $result
-        ], 200);
+        
+
+      
+        
     }
 
 }

@@ -40,7 +40,6 @@ export default function BasicButton({text,
                     fullWidth={fullWidth}
                     fontSize={fontSize}
                     borderRadius={borderradius}
-                    href={href}
                     
        
         
