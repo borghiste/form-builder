@@ -15,7 +15,7 @@ use Illuminate\Support\Str;
 class RegistrationService
 {
     /**
-     * Registra una nuova organizzazione e il suo owner.
+     
      *
      * @param  array $data  Dati validati dal Controller (organization_name, owner_name, email, password, plan?)
      * @return array        ['organization' => Organization, 'user' => User]

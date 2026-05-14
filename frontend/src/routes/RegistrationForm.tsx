@@ -34,7 +34,7 @@ export default function RegistrationForm() {
   // prendi i dati e funzioni dallo store
   const {owner_name, email, password, loading, error, errors,  success, setField, register} = useRegistration();
   const navigate = useNavigate();
-  const {modalOpen, setModalMode, setModalOpen} = useModalStore();
+  
 const [message, setMessage] = useState('');
 const attempt = useRef(0);
 

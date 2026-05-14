@@ -15,15 +15,18 @@ import MenuItem from '@mui/material/MenuItem';
 import SignUpButton from './UI/SignUpButton';
 // REDUX
 import { useDispatch, useSelector } from 'react-redux';
+import {useNavigate } from 'react-router-dom';
 
 import { switchToDarkMode, selectMode } from '../features/themeSlice';
 import BasicButton from './UI/BasicButton';
 import { useAuthentication } from '../stores/useAuthStore';
 
+
 export default function Header() {
   const dispatch = useDispatch();
-  const {organization, user} = useAuthentication();
-  const subdomain = organization?.subdomain;
+  const navigate = useNavigate();
+  const {organization, user, subdomain, logoutUser} = useAuthentication();
+
  
   const darkModeIsOn = useSelector(selectMode);
 
@@ -40,7 +43,8 @@ export default function Header() {
   };
 
   const handleLogout = () => {
-    dispatch(Logout());
+    logoutUser();
+    navigate('/login');
   };
 
   const handleThemeToggle = () => {
@@ -52,7 +56,7 @@ export default function Header() {
     { name: 'Home', path: '/' },
     ...(user?.id
       ? [
-          { name: 'forms', path: (subdomain != undefined & user) ? `/${subdomain}/forms` : '/login' },
+          { name: 'forms', path: (subdomain != undefined && user) ? `/${subdomain}/forms` : '/login' },
           {name:'signup', path:'signup'},
           ...(user?.role === 'admin'
             ? [{ name: 'Entries', path: '/FormEntries' }]

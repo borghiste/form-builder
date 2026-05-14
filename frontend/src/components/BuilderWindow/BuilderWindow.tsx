@@ -42,8 +42,7 @@ export default function BuilderWindow({ handleModalClose }) {
   const selectedField = useSelector(selectField);
   const formFields = form?.form_fields || [];
 
-  // Context
-  const { context } = useContext(modalContext);
+ 
 
   // Local state
   const [draggedField, setDraggedField] = useState(null);

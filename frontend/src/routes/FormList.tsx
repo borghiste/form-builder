@@ -25,14 +25,15 @@ import { AppDispatch } from "../app/store";
 import { fetchFormsList, deleteForm, getForm } from "../features/formsListSlice";
 import { selectForms } from "../features/formsListSlice";
 import { setFormFields, selectForm, setForm } from "../features/formSlice";
-import { selectModalMode, setModalOpen, setMode } from "../features/ModalSlice";
+
+
 import { useModalStore } from "../stores/useModalStore";
 import { useAuthentication } from "../stores/useAuthStore";
 
 
 
 export default function FormsList() {
-  const {setModalOpen} = useModalStore();
+  const {setModalOpen, setModalMode} = useModalStore();
   const dispatch = useDispatch<AppDispatch>();
   const forms = useSelector(selectForms);
   const {user} = useAuthentication();
@@ -46,12 +47,12 @@ export default function FormsList() {
 
   const handleModalClose = () => {
     setModalOpen(false);
-    setMode(null);
+    setModalMode(null);
     dispatch(setForm({ ...form, name: '' }));
   };
 
   const handleNewFormClick = () => {
-    selectModalMode('newForm');
+    setModalMode('newForm');
     setModalOpen(true);
   
 
@@ -69,7 +70,7 @@ export default function FormsList() {
                   form_fields: selectedForm?.form_fields
     }))
     setModalOpen(true);
-    setMode('view');
+    setModalMode('view');
 
     
   };
@@ -99,7 +100,7 @@ export default function FormsList() {
                 <TableCell><b>Created Time</b></TableCell>
                 <TableCell><b>Updated Time</b></TableCell>
                 <TableCell sx={{display:'flex', justifyContent:'space-between', alignItems:'center'}}><b>Actions</b>
-                {user.role === "admin" && (
+                {user?.role === "admin" && (
           <BasicButton
             text="+ NEW FORM"
             variant="contained"

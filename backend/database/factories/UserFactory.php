@@ -31,7 +31,7 @@ class UserFactory extends Factory
             'organization_id' => Organization::factory(),
             'role' => 'admin',
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('adminadmin'),
+            'password' => static::$password ??= Hash::make('devadmin'),
             'remember_token' => Str::random(10),
         ];
     }

@@ -25,26 +25,18 @@ export default function LoginPage(){
 
 
 async function handleLogin(e) {
-    e.preventDefault();
-   
-  
-  
-     if (email === '' || password === '') {
-       setHelperText('email and password are required');
-       return;
-     }
 
+    e.preventDefault();
+    if (email === '' || password === '') {
+      setHelperText('email and password are required');
+      return;
+    }
      try {
+     
+
        const response = await loginUser();
 
 
-
- 
-     
-
-      
-
-     
 
        navigate(`/${response.organization.subdomain}/forms`);
      } catch (error) {
@@ -65,6 +57,7 @@ return(
 
 <Typography variant="h5" align="center" gutterBottom sx={{color:'text.primary'}}>Login</Typography>
 <Box component={'form'} role="login" onSubmit={handleLogin}>
+
 
   
 <InputLabel >email:</InputLabel>

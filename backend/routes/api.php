@@ -20,8 +20,8 @@ use App\Http\Controllers\FormEntriesController;
 Route::post('register', [RegistrationController::class, 'register']);
 // AUTHENTICATION
 
-Route::post('login', [AuthController::class, 'login']);
 
+Route::middleware('web')->post('login', [AuthController::class, 'login']);
 
 
 Route::middleware('auth:sanctum')->group(function () {

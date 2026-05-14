@@ -1,4 +1,4 @@
-import React, { createContext, useState} from 'react';
+import React, { createContext, useState, useEffect} from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from './components/Layout';
 import { ThemeProvider } from '@emotion/react';
@@ -24,7 +24,12 @@ import NotFound from './routes/NotFound';
 // ---------------------- APP ----------------------
 export default function App() {
   const themeState = useSelector(selectMode); 
-  const { organization, subdomain, user} = useAuthentication();
+  const { subdomain, initializeAuth, user} = useAuthentication();
+  
+  useEffect(() => {
+    initializeAuth(); 
+  }, []);
+
 
   
 
@@ -40,10 +45,10 @@ export default function App() {
               <Route path="/login" element={user?.id ? null : <Login/>} />
               <Route
                 path={`/${subdomain}/forms`}
-                element={
-                  <ProtectedRoute>
+                element={ user?.id ?
+                   (<ProtectedRoute>
                     <FormsList/>
-                  </ProtectedRoute>
+                   </ProtectedRoute>) : <Login/>
                 }
               />
               <Route

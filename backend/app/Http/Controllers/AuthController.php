@@ -35,7 +35,7 @@ class AuthController extends Controller
 
     public function getAuthenticatedUser(Request $request)
     {
-        $user = $request->user();
+        $user = $request->user()?->load('organization');
 
         if (!$user) {
             return response()->json(['message' => 'No authenticated user'], 401);
@@ -43,11 +43,11 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Authenticated user retrieved successfully',
-            'user' => $user
+            'user' => $user,
+            'organization' => $user->organization,
         ], 200);
     }
 
- 
 
 
     public function login(Request $request)
@@ -80,6 +80,15 @@ class AuthController extends Controller
 
       
         
+    }
+
+    public function logout(Request $request)
+    {
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+
+        return response()->json(['message' => 'Logout successful'], 200);
     }
 
 }
