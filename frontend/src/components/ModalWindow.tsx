@@ -1,5 +1,5 @@
  import React from "react";
-import { useModalStore } from "../stores/useModalStore";  
+ 
 
 //MUI
 
@@ -10,7 +10,7 @@ import { useModalStore } from "../stores/useModalStore";
  import FormEntry from './FormEntry';
  
  import FormView from "./FormView";
-
+import InvitationPage from '../components/InvitationPage';
 
 
 // //MUI
@@ -19,7 +19,7 @@ import { useDispatch } from "react-redux";
 import { useModalStore } from "../stores/useModalStore";
 
 export default function ModalWindow({message}:{message:string}) {
-  const dispatch = useDispatch();
+ 
   const {modalMode} = useModalStore();
   const {modalOpen, setModalOpen} = useModalStore();
   
@@ -42,6 +42,16 @@ export default function ModalWindow({message}:{message:string}) {
      
   }
 
+  function renderStatus (status: string) {
+    switch (status) {
+    case 'newForm': return <BuilderWindow/>;
+    case 'view': return <FormView/>;
+    case 'submission': return <FormEntry/>;
+    case 'invite' : return <InvitationPage/>
+    default: return null
+    }
+  }
+
   return(
     <>
     <Modal
@@ -49,7 +59,8 @@ export default function ModalWindow({message}:{message:string}) {
                      onClose={() => setModalOpen(false)}
                      // aria-labelledby="modal-modal-title"
                      // aria-describedby="modal-modal-description"
-                     sx={{zIndex:1, overflow:'scroll'}}>
+                     sx={{zIndex:1, overflow:'scroll'}}
+                     >
                       
                       <Box sx={boxStyle}>
                         {message}
@@ -57,7 +68,11 @@ export default function ModalWindow({message}:{message:string}) {
                         <Box sx={{display:'flex', flexDirection:{xs:'column',sm:'row'}}}>
 
                         
-                         {
+                        {
+                          renderStatus(modalMode)
+                        }
+                         {/* {
+                          
                           (modalMode === 'newForm' || modalMode === 'editing') && <BuilderWindow/> 
                             
                           } 
@@ -65,7 +80,7 @@ export default function ModalWindow({message}:{message:string}) {
 
                           {/* {context === 'created' && 'created'} */}
 
-                          { modalMode === 'submission' && <FormEntry  />}
+                          {/* { modalMode === 'submission' && <FormEntry  />} */} 
                       
                         </Box>
                         

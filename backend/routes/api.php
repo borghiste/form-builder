@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\FormController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,7 +22,7 @@ Route::post('register', [RegistrationController::class, 'register']);
 // AUTHENTICATION
 
 
-Route::middleware('web')->post('login', [AuthController::class, 'login']);
+Route::middleware('web')->post('login', [AuthController::class, 'login'])->name('login');
 
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -29,6 +30,14 @@ Route::middleware('auth:sanctum')->group(function () {
     // This route points to the getAuthenticatedUser method of the AuthController, which is responsible for retrieving the currently authenticated user's information. When a user sends a GET request to this route, the getAuthenticatedUser method is called to return the user's details in a JSON response. This route is protected by the auth:sanctum middleware, which ensures that only authenticated users can access it.
 Route::get('user', [AuthController::class, 'getAuthenticatedUser']);
 Route::post('logout', [AuthController::class, 'logout']);
+
+
+//invitations routes
+Route::middleware('auth:sanctum')->group(function () {
+   
+    Route::get('invitations', [InvitationController::class, 'getInvitations']);
+    
+});
 
 // fORMS ACTION ROUTES
 Route::get('forms', [FormListController::class, 'getFormList']);

@@ -59,7 +59,7 @@ export default function Header() {
           { name: 'forms', path: (subdomain != undefined && user) ? `/${subdomain}/forms` : '/login' },
           {name:'signup', path:'signup'},
           ...(user?.role === 'admin'
-            ? [{ name: 'Entries', path: '/FormEntries' }]
+            ? [{ name: 'entries', path: `/${subdomain}/entries` }]
             : []
           ),
           { 
@@ -168,15 +168,7 @@ export default function Header() {
           >
              PickForm
           </Typography>
-          <ButtonGroup sx={{display:{xs:'flex', md:'none'}, alignItems:'center', justifyContent:'center'}}>
-          <SignUpButton/>
-          
-          <BasicButton text={'login'}
-          variant={'contained'}
-          textColor={'primary'}/>
-
-
-          </ButtonGroup>
+         
           </Box>
 
           {/* Menu Desktop */}

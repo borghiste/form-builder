@@ -18,6 +18,7 @@ import AboutPage from './routes/AboutPage';
 import RegisterForm from './routes/RegistrationForm';
 import TermsAndPrivacy from './routes/TermsandPrivacy';
 import NotFound from './routes/NotFound';
+import InvitationPage from '../src/components/InvitationPage';
 
 
 
@@ -41,7 +42,7 @@ export default function App() {
           <Layout>
             <Routes>
               <Route path={`/`} element={<Home />} />
-              <Route path="/signup" element={ user == null ? <Login/> : <RegisterForm/>} />
+              <Route path="/signup" element={ user ? <Login/> : <RegisterForm/>} />
               <Route path="/login" element={user?.id ? null : <Login/>} />
               <Route
                 path={`/${subdomain}/forms`}
@@ -51,12 +52,15 @@ export default function App() {
                    </ProtectedRoute>) : <Login/>
                 }
               />
+
+              
+
               <Route
-                path="/entries"
-                element={
+                path={`/${subdomain}/entries`}
+                element={  
                   <ProtectedRoute>
                     <FormEntriesTable/>
-                  </ProtectedRoute>
+                  </ProtectedRoute >
                 }
               />
 

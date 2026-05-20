@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Benvenuto su {{ config('app.name') }}</title>
+    <title>Welcome on {{ config('app.name') }}</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -79,8 +79,8 @@
         }
         .btn {
             display: inline-block;
-            background: #2c2c2a;
-            color: #ffffff !important;
+            background: #3D71D9;
+            color: #ffffff;
             text-decoration: none;
             font-size: 14px;
             font-weight: 500;
@@ -88,6 +88,51 @@
             border-radius: 8px;
             margin-top: 8px;
             letter-spacing: -0.1px;
+        }
+        .btn-outline {
+            display: inline-block;
+            background: transparent;
+            color: #2c2c2a !important;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 11px 24px;
+            border-radius: 8px;
+            border: 0.5px solid #2c2c2a;
+            margin-top: 8px;
+            letter-spacing: -0.1px;
+        }
+        .divider {
+            height: 0.5px;
+            background: #d3d1c7;
+            margin: 28px 0;
+        }
+        .invite {
+            background: #f5f5f3;
+            border-radius: 8px;
+            border: 0.5px solid #d3d1c7;
+            padding: 20px 24px;
+        }
+        .invite-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: #888780;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .invite-title {
+            font-size: 15px;
+            font-weight: 500;
+            color: #2c2c2a;
+            margin-bottom: 8px;
+            letter-spacing: -0.2px;
+        }
+        .invite-text {
+            font-size: 14px;
+            color: #5f5e5a;
+            line-height: 1.6;
+            margin-bottom: 16px;
         }
         .footer {
             padding: 20px 32px;
@@ -113,36 +158,49 @@
         </div>
 
         <div class="body">
-            <h1 class="title">Ciao, {{ $userName }}!</h1>
+            <h1 class="title">Hello, {{ $userName }}!</h1>
             <p class="text">
-                We su {{ config('app.name') }}. Il tuo account è stato creato con successo.
-                Da adesso puoi iniziare a costruire i tuoi form.
+                Welcome on {{ config('app.name') }}. Your account was created  successfully.
+                Please, make sure to click the button below to verify your email address and activate your account so you can start building your forms immediately.
+
             </p>
 
+            <h2 class="feature-title">Here's what you can do on PickForm</h2>
             <div class="features">
                 <div class="feature">
                     <div class="feature-dot"></div>
-                    <span class="feature-text"><strong>Drag & drop</strong> — trascina i campi per costruire il tuo form in pochi secondi.</span>
+                    <span class="feature-text"><strong>Drag & drop</strong> : drag fields to build your forms in few seconds, drop them anywhere you want.</span>
                 </div>
                 <div class="feature">
                     <div class="feature-dot"></div>
-                    <span class="feature-text"><strong>Validazioni</strong> — aggiungi regole di validazione direttamente dall'interfaccia.</span>
+                    <span class="feature-text"><strong>Validations</strong>: add validation rules directly from the interface.</span>
                 </div>
                 <div class="feature">
                     <div class="feature-dot"></div>
-                    <span class="feature-text"><strong>Preview</strong> — visualizza il form in tempo reale prima di pubblicarlo.</span>
+                    <span class="feature-text"><strong>Preview</strong>: Preview your forms in real time.</span>
                 </div>
             </div>
 
-            <p class="text">Clicca il pulsante per accedere alla dashboard.</p>
+            <p class="text">Click the button to access the dashboard.</p>
 
-            <a href="{{ $url }}" class="btn">Accedi alla dashboard →</a>
+            <a href="{{ $url }}" class="btn">Confirm your account →</a>
+
+            <div class="divider"></div>
+
+            <div class="invite">
+               
+                <h2 class="invite-title">Work together with your colleagues by sending them an invite
+                </h2>
+                
+            
+               
+            </div>
         </div>
 
         <div class="footer">
             <p class="footer-text">
-                Hai ricevuto questa email perché hai creato un account su {{ config('app.name') }}.<br>
-                Se non sei stato tu, <a href="{{ $url }}" class="footer-link">contattaci</a>.
+            You received this email because you created an account on {{ config('app.name') }}.<br>
+                if this wasn't you, please <a href="mailto:sborghi92@gmail.com" class="footer-link">contatact me</a>.
             </p>
         </div>
 

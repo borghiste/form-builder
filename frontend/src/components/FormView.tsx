@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import BasicButton from './UI/BasicButton';
 //REDUX
 import { useDispatch, useSelector } from "react-redux";
+import {useAuthentication} from '../stores/useAuthStore';
 import { submitNewEntry } from '../features/FormEntriesSlice';
 import { selectForm } from '../features/formSlice';
 
@@ -85,7 +86,7 @@ const renderedComponent = {
 export default function FormView({ disabledFields, entries }) {
   const dispatch = useDispatch();
   const form = useSelector(selectForm);
-  const user = useSelector(selectUser);
+  const user = useAuthentication();
   const [entryData, setEntryData] = useState({form_fields: entries || {} });
 
   const handleChange = (e) => {

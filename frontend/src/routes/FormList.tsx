@@ -12,6 +12,7 @@ import {
   TableRow,
   Paper,
   Box,
+  TableFooter,
 } from "@mui/material";
 
 // COMPONENTS
@@ -30,6 +31,9 @@ import { setFormFields, selectForm, setForm } from "../features/formSlice";
 import { useModalStore } from "../stores/useModalStore";
 import { useAuthentication } from "../stores/useAuthStore";
 
+// utils
+
+
 
 
 export default function FormsList() {
@@ -42,45 +46,42 @@ export default function FormsList() {
   
 
   useEffect(() => {
-    dispatch(fetchFormsList());
-  }, forms);
+     dispatch(fetchFormsList());
+   }, forms);
 
   const handleModalClose = () => {
-    setModalOpen(false);
+     setModalOpen(false);
     setModalMode(null);
     dispatch(setForm({ ...form, name: '' }));
   };
 
-  const handleNewFormClick = () => {
-    setModalMode('newForm');
-    setModalOpen(true);
-  
+   const handleNewFormClick = () => {
+     setModalMode('newForm');
+     setModalOpen(true);
+     dispatch(setFormFields([]));
+   };
 
-     
-
-    
-    
-    dispatch(setFormFields([]));
-  };
-
-  const handleViewForm = async (formId: number) => {
-    const selectedForm = await dispatch(getForm(formId)).unwrap();
+   const handleViewForm = async (formId: number) => {
+     const selectedForm = await dispatch(getForm(formId)).unwrap();
    
-    dispatch(setForm({id: selectedForm.id,name:selectedForm.name,
-                  form_fields: selectedForm?.form_fields
-    }))
-    setModalOpen(true);
-    setModalMode('view');
+     dispatch(setForm({id: selectedForm.id,name:selectedForm.name,
+                   form_fields: selectedForm?.form_fields
+     }))
+     setModalOpen(true);
+     setModalMode('view');
+   };
 
-    
-  };
+   function handleInviteClick() {
+    setModalMode('invite');
+    setModalOpen(true);
+   }
 
   const handleEditForm = async (formId: number) => {
     const selectedForm = await dispatch(getForm(formId)).unwrap();
     dispatch(setFormFields(selectedForm.form_fields));
     dispatch(setForm(selectedForm));
     setModalOpen(true);
-    setContext('editing');
+  
   };
 
   return (
@@ -93,7 +94,7 @@ export default function FormsList() {
 
         <TableContainer component={Paper} sx={{ mt: 2, 
            bgcolor:'background.default' }}>
-          <Table sx={{ minWidth: 650 }} aria-label="forms table">
+          <Table sx={{ minWidth: '100%' }} aria-label="forms table">
             <TableHead>
               <TableRow>
                 <TableCell><b>Form Name</b></TableCell>
@@ -102,12 +103,12 @@ export default function FormsList() {
                 <TableCell sx={{display:'flex', justifyContent:'space-between', alignItems:'center'}}><b>Actions</b>
                 {user?.role === "admin" && (
           <BasicButton
-            text="+ NEW FORM"
+            text="+ new form"
             variant="contained"
             color="gray.light"
             textColor="black"
            
-            onClick={handleNewFormClick}
+             onClick={handleNewFormClick}
           />
         )}
         </TableCell>
@@ -115,6 +116,7 @@ export default function FormsList() {
               </TableRow>
             </TableHead>
             <TableBody>
+              
               {forms?.map((form) => {
                 const createdDate = new Date(form.created_at).toISOString().slice(0, 10);
                 const updatedDate = new Date(form.updated_at).toISOString().slice(0, 10);
@@ -153,6 +155,28 @@ export default function FormsList() {
               })}
             </TableBody>
           </Table>
+          
+
+        <TableFooter sx={{display:'flex', justifyContent:'end'}}>
+          
+              <TableRow sx={{display:'flex', maxWidth:'100%'}}>
+                
+                <TableCell sx={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+                {user?.role === "admin" && (
+          <BasicButton
+            text="+ invite"
+            variant="contained"
+            color="gray.light"
+            textColor="black"
+            onClick={() => handleInviteClick()}
+           
+            
+          />
+        )}
+        </TableCell>
+               
+              </TableRow>
+            </TableFooter>
         </TableContainer>
       </Container>
 
