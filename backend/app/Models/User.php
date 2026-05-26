@@ -52,18 +52,15 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Form::class, 'created_by');
     }
 
-    public function formPermissions(): HasMany
-    {
-        return $this->hasMany(FormPermission::class);
-    }
+    
 
     // Invitations
 
     public function Invitations()
     {
-       
-        return $this->hasMany(Invitation::class);
+          return $this->hasMany(Invitation::class);
     }
+
     public function inviter(): BelongsTo
     {
         return $this->belongsTo(User::class, 'invited_by');

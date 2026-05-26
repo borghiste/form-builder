@@ -14,21 +14,22 @@ import MenuItem from '@mui/material/MenuItem';
 // COMPONENTS
 import SignUpButton from './UI/SignUpButton';
 // REDUX
-import { useDispatch, useSelector } from 'react-redux';
+
 import {useNavigate } from 'react-router-dom';
 
 import { switchToDarkMode, selectMode } from '../features/themeSlice';
 import BasicButton from './UI/BasicButton';
-import { useAuthentication } from '../stores/useAuthStore';
+import { useThemeStore, useAuthStore } from '../stores/index';
 
 
 export default function Header() {
-  const dispatch = useDispatch();
+  
   const navigate = useNavigate();
-  const {organization, user, subdomain, logoutUser} = useAuthentication();
+  const {organization, user, subdomain, logoutUser} = useAuthStore();
+  const {darkMode, toggleDarkMode} = useThemeStore();
 
  
-  const darkModeIsOn = useSelector(selectMode);
+  
 
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
 
@@ -48,7 +49,7 @@ export default function Header() {
   };
 
   const handleThemeToggle = () => {
-    dispatch(switchToDarkMode(!darkModeIsOn));
+    toggleDarkMode();
   };
 
   // Costruzione dinamica delle pagine in base allo stato utente
@@ -211,18 +212,18 @@ export default function Header() {
           >
             <LightModeIcon
               sx={{
-                color: darkModeIsOn ? 'primary.main' : 'warning.main',
+                color: darkMode ? 'primary.main' : 'warning.main',
               }}
             />
             <Switch
               color="primary"
-              checked={darkModeIsOn}
+              checked={darkMode}
               onChange={handleThemeToggle}
               inputProps={{ 'aria-label': 'change light/dark theme' }}
             />
             <DarkModeIcon
               sx={{
-                color: darkModeIsOn ? 'primary.main' : 'text.primary',
+                color: darkMode ? 'primary.main' : 'text.primary',
               }}
             />
 

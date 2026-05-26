@@ -7,7 +7,7 @@ import ModalWindow from "../components/ModalWindow";
 //REDUX
 import { selectEntries, fetchFormEntries} from '../features/FormEntriesSlice';
 import { useDispatch, useSelector } from "react-redux";
-import { setEntryObj, setMode,  setModalOpen, selectModalOpen} from "../features/ModalSlice";
+import { useModalStore } from "../stores/index";
 
 import {
   Table,
@@ -28,7 +28,7 @@ import BasicButton from "../components/UI/BasicButton";
 export default function FormEntriesTable() {
   const dispatch = useDispatch();
   const entries = useSelector(selectEntries);
-  const modalOpen = useSelector(selectModalOpen);
+  const {modalOpen, setModalOpen, setModalMode} = useModalStore();
 
   
   useEffect(() => {

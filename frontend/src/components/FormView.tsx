@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import BasicButton from './UI/BasicButton';
 //REDUX
 import { useDispatch, useSelector } from "react-redux";
-import {useAuthentication} from '../stores/useAuthStore';
+import {useAuthStore} from '../stores/index';
 import { submitNewEntry } from '../features/FormEntriesSlice';
 import { selectForm } from '../features/formSlice';
 

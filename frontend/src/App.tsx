@@ -6,7 +6,7 @@ import { LightTheme, DarkTheme } from '../src/theme/theme';
 import { useSelector } from 'react-redux';
 import { selectMode } from './features/themeSlice';
 
-import { useAuthentication } from './stores/useAuthStore';
+import { useThemeStore,useAuthStore } from './stores/index';
 
 // COMPONENTS
 import Home from '../src/routes/Home';
@@ -24,8 +24,8 @@ import InvitationPage from '../src/components/InvitationPage';
 
 // ---------------------- APP ----------------------
 export default function App() {
-  const themeState = useSelector(selectMode); 
-  const { subdomain, initializeAuth, user} = useAuthentication();
+  const { darkMode} = useThemeStore(); 
+  const { subdomain, initializeAuth, user} = useAuthStore();
   
   useEffect(() => {
     initializeAuth(); 
@@ -37,7 +37,7 @@ export default function App() {
 
   return (
     
-      <ThemeProvider theme={ themeState ? DarkTheme : LightTheme}>
+      <ThemeProvider theme={ darkMode ? DarkTheme : LightTheme}>
         <BrowserRouter>
           <Layout>
             <Routes>

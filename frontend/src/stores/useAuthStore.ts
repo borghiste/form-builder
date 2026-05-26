@@ -16,7 +16,7 @@ type AuthState = {
   logoutUser: () => Promise<any>;
 }
 
-export const useAuthentication = create<AuthState>((set, get) => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
   email: '',
   password: '',
   success: false,

@@ -1,5 +1,4 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Box,
   Typography,
@@ -9,304 +8,246 @@ import {
   Card,
   CardContent,
   Avatar,
-  Badge,
   IconButton,
   Paper,
   Stack,
   Divider,
+  Select,
+  MenuItem,
   Tooltip,
 } from "@mui/material";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-
-//stores
-import { useInvitationsStore } from "../stores/useInvitationsStore";
-
-// mui icons
+import BasicButton from "../components/UI/BasicButton";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
-import SendIcon from "@mui/icons-material/Send";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
-import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
-
+import CloseIcon from "@mui/icons-material/Close";
+import { useInvitationsStore, useInviteFormStore, useModalStore } from "../stores/index";
+import { nanoid } from "nanoid";
 
 const roles = [
-  {
-    id: "viewer",
-    label: "Viewer",
-    description: "Can view, fill forms and submit filled forms",
-    Icon: VisibilityOutlinedIcon,
-  },
- 
-  {
-    id: "admin",
-    label: "Admin",
-    description: "Full access control",
-    Icon: AdminPanelSettingsOutlinedIcon,
-  },
+  { value: "viewer", label: "Viewer" },
+  { value: "editor", label: "Editor" },
+  { value: "admin", label: "Admin" },
 ];
 
- 
+const isValidEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
 
 export default function InvitationPage() {
-  const { getInvitations, invitations } = useInvitationsStore();
+  const { pendingInvitations, getInvitations } = useInvitationsStore();
+  const { sendInvitations } = useInviteFormStore();
+  const {setModalOpen, setModalMode} = useModalStore();
+
   useEffect(() => {
     getInvitations();
-  }, [getInvitations]);
+  }, []);
+
  
-  
-  
+  const [entries, setEntries] = useState<{ email: string; role: string, message: string }[]>([]);
+  const [localInput, setLocalInput] = useState("");
+  const [message, setMessage] = useState(null);
+  const [inputError, setInputError] = useState(false);
 
+  const addEmail = (raw: string) => {
+    const val = raw.trim().toLowerCase();
+    if (!val) return;
+    if (!isValidEmail(val)) { setInputError(true); return; }
+    if (entries.find((e) => e.email === val)) { setLocalInput(""); return; }
+    setEntries((prev) => [...prev, {email: val, role: "editor", message: message }]);
+    setLocalInput("");
+    setInputError(false);
+  };
 
+  const removeEntry = (id: string) => setEntries((prev) => prev.filter((e) => e.id !== id));
 
-   
-
-  
-  const [emails, setEmails] = useState(["alex.rivera@company.com", "sarah.j@design.io"]);
-  const [inputValue, setInputValue] = useState("");
-  const [selectedRole, setSelectedRole] = useState("editor");
-  const [message, setMessage] = useState("");
-
-  const addEmail = (e) => {
-    if ((e.key === "Enter" || e.key === ",") && inputValue.trim()) {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" || e.key === ",") {
       e.preventDefault();
-      const email = inputValue.trim().replace(/,$/, "");
-      if (email && !emails.includes(email)) setEmails([...emails, email]);
-      setInputValue("");
+      addEmail(localInput);
+    }
+    if (e.key === "Backspace" && localInput === "" && entries.length > 0) {
+      setEntries((prev) => prev.slice(0, -1));
     }
   };
 
-  const removeEmail = (email) => setEmails(emails.filter((e) => e !== email));
+  const handleCancel = () => {
+    setEntries([]);
+    setLocalInput("");
+    setMessage("");
+    setInputError(false);
+    setModalOpen(false);
+    setModalMode(null);
+  };
 
   return (
-    
-      <Box
-        sx={{
-          minHeight: "100vh",
-          bgcolor: "background.default",
-          
-        }}
-      >
+    <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
+      {/* Main Layout */}
+      <Box sx={{ maxWidth: 960, mx: "auto", px: 3, py: 6, display: "flex", gap: 3, alignItems: "flex-start" }}>
 
-        {/* Main Layout */}
-        <Box sx={{ maxWidth: 960, mx: "auto", px: 3, py: 6, display: "flex", gap: 3, alignItems: "flex-start", overflow:'scroll' }}>
-          {/* Invite Card */}
-          <Card elevation={0} sx={{ flex: 1, border: "1px solid #e5e7eb", borderRadius: 3 }}>
-            <CardContent sx={{ p: 4 }}>
-              {/* Header */}
-              <Stack direction="row" alignItems="center" spacing={1.5} mb={0.5}>
-                <Box
-                  sx={{
-                    width: 40,
-                    height: 40,
-                    bgcolor: "#1a1a2e",
-                    borderRadius: 2,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
+        {/* Invite Card */}
+        <Card elevation={0} sx={{ flex: 1, border: "1px solid #e5e7eb", borderRadius: 3 }}>
+          <CardContent sx={{ p: 4 }}>
+            {/* Header */}
+            <Stack direction="row" alignItems="center" spacing={1.5} mb={0.5}>
+              <Box sx={{ width: 40, height: 40, bgcolor: "#1a1a2e", borderRadius: 2, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <PersonAddAlt1Icon sx={{ color: "#fff", fontSize: 20 }} />
+              </Box>
+              <Typography variant="h5">Invite new members</Typography>
+            </Stack>
+            <Typography variant="body2" color="text.secondary" mb={3}>
+              Add the email addresses of the people you want to invite. You can assign them a role and write a personal message to include in the invitation email.
+            </Typography>
+
+            {/* Email input area */}
+            <Typography variant="caption" color="text.secondary" display="block" mb={1}>
+              EMAIL ADDRESSES
+            </Typography>
+            <Paper
+              variant="outlined"
+              sx={{
+                p: 1.5,
+                borderRadius: 2,
+                borderColor: inputError ? "error.main" : "#e5e7eb",
+                mb: entries.length > 0 ? 1.5 : 3,
+                cursor: "text",
+                "&:focus-within": { borderColor: inputError ? "error.main" : "#4f46e5" },
+              }}
+            >
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, alignItems: "center" }}>
+                <TextField
+                  variant="standard"
+                  placeholder="Add email addresses…"
+                  value={localInput}
+                  onChange={(e) => { setLocalInput(e.target.value); setInputError(false); }}
+                  onKeyDown={handleKeyDown}
+                  onBlur={() => { if (localInput) addEmail(localInput); }}
+                  error={inputError}
+                  InputProps={{
+                    disableUnderline: true,
+                    sx: { fontSize: 13, color: inputError ? "error.main" : "#6b7280" },
                   }}
-                >
-                  <PersonAddAlt1Icon sx={{ color: "#fff", fontSize: 20 }} />
-                </Box>
-                <Typography variant="h5">Invite New Member</Typography>
-              </Stack>
-              <Typography variant="body2" color="text.secondary" mb={3}>
-                Enter the email addresses of the people you want to invite.
+                  sx={{ minWidth: 200, flex: 1 }}
+                />
+              </Box>
+            </Paper>
+            {inputError && (
+              <Typography variant="caption" color="error" sx={{ mb: 1.5, display: "block" }}>
+                Please enter a valid email address.
               </Typography>
+            )}
 
-              {/* Email Field */}
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                display="block"
-                mb={1}
-              >
-                EMAIL ADDRESSES
-              </Typography>
-              <Paper
-                variant="outlined"
-                sx={{ p: 1.5, borderRadius: 2, borderColor: "#e5e7eb", mb: 3, minHeight: 80 }}
-              >
-                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-                  {emails.map((email) => (
-                    <Chip
-                      key={email}
-                      label={email}
-                      onDelete={() => removeEmail(email)}
+            {/* Per-email role list */}
+            {entries.length > 0 && (
+              <Stack spacing={1} mb={3}>
+                {entries.map((entry) => (
+                  <Box
+                    key={entry.id}
+                    sx={{
+                      display: "flex", alignItems: "center", gap: 1.5,
+                      bgcolor: "background.paper", border: "1px solid #e5e7eb",
+                      borderRadius: 2, px: 1.5, py: 1,
+                    }}
+                  >
+                    <Typography variant="body2" sx={{ flex: 1, fontSize: 12, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {entry.email}
+                    </Typography>
+                    <Select
                       size="small"
-                      sx={{ bgcolor: "#f3f4f6", fontSize: 13 }}
-                    />
-                  ))}
-                  <TextField
-                    variant="standard"
-                    placeholder="Add email..."
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    onKeyDown={addEmail}
-                    InputProps={{ disableUnderline: true, sx: { fontSize: 14, color: "#6b7280" } }}
-                    sx={{ minWidth: 120, flex: 1 }}
-                  />
-                </Box>
-              </Paper>
-
-              {/* Role Selection */}
-              <Typography variant="caption" color="text.secondary" display="block" mb={1}>
-                ASSIGN ROLE
-              </Typography>
-              <Stack direction="row" spacing={1.5} mb={3}>
-                {roles.map(({ id, label, description, Icon }) => {
-                  const active = selectedRole === id;
-                  return (
-                    <Box
-                      key={id}
-                      onClick={() => setSelectedRole(id)}
+                      value={entry.role}
+                      onChange={(e) => setEntries((prev) => prev.map((el) => el.id === entry.id ? { ...el, role: e.target.value } : el))}
                       sx={{
-                        flex: 1,
-                        p: 2,
-                        borderRadius: 2,
-                        border: active ? "2px solid #4f46e5" : "2px solid #e5e7eb",
-                        cursor: "pointer",
-                        bgcolor: active ? "#eef2ff" : "#fff",
-                        position: "relative",
-                        transition: "all 0.15s",
-                        "&:hover": { borderColor: active ? "#4f46e5" : "#c7d2fe" },
+                        fontSize: 12, minWidth: 100, flexShrink: 0,
+                        "& .MuiOutlinedInput-notchedOutline": { borderColor: "#e5e7eb" },
+                        "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#c7d2fe" },
+                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "#4f46e5" },
                       }}
                     >
-                      {active && (
-                        <CheckCircleOutlineIcon
-                          sx={{
-                            position: "absolute",
-                            top: 8,
-                            right: 8,
-                            fontSize: 18,
-                            color: "#4f46e5",
-                          }}
-                        />
-                      )}
-                      <Icon sx={{ fontSize: 18, color: active ? "#4f46e5" : "#9ca3af", mb: 0.5 }} />
-                      <Typography variant="body2" fontWeight={600} color={active ? "#4f46e5" : "text.primary"}>
-                        {label}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary" sx={{ fontSize: 12 }}>
-                        {description}
-                      </Typography>
-                    </Box>
-                  );
-                })}
-              </Stack>
-
-              {/* Personal Message */}
-              <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
-                <Typography variant="caption" color="text.secondary">
-                  PERSONAL MESSAGE
-                </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  Optional
-                </Typography>
-              </Box>
-              <TextField
-                multiline
-                rows={3}
-                fullWidth
-                placeholder="Write a short note to your new team members..."
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                sx={{
-                  mb: 4,
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: 2,
-                    fontSize: 14,
-                    "& fieldset": { borderColor: "#e5e7eb" },
-                    "&:hover fieldset": { borderColor: "#c7d2fe" },
-                  },
-                }}
-              />
-
-              {/* Actions */}
-              <Stack direction="row" spacing={2}>
-                <Button
-                  variant="outlined"
-                  fullWidth
-                  size="large"
-                  sx={{ borderColor: "#e5e7eb", color: "text.primary", "&:hover": { borderColor: "#9ca3af", bgcolor: "#f9fafb" } }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  variant="contained"
-                  fullWidth
-                  size="large"
-                  disableElevation
-                 
-                  sx={{ bgcolor: "cyan.main", "&:hover": { bgcolor: "#2d2d4e" } }}
-                >
-                  Send Invitation
-                </Button>
-              </Stack>
-            </CardContent>
-          </Card>
-
-          {/* Pending Invites Panel */}
-          <Card
-            elevation={0}
-            sx={{ width: 260, border: "1px solid #e5e7eb", borderRadius: 3, flexShrink: 0 }}
-          >
-            <CardContent sx={{ p: 3 }}>
-              <Typography variant="subtitle1" fontWeight={700} mb={2}>
-                Pending Invites
-              </Typography>
-              <Stack spacing={2} divider={<Divider flexItem />}>
-             
-                {invitations?.map(({ email, status, created_at, role }) => (
-                  
-                  
-                  
-                  <Stack key={email} direction="row" alignItems="center" spacing={1.5}>
-                    <Avatar sx={{ width: 36, height: 36, fontSize: 13, fontWeight: 700 }}>
-                      {email.charAt(0).toUpperCase()}
-                    </Avatar>
-                    <Box sx={{ flex: 1, minWidth: 0 }}>
-                      <Typography variant="body2" fontWeight={600} noWrap>
-                        {email}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        {created_at.slice(0, 10)}
-                      </Typography>
-                    </Box>
-                    <Chip
-                      label={role}
-                      size="small"
-                      sx={{
-                        fontSize: '1rem',
-                        
-                        bgcolor: "background.paper",
-                        fontWeight: 700,
-                        letterSpacing: "0.05em",
-                      }}
-                      />
-                  </Stack>
-                     
+                      {roles.map((r) => (
+                        <MenuItem key={r.value} value={r.value} sx={{ fontSize: 12 }}>
+                          {r.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    <Tooltip title={`Remove ${entry.email}`}>
+                      <IconButton size="small" onClick={() => removeEntry(entry.id)} sx={{ flexShrink: 0 }}>
+                        <CloseIcon sx={{ fontSize: 15 }} />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
                 ))}
               </Stack>
-              <Button
-                fullWidth
-                variant="outlined"
-                size="small"
-                sx={{
-                  mt: 2.5,
-                  borderColor: "#e5e7eb",
-                  color: "text.primary",
-                  fontWeight: 600,
-                  "&:hover": { borderColor: "#9ca3af", bgcolor: "#f9fafb" },
-                }}
-              >
-                View All Pending
-              </Button>
-            </CardContent>
-          </Card>
-        </Box>
+            )}
+
+            {/* Personal Message */}
+            <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
+              <Typography variant="caption" color="text.secondary">PERSONAL MESSAGE</Typography>
+              <Typography variant="caption" color="text.secondary">Optional</Typography>
+            </Box>
+            <TextField
+              multiline rows={3} fullWidth
+              placeholder="Scrivi un messaggio ai nuovi membri…"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              sx={{
+                mb: 4,
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 2, fontSize: 13,
+                  "& fieldset": { borderColor: "#e5e7eb" },
+                  "&:hover fieldset": { borderColor: "#c7d2fe" },
+                  "&.Mui-focused fieldset": { borderColor: "#4f46e5" },
+                },
+              }}
+            />
+
+            {/* Actions */}
+            <Stack direction="row" spacing={2} sx={{ justifyContent: "flex-end" }}>
+              <BasicButton text="cancel" variant="outline" onClick={handleCancel} />
+              <BasicButton
+                text="Send invitation"
+                variant="contained"
+                color="cyan.main"
+                onClick={() => sendInvitations(entries)}
+              />
+            </Stack>
+          </CardContent>
+        </Card>
+
+        {/* Pending Invites */}
+        <Card elevation={0} sx={{ width: 240, border: "1px solid #e5e7eb", borderRadius: 3, flexShrink: 0 }}>
+          <CardContent sx={{ p: 2.5 }}>
+            <Typography variant="subtitle2" fontWeight={700} mb={1.5}>
+              Pending invites
+            </Typography>
+            <Stack divider={<Divider flexItem />}>
+              {pendingInvitations?.map(({ email, time, role }) => (
+                <Stack key={email} direction="row" alignItems="center" spacing={1.5} py={1.25}>
+                  <Avatar sx={{ width: 34, height: 34, fontSize: 12, fontWeight: 700 }}>
+                    {email.slice(0, 2).toUpperCase()}
+                  </Avatar>
+                  <Box sx={{ flex: 1, minWidth: 0 }}>
+                    <Typography variant="body2" fontWeight={600} fontSize={12} noWrap>{email}</Typography>
+                    <Typography variant="caption" color="text.secondary" fontSize={11}>{time}</Typography>
+                  </Box>
+                  <Chip
+                    label={role}
+                    size="small"
+                    sx={{ fontSize: 10, height: 20, fontWeight: 700, letterSpacing: "0.04em" }}
+                  />
+                </Stack>
+              ))}
+            </Stack>
+            <Button
+              fullWidth variant="outlined" size="small"
+              sx={{
+                mt: 1.5, borderColor: "#e5e7eb", color: "text.secondary",
+                fontSize: 12, fontWeight: 600,
+                "&:hover": { borderColor: "#9ca3af", bgcolor: "#f9fafb" },
+              }}
+            >
+              View all pending
+            </Button>
+          </CardContent>
+        </Card>
+
       </Box>
-    
+    </Box>
   );
 }

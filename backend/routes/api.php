@@ -37,6 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
    
     Route::get('invitations', [InvitationController::class, 'getInvitations']);
     
+    Route::post('invitations/sendinvite', [InvitationController::class, 'sendInvitations']);
 });
 
 // fORMS ACTION ROUTES

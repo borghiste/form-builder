@@ -1,21 +1,21 @@
 import { configureStore } from '@reduxjs/toolkit';
-import themeReducer from '../features/themeSlice';
+
 
 import formsReducer from '../features/formsListSlice';
 import formReducer from '../features/formSlice';
 import fieldReducer from '../features/fieldSlice';
 import formsEntriesReducer from '../features/FormEntriesSlice';
-import modalReducer from '../features/ModalSlice';
+
 
 export default configureStore({
   reducer: {
-    theme: themeReducer,
+    
     
     forms: formsReducer,
     form: formReducer,
     field: fieldReducer,
     entries: formsEntriesReducer,
-    modal: modalReducer 
+
   },
 })
 

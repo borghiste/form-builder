@@ -29,7 +29,7 @@ import { setFormFields, selectForm, setForm } from "../features/formSlice";
 
 
 import { useModalStore } from "../stores/useModalStore";
-import { useAuthentication } from "../stores/useAuthStore";
+import { useAuthStore} from "../stores/index";
 
 // utils
 
@@ -40,7 +40,7 @@ export default function FormsList() {
   const {setModalOpen, setModalMode} = useModalStore();
   const dispatch = useDispatch<AppDispatch>();
   const forms = useSelector(selectForms);
-  const {user} = useAuthentication();
+  const {user} = useAuthStore();
   
   const form = useSelector(selectForm);
   

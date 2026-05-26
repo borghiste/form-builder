@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from "react-redux";
+
 
 import { Container, Paper, Box, Typography, TextField, InputLabel, FormHelperText } from "@mui/material";
 import BasicButton from "../components/UI/BasicButton";
 
-import { useAuthentication } from '../stores/useAuthStore';
+import { useAuthStore } from '../stores/index';
 
 
 //THIS COMPONENT CONTAINS LOGIN PAGE AND ITS LOGIC
@@ -16,7 +16,7 @@ export default function LoginPage(){
 
 
 
-  const {email, password, loginUser, setField} = useAuthentication();
+  const {email, password, loginUser, setField} = useAuthStore();
   const navigate = useNavigate();
   
  
