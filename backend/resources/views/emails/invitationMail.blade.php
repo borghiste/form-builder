@@ -189,7 +189,7 @@
         <div class="footer">
             <p class="footer-text">
             You received this email because you created an account on {{ config('app.name') }}.<br>
-                if this wasn't you, please <a href="mailto:sborghi92@gmail.com" class="footer-link">contatact me</a>.
+                if this wasn't you, please send an email to <a href="mailto:sborghi92@gmail.com" class="footer-link">sborghi92@gmail.com</a>.
             </p>
         </div>
 

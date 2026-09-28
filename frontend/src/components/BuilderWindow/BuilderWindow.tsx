@@ -5,6 +5,8 @@ import { Box, ButtonGroup, TextField } from '@mui/material';
 
 // stores
 import { useFieldState } from '../../stores/useFieldStore';
+import { selectField } from '../../features/fieldSlice';
+import { selectForm } from '../../features/formSlice';
 
 
 
@@ -36,8 +38,8 @@ const CONTEXT_TYPES = {
 export default function BuilderWindow({ handleModalClose }) {
   // Redux state
   const {setField} = useFieldState();
-  // const form = useSelector(selectForm);
-  // const selectedField = useSelector(selectField);
+   const form = useSelector(selectForm);
+   const selectedField = useSelector(selectField);
    const formFields = [];
 
  
@@ -234,7 +236,7 @@ export default function BuilderWindow({ handleModalClose }) {
       <Box 
         component="main" 
         sx={{ 
-          padding: '1.5rem', 
+          paddingTop: '2.6rem', 
           overflow: 'auto', 
           maxHeight: '100vh',
           WebkitOverflowScrolling: 'touch' 
@@ -324,13 +326,14 @@ export default function BuilderWindow({ handleModalClose }) {
               component="div"
               sx={{
                 display: 'grid',
+               
                 gridTemplateColumns: { 
                   xs: '1fr',
                   md: '1fr 2fr 1fr'
                 },
                 gap: '1.5rem',
-                overflow: 'auto',
-                WebkitOverflowScrolling: 'touch' // iOS smooth scrolling
+          
+                WebkitOverflowScrolling: 'touch'
               }}
             >
               {/* Left Column - Field Types */}

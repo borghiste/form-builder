@@ -4,12 +4,11 @@ import { Box, ButtonGroup, Typography, Grid, Card, CardContent } from "@mui/mate
 // COMPONENTS
 
 
-import homeImg1 from '../assets/images/home-1.png';
-import SignUpButton from "../components/UI/SignUpButton";
+
+import BasicButton from "../components/UI/BasicButton";
 
 
 
-// Hook per triggerare l'animazione quando la sezione entra nel viewport
 function useIntersectionAnimation(threshold = 0.15) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
@@ -17,7 +16,7 @@ function useIntersectionAnimation(threshold = 0.15) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const observer = new IntersectionObserver(
+    const observer =new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) { setVisible(true); observer.disconnect(); } },
       { threshold }
     );
@@ -79,25 +78,29 @@ export default function Home(){
         {/* Beneficio 1 */}
        
          <Box component={'div'} sx={{display:'flex', flexDirection:{xs:'column', md:'row'}, justifyContent:'center', alignItems:'center'}}>
-         <img src={homeImg1}/>
+         <img src={'https://placehold.co/600x400'}/>
 
 
           <Box sx={{display:'flex', flexDirection:'column', justifyContent:'center',  flexWrap: 'wrap', gap:2}}>
             <Typography variant="h2" sx={{color:'text.primary', fontSize:{md: 40}, flexWrap:'wrap'}}>
              Intuitive interface
             </Typography>
-            <Typography variant="body1" sx={{color:'text.secondary', maxWidth:300}}>
-              create custom forms with ease using our intuitive drag-and-drop interface.
+            <Typography variant="body1" sx={{color:'text.secondary', fontSize:'1rem'}}>
+              Create custom forms easily using an intuitive drag-and-drop interface.
         
             </Typography>
           </Box>
         </Box> 
 
-        <SignUpButton size={'large'}/>
+        <BasicButton
+            text={'sign up'}
+              size={'large'}
+              variant={'contained'}
+              href={'/signup'}/>
 
         {/* Beneficio 2 */}
         <Box component={'div'} sx={{display:'flex', flexDirection:{xs:'column', md:'row-reverse'}, justifyContent:'center', alignItems:'center', gap:4, mt:6}}>
-          <img src="https://placehold.co/600x400" alt="Beneficio 2"/>
+          <img src="https://placehold.co/600x400" alt=""/>
           <Box sx={{display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center', gap:2}}>
             <Typography variant="h2" sx={{color:'text.primary', fontSize:40}}>
               All your data in one place
@@ -136,7 +139,7 @@ export default function Home(){
               >
                 <CardContent>
                   <Typography variant="h5" sx={{color:'text.primary'}}>
-                    📱 Responsive Design
+                    Responsive Design
                   </Typography>
                   <Typography variant="body2" sx={{color:'text.secondary'}}>
                     your forms will look great on any device, from desktop to mobile, ensuring a seamless user experience
@@ -153,10 +156,10 @@ export default function Home(){
               >
                 <CardContent>
                   <Typography variant="h5" sx={{color:'text.primary', mb:2}}>
-                    📊 Analytics Real-time
+                    centralized system 
                   </Typography>
                   <Typography variant="body2" sx={{color:'text.secondary'}}>
-                    track form performance with real-time analytics and gain insights into user behavior
+                    All your form responses are collected and managed in a centralized dashboard, giving you easy access to your data and insights.
                   </Typography>
                 </CardContent>
               </Card>
@@ -170,10 +173,10 @@ export default function Home(){
               >
                 <CardContent>
                   <Typography variant="h5" sx={{color:'text.primary', mb:2}}>
-                    🤖 Automations
+                 Security
                   </Typography>
                   <Typography variant="body2" sx={{color:'text.secondary'}}>
-                    automate repetitive tasks with powerful workflow automations
+                    security is priority, with robust measures in place to protect your data and ensure compliance with industry standards.
                   </Typography>
                 </CardContent>
               </Card>
@@ -185,7 +188,7 @@ export default function Home(){
 
 
         {/* Final CTA Section */}
-        <Box sx={{mt:10, textAlign:'center', width:'100%', bgcolor:'rgba(0,188,212,0.1)', borderRadius:2, p:6}}>
+        <Box sx={{mt:10, textAlign:'center', width:'100%', bgcolor:'background.paper', borderRadius:2, p:6}}>
           <Typography variant="h3" sx={{color:'text.primary', mb:2}}>
             ready to get started?
           </Typography>
@@ -193,12 +196,11 @@ export default function Home(){
             Try PickForm for free and experience the power of effortless form building.
           </Typography>
           <ButtonGroup>
-            <SignUpButton
-              text={'Try for free'} 
-              color={'cyan.main'}
-              size={'large'} 
-              textColor={'white'}
+            <BasicButton
+            text={'sign up'}
+              size={'large'}
               href={'/signup'} 
+              variant={'contained'}
               
             />
           </ButtonGroup>

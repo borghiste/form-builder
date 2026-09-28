@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import { useAuthentication } from '../../stores/useAuthStore';
+import { useAuthStore } from '../../stores/useAuthStore';
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
@@ -7,7 +7,7 @@ const BACKEND = 'http://localhost';
 
 /** Reset the Zustand store to its initial state between tests */
 function resetStore() {
-  useAuthentication.setState({
+  useAuthStore.setState({
     email: '',
     password: '',
     success: false,
@@ -45,15 +45,15 @@ afterEach(() => {
 
 describe('setField', () => {
   it('updates the email field', () => {
-    const { setField } = useAuthentication.getState();
+    const { setField } = useAuthStore.getState();
     setField('email', 'user@example.com');
-    expect(useAuthentication.getState().email).toBe('user@example.com');
+    expect(useAuthStore.getState().email).toBe('user@example.com');
   });
 
   it('updates the password field', () => {
-    const { setField } = useAuthentication.getState();
+    const { setField } = useAuthStore.getState();
     setField('password', 's3cr3t');
-    expect(useAuthentication.getState().password).toBe('s3cr3t');
+    expect(useAuthStore.getState().password).toBe('s3cr3t');
   });
 });
 
@@ -61,9 +61,9 @@ describe('setField', () => {
 
 describe('setDomain', () => {
   it('updates the subdomain field', () => {
-    const { setDomain } = useAuthentication.getState();
+    const { setDomain } = useAuthStore.getState();
     setDomain('acme');
-    expect(useAuthentication.getState().subdomain).toBe('acme');
+    expect(useAuthStore.getState().subdomain).toBe('acme');
   });
 });
 
@@ -77,9 +77,9 @@ describe('initializeAuth', () => {
     };
     global.fetch = mockFetch(200, payload);
 
-    await useAuthentication.getState().initializeAuth();
+    await useAuthStore.getState().initializeAuth();
 
-    const state = useAuthentication.getState();
+    const state = useAuthStore.getState();
     expect(state.user).toEqual(payload.user);
     expect(state.organization).toEqual(payload.organization);
     expect(state.subdomain).toBe('acme');
@@ -92,7 +92,7 @@ describe('initializeAuth', () => {
     });
     global.fetch = fetchMock;
 
-    await useAuthentication.getState().initializeAuth();
+    await useAuthStore.getState().initializeAuth();
 
     expect(fetchMock).toHaveBeenCalledWith(
       `${BACKEND}/api/user`,
@@ -103,9 +103,9 @@ describe('initializeAuth', () => {
   it('does not update state when response is not ok', async () => {
     global.fetch = mockFetch(401, {});
 
-    await useAuthentication.getState().initializeAuth();
+    await useAuthStore.getState().initializeAuth();
 
-    const state = useAuthentication.getState();
+    const state = useAuthStore.getState();
     expect(state.user).toBeNull();
     expect(state.organization).toBeNull();
     expect(state.subdomain).toBeNull();
@@ -117,8 +117,8 @@ describe('initializeAuth', () => {
 describe('loginUser', () => {
   /** Helper: set credentials then call loginUser */
   async function loginWith(email: string, password: string) {
-    useAuthentication.setState({ email, password });
-    return useAuthentication.getState().loginUser();
+    useAuthStore.setState({ email, password });
+    return useAuthStore.getState().loginUser();
   }
 
   beforeEach(() => {
@@ -143,10 +143,10 @@ describe('loginUser', () => {
 
     const promise = loginWith('user@example.com', 'pass');
     // loading becomes true synchronously inside loginUser before first await
-    expect(useAuthentication.getState().loading).toBe(true);
+    expect(useAuthStore.getState().loading).toBe(true);
 
     await promise;
-    expect(useAuthentication.getState().loading).toBe(false);
+    expect(useAuthStore.getState().loading).toBe(false);
   });
 
   it('stores user, organization and subdomain on success', async () => {
@@ -162,7 +162,7 @@ describe('loginUser', () => {
 
     await loginWith('bob@example.com', 'secret');
 
-    const state = useAuthentication.getState();
+    const state = useAuthStore.getState();
     expect(state.success).toBe(true);
     expect(state.user).toEqual(loginPayload.user);
     expect(state.organization).toEqual(loginPayload.organization);
@@ -182,7 +182,7 @@ describe('loginUser', () => {
 
     await expect(loginWith('bad@example.com', 'wrong')).rejects.toThrow('Invalid credentials');
 
-    const state = useAuthentication.getState();
+    const state = useAuthStore.getState();
     expect(state.error).toBe('Invalid credentials');
     expect(state.success).toBe(false);
     expect(state.loading).toBe(false);
@@ -200,7 +200,7 @@ describe('loginUser', () => {
 
     await expect(loginWith('u@example.com', 'p')).rejects.toThrow();
 
-    const state = useAuthentication.getState();
+    const state = useAuthStore.getState();
     expect(state.error).toMatch(/Request failed with status 500/);
   });
 
@@ -212,7 +212,7 @@ describe('loginUser', () => {
 
     await expect(loginWith('u@example.com', 'p')).rejects.toThrow('Network failure');
 
-    expect(useAuthentication.getState().error).toBe('Network failure');
+    expect(useAuthStore.getState().error).toBe('Network failure');
   });
 
   it('sends email and password in the request body', async () => {
@@ -239,7 +239,7 @@ describe('loginUser', () => {
 describe('logoutUser', () => {
   it('clears user, organization and subdomain on success', async () => {
     // Pre-populate state
-    useAuthentication.setState({
+    useAuthStore.setState({
       user: { id: 1 },
       organization: { id: 10 },
       subdomain: 'acme',
@@ -247,9 +247,9 @@ describe('logoutUser', () => {
 
     global.fetch = mockFetch(200, { message: 'Logged out' });
 
-    await useAuthentication.getState().logoutUser();
+    await useAuthStore.getState().logoutUser();
 
-    const state = useAuthentication.getState();
+    const state = useAuthStore.getState();
     expect(state.user).toBeNull();
     expect(state.organization).toBeNull();
     expect(state.subdomain).toBeNull();
@@ -261,7 +261,7 @@ describe('logoutUser', () => {
     const fetchMock = mockFetch(200, {});
     global.fetch = fetchMock;
 
-    await useAuthentication.getState().logoutUser();
+    await useAuthStore.getState().logoutUser();
 
     expect(fetchMock).toHaveBeenCalledWith(
       `${BACKEND}/api/logout`,
@@ -272,9 +272,9 @@ describe('logoutUser', () => {
   it('sets error and re-throws when fetch throws', async () => {
     global.fetch = vi.fn().mockRejectedValue(new Error('Network down'));
 
-    await expect(useAuthentication.getState().logoutUser()).rejects.toThrow('Network down');
+    await expect(useAuthStore.getState().logoutUser()).rejects.toThrow('Network down');
 
-    const state = useAuthentication.getState();
+    const state = useAuthStore.getState();
     expect(state.error).toBe('Network down');
     expect(state.loading).toBe(false);
   });
@@ -282,7 +282,7 @@ describe('logoutUser', () => {
   it('returns data from the response', async () => {
     global.fetch = mockFetch(200, { message: 'ok' });
 
-    const result = await useAuthentication.getState().logoutUser();
+    const result = await useAuthStore.getState().logoutUser();
 
     expect(result).toEqual({ message: 'ok' });
   });

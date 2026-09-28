@@ -2,19 +2,22 @@
 
 
 
+use App\Models\Invitation;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
 use App\Http\Controllers\AuthController;
 use App\Mail\InvitationMail;
 use App\Http\Controllers\InvitationController;
 
+
 //VERIFY EMAIL
-Route::get('/verify.email/{user}', [AuthController::class, 'verify'])->name('verify.email')->middleware('signed');
+Route::get('/verify.email/{user}', [AuthController::class, 'verifyUser'])->name('verify.email')->middleware('signed');
+
 
 
 // INVITATION ACCEPTANCE
 
-Route::get('/invitations/accept/{token}', [InvitationController::class, 'acceptInvitation'])
+Route::get('/invitations/{token}/accept', [InvitationController::class, 'acceptInvitation'])
     ->name('invitations.accept');
 
 
@@ -34,17 +37,25 @@ Route::get('/users', function(){
 Route::get('/preview-mail', function () {
     return new App\Mail\WelcomeEmail(
         userName: 'Test User',
-        magicLink: 'http://localhost:8000/pick.jf'
-        
-    );
+        magicLink: URL::temporarySignedRoute(
+            'verify.email',
+            now()->addMinutes(1),
+            ['user' => 1, 'tag' => 0]));
 });
 
-Route::get('/preview-invite', function () {
+
+
+Route::get('invitations/invite', function () {
+
+    $invitation = Invitation::factory()->create();
+   
+
     return new InvitationMail(
-        invitedBy: 'Test User',
-        role: 'Editor',
-        invitationMessage: 'You have been invited to join our platform. Please click the link below to accept the invitation',
-        invitationLink: 'http://localhost:8000/accept-invite'
+        invitedBy: 'test user',
+        role: 'admin',
+        invitationMessage: 'test',
+        invitationLink: url("/invitations/{$invitation->token}/accept"),
+
     );
 });
 

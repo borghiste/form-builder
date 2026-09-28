@@ -86,7 +86,7 @@ const renderedComponent = {
 export default function FormView({ disabledFields, entries }) {
   const dispatch = useDispatch();
   const form = useSelector(selectForm);
-  const user = useAuthentication();
+  const user = useAuthStore();
   const [entryData, setEntryData] = useState({form_fields: entries || {} });
 
   const handleChange = (e) => {

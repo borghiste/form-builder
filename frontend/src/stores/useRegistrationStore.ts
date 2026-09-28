@@ -35,6 +35,7 @@ export const useRegistration = create<RegistrationState>((set, get) => ({
     set({ loading: true, error: null, success: false });
     
     try {
+     
       const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

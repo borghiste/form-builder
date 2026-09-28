@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 
 import { Container, Paper, Box, Typography, TextField, InputLabel, FormHelperText } from "@mui/material";
@@ -18,6 +18,11 @@ export default function LoginPage(){
 
   const {email, password, loginUser, setField} = useAuthStore();
   const navigate = useNavigate();
+  const error = useSearchParams()[0].get('error');
+
+  useEffect(() => {
+    setHelperText(error === 'link_expired' ? 'The magic link has expired. Please request a new magic link to confirm registration' : '');
+  }, [error]);
   
  
 
@@ -69,7 +74,7 @@ return(
   
 
   <BasicButton text='Log in' variant="contained" fullWidth={true} type={'submit'} />
-  <FormHelperText sx={{color:'red'}}>{HelperText}</FormHelperText>
+  <FormHelperText sx={{color:'red', fontSize: '1rem'}}>{HelperText}</FormHelperText>
 </Box>
 
 </Paper>

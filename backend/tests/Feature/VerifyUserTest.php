@@ -8,7 +8,7 @@ use App\Models\Organization;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\URL;
 
-class VerifyTest extends TestCase
+class VerifyUserTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -156,6 +156,45 @@ class VerifyTest extends TestCase
 
         $response->assertStatus(404);
     }
+
+    public function test_user_request_new_magic_link_after_expiration(): void
+    {
+        $user = $this->createUserWithOrganization();
+
+      
+        $expiredUrl = URL::temporarySignedRoute(
+            'verify.email',
+            now()->subMinutes(1), 
+            [
+                'user' => $user->id,
+                'tag'  => $user->last_login_at?->timestamp ?? 0,
+            ]
+        );
+
+        
+        $response = $this->postJson('/api/request-new-magic-link', [
+            'email' => $user->email,
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson(['message' => 'New magic link sent to your email.']);
+
+ 
+        $newUrl = URL::temporarySignedRoute(
+            'verify.email',
+            now()->addMinutes(15),
+            [
+                'user' => $user->id,
+                'tag'  => $user->last_login_at?->timestamp ?? 0,
+            ]
+        );
+
+        
+        $this->assertNotEquals($expiredUrl, $newUrl);
+
+
+
 }
 
 
+}

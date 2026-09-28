@@ -4,6 +4,7 @@ import "@testing-library/jest-dom";
 import { BrowserRouter } from "react-router-dom";
 import LoginPage from '../../routes/LoginPage';
 
+
 // --------------------------------------------------------------------------- mocks ---------------------------------------------------------------------------
 
 const mockSetField = vi.fn();
@@ -17,13 +18,10 @@ vi.mock("react-router-dom", async () => {
   return { ...actual, useNavigate: () => mockUseNavigate };
 });
 
-vi.mock('useAuthStore', () => ({
-  useAuthentication: () => mockUseAuthentication(),
+vi.mock('../../stores/useAuthStore', () => ({
+  useAuthStore: () => mockUseAuthentication(),
 }));
 
-vi.mock('../../stores/useAuthStore', () => ({
-  useAuthentication: () => mockUseAuthentication(),
-}));
 
 vi.mock("../../components/UI/BasicButton", () => ({
   default: ({ text, type }: { text: string; type?: string }) => (
@@ -50,7 +48,7 @@ const defaultStoreState = {
 const renderPage = () => {
   render(
     <BrowserRouter>
-      <LoginPage />
+      <LoginPage/>
     </BrowserRouter>
   );
 };

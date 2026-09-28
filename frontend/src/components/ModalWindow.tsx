@@ -1,8 +1,6 @@
  import React from "react";
- 
 
 //MUI
-
  import { Box, Modal} from '@mui/material';
  //COMPONENTS
 
@@ -59,7 +57,7 @@ export default function ModalWindow({message}:{message:string}) {
                      onClose={() => setModalOpen(false)}
                      // aria-labelledby="modal-modal-title"
                      // aria-describedby="modal-modal-description"
-                     sx={{zIndex:1, overflow:'scroll'}}
+                     sx={{ overflow:'scroll'}}
                      >
                       
                       <Box sx={boxStyle}>

@@ -4,7 +4,7 @@ import Layout from './components/Layout';
 import { ThemeProvider } from '@emotion/react';
 import { LightTheme, DarkTheme } from '../src/theme/theme';
 import { useSelector } from 'react-redux';
-import { selectMode } from './features/themeSlice';
+
 
 import { useThemeStore,useAuthStore } from './stores/index';
 
@@ -32,8 +32,6 @@ export default function App() {
   }, []);
 
 
-  
-
 
   return (
     
@@ -42,7 +40,7 @@ export default function App() {
           <Layout>
             <Routes>
               <Route path={`/`} element={<Home />} />
-              <Route path="/signup" element={ user ? <Login/> : <RegisterForm/>} />
+              <Route path={"/signup"} element={ user ? <Login/> : <RegisterForm/>} />
               <Route path="/login" element={user?.id ? null : <Login/>} />
               <Route
                 path={`/${subdomain}/forms`}

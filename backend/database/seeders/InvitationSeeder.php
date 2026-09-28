@@ -21,9 +21,11 @@ class InvitationSeeder extends Seeder
         if ($user)
         {
             Invitation::factory()
-            ->count(1)
+            ->count(10)
             ->create([
-                'user_id' => $user->id 
+                'user_id' => $user->id,
+                'organization_id' => $user->organization_id,
+                'invited_by' => $user->id,
             ]);
         }
     }

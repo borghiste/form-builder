@@ -8,8 +8,8 @@ type ModalState = {
 };
 
 export const useModalStore = create<ModalState>((set) => ({
-    modalOpen: true,
-    modalMode: 'invite',
+    modalOpen: false,
+    modalMode: null,
     setModalOpen: (open) => set({ modalOpen: open }),
     setModalMode: (mode) => set({ modalMode: mode }),
 }));

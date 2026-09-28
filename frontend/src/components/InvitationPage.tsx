@@ -22,10 +22,10 @@ import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import CloseIcon from "@mui/icons-material/Close";
 import { useInvitationsStore, useInviteFormStore, useModalStore } from "../stores/index";
 import { nanoid } from "nanoid";
+import { Email } from "@mui/icons-material";
 
 const roles = [
   { value: "viewer", label: "Viewer" },
-  { value: "editor", label: "Editor" },
   { value: "admin", label: "Admin" },
 ];
 
@@ -51,7 +51,7 @@ export default function InvitationPage() {
     if (!val) return;
     if (!isValidEmail(val)) { setInputError(true); return; }
     if (entries.find((e) => e.email === val)) { setLocalInput(""); return; }
-    setEntries((prev) => [...prev, {email: val, role: "editor", message: message }]);
+    setEntries((prev) => [...prev, {email: val, role: "viewer", message: message }]);
     setLocalInput("");
     setInputError(false);
   };
@@ -71,7 +71,7 @@ export default function InvitationPage() {
   const handleCancel = () => {
     setEntries([]);
     setLocalInput("");
-    setMessage("");
+    setMessage(null);
     setInputError(false);
     setModalOpen(false);
     setModalMode(null);
@@ -114,6 +114,7 @@ export default function InvitationPage() {
               <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, alignItems: "center" }}>
                 <TextField
                   variant="standard"
+                  type="email"
                   placeholder="Add email addresses…"
                   value={localInput}
                   onChange={(e) => { setLocalInput(e.target.value); setInputError(false); }}
@@ -125,9 +126,16 @@ export default function InvitationPage() {
                     sx: { fontSize: 13, color: inputError ? "error.main" : "#6b7280" },
                   }}
                   sx={{ minWidth: 200, flex: 1 }}
+                  required
                 />
+                <BasicButton
+                text='+'
+                size='medium'
+                color='gray.light'
+                onClick={() => handleKeyDown}/>
               </Box>
             </Paper>
+                
             {inputError && (
               <Typography variant="caption" color="error" sx={{ mb: 1.5, display: "block" }}>
                 Please enter a valid email address.
@@ -183,7 +191,7 @@ export default function InvitationPage() {
             </Box>
             <TextField
               multiline rows={3} fullWidth
-              placeholder="Scrivi un messaggio ai nuovi membri…"
+              placeholder="write a personal message to your invitees…"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               sx={{
@@ -231,10 +239,11 @@ export default function InvitationPage() {
                     size="small"
                     sx={{ fontSize: 10, height: 20, fontWeight: 700, letterSpacing: "0.04em" }}
                   />
+                 
                 </Stack>
               ))}
             </Stack>
-            <Button
+            {/* <Button
               fullWidth variant="outlined" size="small"
               sx={{
                 mt: 1.5, borderColor: "#e5e7eb", color: "text.secondary",
@@ -243,7 +252,7 @@ export default function InvitationPage() {
               }}
             >
               View all pending
-            </Button>
+            </Button> */}
           </CardContent>
         </Card>
 

@@ -21,6 +21,7 @@ export const useInviteFormStore = create<InviteFormState>((set, get) => ({
 
 
   removeInvitation: (email) =>
+    
     set({ invitations: get().invitations.filter((i) => i.email !== email) }),
 
   sendInvitations: async (invitations) => {

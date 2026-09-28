@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 // STORE
 import { useRegistration } from "../stores/useRegistrationStore";
-import { useModalStore } from "../stores/useModalStore";
+
 
 
 type RegisterFormData = {
@@ -59,7 +59,7 @@ const attempt = useRef(0);
     if (response) {
       
       
-      console.log(response);
+    
       setMessage(response.message);
      
       setTimeout(() => {

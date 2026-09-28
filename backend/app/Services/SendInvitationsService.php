@@ -32,7 +32,7 @@ class SendInvitationsService
             
           
             
-            Mail::to($invitation->email)->send(new InvitationMail(
+            Mail::to($invitation->email)->queue(new InvitationMail(
                 $invitationLink,
                 $item['role'],
                 $item['message'] ?? null,

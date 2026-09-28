@@ -20,6 +20,13 @@ class LoginService
    
 
         $user = Auth::user()->load('organization');
+        if($user->email_verified_at === null) {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            throw new AuthenticationException('Email not verified');
+            
+        }
         $request->session()->regenerate();
         return ['user' => $user,
         'organization' => $user ->organization];

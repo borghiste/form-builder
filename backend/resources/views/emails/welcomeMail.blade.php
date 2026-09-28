@@ -78,7 +78,7 @@
             font-weight: 500;
         }
         .btn {
-            display: inline-block;
+            
             background: #3D71D9;
             color: #ffffff;
             text-decoration: none;
@@ -92,7 +92,7 @@
         .btn-outline {
             display: inline-block;
             background: transparent;
-            color: #2c2c2a !important;
+            color: #2c2c2a;
             text-decoration: none;
             font-size: 14px;
             font-weight: 500;
@@ -101,6 +101,15 @@
             border: 0.5px solid #2c2c2a;
             margin-top: 8px;
             letter-spacing: -0.1px;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap:'3rem';
+            
+            
         }
         .divider {
             height: 0.5px;
@@ -183,7 +192,12 @@
 
             <p class="text">Click the button to access the dashboard.</p>
 
-            <a href="{{ $url }}" class="btn">Confirm your account →</a>
+            <div class="btn-group">
+
+                <a href="{{ $url }}" class="btn">Confirm your account </a>
+                <a href="{{ $url }}" class="btn">Reuest a new  link</a>
+            </div>
+
 
             <div class="divider"></div>
 

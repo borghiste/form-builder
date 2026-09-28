@@ -123,7 +123,8 @@ export default function Header() {
               }}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
-              sx={{ display: { xs: 'block', md: 'none' } }}
+              sx={{ display: { xs: 'block', md: 'none' }
+              }}
             >
               {pages.map((page) => (
                 <MenuItem
