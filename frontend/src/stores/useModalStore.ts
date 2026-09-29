@@ -2,7 +2,7 @@ import { create } from 'zustand';
 
 type ModalState = {
     modalOpen: boolean;
-    modalMode: 'newForm' | 'editing' | 'view' | 'submission' | null;
+    modalMode: 'newForm' | 'editing' | 'view' | 'submission' | 'invite' | null;
     setModalOpen: (open: boolean) => void;
     setModalMode: (mode: ModalState['modalMode']) => void;
 };

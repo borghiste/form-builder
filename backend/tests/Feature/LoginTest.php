@@ -46,7 +46,8 @@ class LoginTest extends TestCase
         ->withHeader('Referer', config('app.url'))
         ->postJson('/api/login', [
             'email' => Organization::first()->users()->first()->email,
-            'password' => 'password123',])
+            'password' => 'password123',
+            'token_name' => 'test-token',])
 ;
         $response
             ->assertOk()

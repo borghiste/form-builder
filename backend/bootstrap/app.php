@@ -2,6 +2,8 @@
 
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
+use Illuminate\Routing\Exceptions\InvalidSignatureException;
+use Illuminate\Http\Request;
 use Illuminate\Foundation\Configuration\Middleware;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -15,5 +17,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->statefulApi();
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        $exceptions->render( function (InvalidSignatureException $e, Request $request) {
+            return response()->view('errors.linkExpired', [$request->query('email')], 403);
+
+        });
     })->create();

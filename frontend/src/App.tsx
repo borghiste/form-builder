@@ -1,12 +1,12 @@
-import React, { createContext, useState} from 'react';
+import React, { createContext, useState, useEffect} from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from './components/Layout';
 import { ThemeProvider } from '@emotion/react';
 import { LightTheme, DarkTheme } from '../src/theme/theme';
 import { useSelector } from 'react-redux';
-import { selectMode } from './features/themeSlice';
 
-import { useAuthentication } from './stores/useAuthStore';
+
+import { useThemeStore,useAuthStore } from './stores/index';
 
 // COMPONENTS
 import Home from '../src/routes/Home';
@@ -18,40 +18,47 @@ import AboutPage from './routes/AboutPage';
 import RegisterForm from './routes/RegistrationForm';
 import TermsAndPrivacy from './routes/TermsandPrivacy';
 import NotFound from './routes/NotFound';
+import InvitationPage from '../src/components/InvitationPage';
 
 
 
 // ---------------------- APP ----------------------
 export default function App() {
-  const themeState = useSelector(selectMode); 
-  const { organization, subdomain, user} = useAuthentication();
-
+  const { darkMode} = useThemeStore(); 
+  const { subdomain, initializeAuth, user} = useAuthStore();
   
+  useEffect(() => {
+    initializeAuth(); 
+  }, []);
+
 
 
   return (
     
-      <ThemeProvider theme={ themeState ? DarkTheme : LightTheme}>
+      <ThemeProvider theme={ darkMode ? DarkTheme : LightTheme}>
         <BrowserRouter>
           <Layout>
             <Routes>
               <Route path={`/`} element={<Home />} />
-              <Route path="/signup" element={ user == null ? <Login/> : <RegisterForm/>} />
+              <Route path={"/signup"} element={ user ? <Login/> : <RegisterForm/>} />
               <Route path="/login" element={user?.id ? null : <Login/>} />
               <Route
                 path={`/${subdomain}/forms`}
-                element={
-                  <ProtectedRoute>
+                element={ user?.id ?
+                   (<ProtectedRoute>
                     <FormsList/>
-                  </ProtectedRoute>
+                   </ProtectedRoute>) : <Login/>
                 }
               />
+
+              
+
               <Route
-                path="/entries"
-                element={
+                path={`/${subdomain}/entries`}
+                element={  
                   <ProtectedRoute>
                     <FormEntriesTable/>
-                  </ProtectedRoute>
+                  </ProtectedRoute >
                 }
               />
 

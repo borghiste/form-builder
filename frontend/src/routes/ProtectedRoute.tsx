@@ -1,8 +1,9 @@
+import React from "react";
 import { Navigate } from "react-router-dom";
-import { useAuthentication } from "../stores/useAuthStore";
+import { useAuthStore } from "../stores/index";
 export default function ProtectedRoute({children}){
-    const {user } = useAuthentication();
+    const {user} = useAuthStore();
 
-    return user?.id !== null ?children :  <Navigate to='/login' replace/>
+    return user?.id ? children :  <Navigate to='/login' replace/>
     
 }

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from "react-redux";
+import { useNavigate, useSearchParams } from 'react-router-dom';
+
 
 import { Container, Paper, Box, Typography, TextField, InputLabel, FormHelperText } from "@mui/material";
 import BasicButton from "../components/UI/BasicButton";
 
-import { useAuthentication } from '../stores/useAuthStore';
+import { useAuthStore } from '../stores/index';
 
 
 //THIS COMPONENT CONTAINS LOGIN PAGE AND ITS LOGIC
@@ -16,8 +16,13 @@ export default function LoginPage(){
 
 
 
-  const {email, password, loginUser, setField} = useAuthentication();
+  const {email, password, loginUser, setField} = useAuthStore();
   const navigate = useNavigate();
+  const error = useSearchParams()[0].get('error');
+
+  useEffect(() => {
+    setHelperText(error === 'link_expired' ? 'The magic link has expired. Please request a new magic link to confirm registration' : '');
+  }, [error]);
   
  
 
@@ -25,26 +30,18 @@ export default function LoginPage(){
 
 
 async function handleLogin(e) {
-    e.preventDefault();
-   
-  
-  
-     if (email === '' || password === '') {
-       setHelperText('email and password are required');
-       return;
-     }
 
+    e.preventDefault();
+    if (email === '' || password === '') {
+      setHelperText('email and password are required');
+      return;
+    }
      try {
+     
+
        const response = await loginUser();
 
 
-
- 
-     
-
-      
-
-     
 
        navigate(`/${response.organization.subdomain}/forms`);
      } catch (error) {
@@ -66,6 +63,7 @@ return(
 <Typography variant="h5" align="center" gutterBottom sx={{color:'text.primary'}}>Login</Typography>
 <Box component={'form'} role="login" onSubmit={handleLogin}>
 
+
   
 <InputLabel >email:</InputLabel>
 <TextField label="email"  fullWidth margin="normal" sx={{minHeight:'1rem'}} id="email" name="email" role="email" required  onChange={(e)=>{setField('email', e.target.value)}}  inputProps={{'data-testid': 'email-input'}}/>
@@ -76,7 +74,7 @@ return(
   
 
   <BasicButton text='Log in' variant="contained" fullWidth={true} type={'submit'} />
-  <FormHelperText sx={{color:'red'}}>{HelperText}</FormHelperText>
+  <FormHelperText sx={{color:'red', fontSize: '1rem'}}>{HelperText}</FormHelperText>
 </Box>
 
 </Paper>

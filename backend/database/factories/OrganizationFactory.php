@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Organization>
@@ -18,10 +18,12 @@ class OrganizationFactory extends Factory
      */
     public function definition(): array
     {
+        $suffix = Str::lower(Str::random(12));
+
         return [
             'name' => fake()->company(),
-            'subdomain' => fake()->unique()->domainWord(),
-            'slug' => fake()->unique()->slug(),
+            'subdomain' => fake()->domainWord().'-'.$suffix,
+            'slug' => fake()->slug().'-'.$suffix,
         ];
     }
 }

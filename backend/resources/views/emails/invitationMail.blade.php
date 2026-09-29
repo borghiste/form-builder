@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -78,7 +79,7 @@
             font-weight: 500;
         }
         .btn {
-            
+            display: inline-block;
             background: #3D71D9;
             color: #ffffff;
             text-decoration: none;
@@ -92,7 +93,7 @@
         .btn-outline {
             display: inline-block;
             background: transparent;
-            color: #2c2c2a;
+            color: #2c2c2a !important;
             text-decoration: none;
             font-size: 14px;
             font-weight: 500;
@@ -101,15 +102,6 @@
             border: 0.5px solid #2c2c2a;
             margin-top: 8px;
             letter-spacing: -0.1px;
-        }
-
-        .btn-group {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap:'3rem';
-            
-            
         }
         .divider {
             height: 0.5px;
@@ -163,41 +155,24 @@
     <div class="container">
 
         <div class="header">
-            <span class="logo">{{ config('app.name') }}</span>
+            <span class="logo"> {{ config('app.name') }}</span>
         </div>
 
         <div class="body">
-            <h1 class="title">Hello, {{ $userName }}!</h1>
+            <h1 class="title">{{ $invitedBy }} invites you to {{ config('app.name')}}</h1>
             <p class="text">
                 Welcome on {{ config('app.name') }}. Your account was created  successfully.
                 Please, make sure to click the button below to verify your email address and activate your account so you can start building your forms immediately.
 
             </p>
 
-            <h2 class="feature-title">Here's what you can do on PickForm</h2>
-            <div class="features">
-                <div class="feature">
-                    <div class="feature-dot"></div>
-                    <span class="feature-text"><strong>Drag & drop</strong> : drag fields to build your forms in few seconds, drop them anywhere you want.</span>
-                </div>
-                <div class="feature">
-                    <div class="feature-dot"></div>
-                    <span class="feature-text"><strong>Validations</strong>: add validation rules directly from the interface.</span>
-                </div>
-                <div class="feature">
-                    <div class="feature-dot"></div>
-                    <span class="feature-text"><strong>Preview</strong>: Preview your forms in real time.</span>
-                </div>
-            </div>
+            <h2 class="feature-title">{{ $invitedBy}} is inviting you on {{ config('app.name')}} with the following message:</h2>
+            <br/>
+            <p class="text">{{$invitationMessage}}</p>
 
-            <p class="text">Click the button to access the dashboard.</p>
+            <p class="text">Click the button below to access the dashboard.</p>
 
-            <div class="btn-group">
-
-                <a href="{{ $url }}" class="btn">Confirm your account </a>
-                <a href="{{ $url }}" class="btn">Reuest a new  link</a>
-            </div>
-
+            <a href="{{ $url }}" class="btn">Accept the invite on {{ config('app.name')  }}→</a>
 
             <div class="divider"></div>
 
@@ -214,7 +189,7 @@
         <div class="footer">
             <p class="footer-text">
             You received this email because you created an account on {{ config('app.name') }}.<br>
-                if this wasn't you, please <a href="mailto:sborghi92@gmail.com" class="footer-link">contatact me</a>.
+                if this wasn't you, please send an email to <a href="mailto:sborghi92@gmail.com" class="footer-link">sborghi92@gmail.com</a>.
             </p>
         </div>
 

@@ -515,7 +515,7 @@ export default function TermsAndPrivacy() {
             <Typography variant="h6" gutterBottom sx={{ mt: 3 }} color="text.primary">
               13. Data Protection Officer
             </Typography>
-            <Typography paragraph color="text.secondary">
+            <Typography color="text.secondary">
               For privacy-related inquiries or to exercise your rights, contact our Data Protection Officer at{' '}
               <Link href="mailto:dpo@formbuilder.com" color="primary">dpo@formbuilder.com</Link>
             </Typography>

@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Support\Facades\Auth;
+
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -50,9 +52,13 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Form::class, 'created_by');
     }
 
-    public function formPermissions(): HasMany
+    
+
+    // Invitations
+
+    public function Invitations()
     {
-        return $this->hasMany(FormPermission::class);
+          return $this->hasMany(Invitation::class);
     }
 
     public function inviter(): BelongsTo

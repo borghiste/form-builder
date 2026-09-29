@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Mail\WelcomeEmail;
 use App\Models\Organization;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -14,13 +15,8 @@ use Illuminate\Support\Str;
 
 class RegistrationService
 {
-    /**
-     * Registra una nuova organizzazione e il suo owner.
-     *
-     * @param  array $data  Dati validati dal Controller (organization_name, owner_name, email, password, plan?)
-     * @return array        ['organization' => Organization, 'user' => User]
-     * @throws \Throwable   Rilancia qualsiasi eccezione dopo averla loggata
-     */
+   
+     
     public function registration(array $data): array
     {
         try {
@@ -84,32 +80,22 @@ class RegistrationService
                     'email'           => $data['email'],
                     'password'        => Hash::make($data['password']),
                     'role'            => 'owner',
-                    'is_active'       => true,
+                    'is_active'       => true
+                 
                 ]);
 
                 // -----------------------------------------------------------
                 // MAGIC LINK
-                // URL::temporarySignedRoute genera un URL firmato con APP_KEY,
-                // valido 15 minuti, che punta alla route 'login.verify'.
-                // La firma crittografica impedisce manomissioni dei parametri.
-                // Il link NON viene restituito al chiamante: viaggia solo
-                // via email per evitare esposizioni in log o API response.
+                    // URL::temporarySignedRoute genera un URL signed with APP_KEY,
                 // -----------------------------------------------------------
                 $magicLink = URL::temporarySignedRoute(
                     'verify.email',
-                    now()->addMinutes(15),
+                    now()->addMinutes(60),
                     ['user' => $user->id,
-                    'tag' => $user->last_login_at?->timestamp ?? 0] // Aggiunta del timestamp per invalidare link vecchi 
-                );
+                    'tag' => $user->last_login_at?->timestamp ?? 0]); // tag is added to invalidate old links if the user logs in again before using the magic link
 
                 // -----------------------------------------------------------
-                // MAIL CON DB::afterCommit
-                // Senza afterCommit, se la transaction fa rollback DOPO
-                // che Mail::queue() è già stato chiamato, la mail partirebbe
-                // comunque con dati che non esistono più nel DB.
-                // afterCommit garantisce che il callback venga eseguito
-                // SOLO se il commit ha avuto successo; in caso di rollback
-                // il callback non viene mai invocato.
+                //  Email DB::afterCommit
                 // -----------------------------------------------------------
                 DB::afterCommit(function () use ($user, $magicLink) {
                     Mail::to($user->email)
@@ -127,7 +113,8 @@ class RegistrationService
 
             return $result;
 
-        } catch (\Throwable $e) {
+        } 
+        catch (\Throwable $e) {
             // ---------------------------------------------------------------
             // LOGGING ERRORI
             // Logga email e messaggio di errore senza esporre dati sensibili

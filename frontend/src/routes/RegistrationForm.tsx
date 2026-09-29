@@ -1,5 +1,5 @@
-import React, { useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
 
 // COMPONENTS
@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 // STORE
 import { useRegistration } from "../stores/useRegistrationStore";
-import { useModalStore } from "../stores/useModalStore";
+
 
 
 type RegisterFormData = {
@@ -31,45 +31,44 @@ type RegisterFormData = {
 
 
 export default function RegistrationForm() {
-  // prendi i dati e funzioni dallo store
-  const {owner_name, email, password, loading, error, errors,  success, setField, register} = useRegistration();
+  const [searchParams] = useSearchParams();
+  const invitationToken = searchParams.get('token');
+  const invitationEmail = searchParams.get('email');
+
+  const {owner_name, email, password, loading, error, errors, success, setField, register, token} = useRegistration();
   const navigate = useNavigate();
-  const {modalOpen, setModalMode, setModalOpen} = useModalStore();
-const [message, setMessage] = useState('');
-const attempt = useRef(0);
 
+  useEffect(() => {
+    if (invitationToken) {
+      setField('token', invitationToken);
+    }
 
+    if (invitationEmail) {
+      setField('email', invitationEmail);
+    }
+  }, [invitationToken, invitationEmail, setField]);
 
-  //  Submit
+  const [message, setMessage] = useState('');
+  const attempt = useRef(0);
+
   async function handleRegistration(e: React.FormEvent<HTMLFormElement>) {
-    // 1. previeni comportamento di default
-    e.preventDefault(); 
-    
-    // 2. se ci sono già stati 5 tentativi di registrazione, mostra un messaggio di errore e non permettere ulteriori tentativi
+    e.preventDefault();
+
     if (attempt.current >= 5) {
       setMessage('Too many registration attempts. Please try again later.');
     }
-    
-    
-    
-    // 3. chiama la funzione di registrazione dallo store, attendi risposta dal backend
-    const response = await register();
-    
-    // 4. se la registrazione ha successo, mostra messaggio di successo direttamente nel form e reindirizza alla pagina di login dopo 3 secondi
+
+    const response = await register(invitationToken ?? token);
+
     if (response) {
-      
-      
-      console.log(response);
-      setMessage(response.message);
-     
+      setMessage(response.message ?? 'Registration successful.');
+
       setTimeout(() => {
-        navigate('/login')}, 3000);
-
-
+        navigate('/login');
+      }, 3000);
     }
-    attempt.current++;
-   
 
+    attempt.current++;
   }
 
   return (
