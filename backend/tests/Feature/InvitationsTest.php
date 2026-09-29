@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Models\User;
+use Illuminate\Support\Facades\URL;
 use Tests\TestCase;
 use App\Models\Invitation;
 
@@ -140,9 +141,10 @@ public function test_expired_token_is_rejected(): void
   public function test_registration_with_wrong_email_is_rejected(): void
   {
       Invitation::factory()->create([
-          'token'  => 'valid-token',
-          'status' => 'accepted',
-          'email'  => 'giusto@example.com',
+          'token'    => 'valid-token',
+          'status'   => 'pending',
+          'email'    => 'giusto@example.com',
+          'expires_at' => now()->addDays(2),
       ]);
 
       $user = User::factory()->create();
@@ -161,9 +163,10 @@ public function test_expired_token_is_rejected(): void
  public function test_registration_with_correct_email_creates_user(): void
  {
      Invitation::factory()->create([
-         'token'  => 'valid-token',
-         'status' => 'accepted',
-         'email'  => 'giusto@example.com',
+         'token'    => 'valid-token',
+         'status'   => 'pending',
+         'email'    => 'giusto@example.com',
+         'expires_at' => now()->addDays(2),
      ]);
 
      $this->postJson('/api/register-invitation', [
@@ -176,5 +179,100 @@ public function test_expired_token_is_rejected(): void
      ->assertJsonStructure(['user' => ['id', 'name', 'email']]);
 
      $this->assertDatabaseHas('users', ['email' => 'giusto@example.com']);
+ }
+
+ public function test_invitation_link_redirects_without_marking_it_accepted(): void
+ {
+     $invitation = Invitation::factory()->create([
+         'token' => 'link-token-123',
+         'status' => 'pending',
+         'expires_at' => now()->addDays(2),
+         'email' => 'invitee@example.com',
+     ]);
+
+     $url = URL::temporarySignedRoute(
+        'invitations.accept',
+        now()->addDays(2),
+        ['token' => $invitation->token]
+    );
+
+    $this->from('/')->get($url)
+        ->assertRedirectContains('/signup?token=' . $invitation->token)
+        ->assertStatus(302);
+
+     $this->assertDatabaseHas('invitations', [
+         'token' => 'link-token-123',
+         'status' => 'pending',
+     ]);
+ }
+
+ public function test_registration_requires_a_pending_valid_invitation(): void
+ {
+     $invitation = Invitation::factory()->create([
+         'token' => 'pending-valid-token',
+         'status' => 'pending',
+         'email' => 'giusto@example.com',
+         'expires_at' => now()->subDay(),
+     ]);
+
+     $this->postJson('/api/register-invitation', [
+         'token' => 'pending-valid-token',
+         'email' => 'giusto@example.com',
+         'name' => 'Luigi Verdi',
+         'password' => 'password123',
+     ])
+     ->assertStatus(422)
+     ->assertJson(['message' => 'Invitation expired']);
+ }
+
+ public function test_invitation_acceptance_flow_completes_registration_only_after_valid_signup(): void
+ {
+     $inviter = User::factory()->create();
+     $invitation = Invitation::factory()->create([
+         'organization_id' => $inviter->organization_id,
+         'invited_by' => $inviter->id,
+         'user_id' => $inviter->id,
+         'email' => 'newmember@example.com',
+         'role' => 'viewer',
+         'status' => 'pending',
+         'token' => 'flow-token-123',
+         'expires_at' => now()->addDays(3),
+         'accepted_at' => null,
+     ]);
+
+     $signedUrl = URL::temporarySignedRoute(
+         'invitations.accept',
+         now()->addDays(3),
+         ['token' => $invitation->token]
+     );
+
+     $this->get($signedUrl)
+         ->assertRedirectContains('/signup?token=' . $invitation->token)
+         ->assertStatus(302);
+
+     $this->assertDatabaseHas('invitations', [
+         'token' => 'flow-token-123',
+         'status' => 'pending',
+     ]);
+
+     $this->postJson('/api/register-invitation', [
+         'token' => 'flow-token-123',
+         'name' => 'New Member',
+         'email' => 'newmember@example.com',
+         'password' => 'password123',
+     ])->assertStatus(201)
+       ->assertJsonPath('user.email', 'newmember@example.com')
+       ->assertJsonPath('user.organization_id', $invitation->organization_id);
+
+     $this->assertDatabaseHas('users', [
+         'email' => 'newmember@example.com',
+         'organization_id' => $invitation->organization_id,
+     ]);
+
+     $this->assertDatabaseHas('invitations', [
+         'token' => 'flow-token-123',
+         'status' => 'accepted',
+         'user_id' => User::where('email', 'newmember@example.com')->first()->id,
+     ]);
  }
 }

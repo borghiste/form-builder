@@ -46,10 +46,22 @@ class RegisterController extends Controller
         ]);
 
         $invitation = Invitation::where('token', $validated['token'])
-            ->where('status', 'accepted')
-            ->firstOrFail();
+            ->where('status', 'pending')
+            ->first();
 
-        if ($invitation->email !== $validated['email']) {
+        if (!$invitation) {
+            return response()->json([
+                'message' => 'Invitation not found or already used.'
+            ], 422);
+        }
+
+        if (!$invitation->expires_at || $invitation->expires_at->isPast()) {
+            return response()->json([
+                'message' => 'Invitation expired'
+            ], 422);
+        }
+
+        if (strtolower($invitation->email) !== strtolower($validated['email'])) {
             return response()->json([
                 'message' => "Email doesn't match the invitation."
             ], 422);
@@ -68,6 +80,7 @@ class RegisterController extends Controller
         $invitation->update([
             'user_id' => $user->id,
             'status' => 'accepted',
+            'accepted_at' => now(),
         ]);
 
         return response()->json(['user' => $user], 201);

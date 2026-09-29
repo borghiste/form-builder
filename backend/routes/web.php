@@ -18,6 +18,7 @@ Route::get('/verify.email/{user}', [AuthController::class, 'verifyUser'])->name(
 // INVITATION ACCEPTANCE
 
 Route::get('/invitations/{token}/accept', [InvitationController::class, 'acceptInvitation'])
+    ->middleware('signed')
     ->name('invitations.accept');
 
 

@@ -16,6 +16,7 @@ describe('useRegistrationStore', () => {
       password: '',
       password_confirmation: '',
       acceptedTerms: false,
+      token: '',
       loading: false,
       error: null,
       success: false,
@@ -75,6 +76,40 @@ describe('useRegistrationStore', () => {
 
     expect(result.current.error).toBe('Network error');
     expect(result.current.success).toBe(false);
+  });
+
+  it('uses the invite token and calls the invitation registration endpoint', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ user: { id: 9, email: 'newmember@example.com' } }),
+    });
+    global.fetch = fetchMock as typeof fetch;
+
+    const { result } = renderHook(() => useRegistration());
+
+    act(() => {
+      result.current.setField('token', 'invite-token-123');
+      result.current.setField('owner_name', 'New Member');
+      result.current.setField('email', 'newmember@example.com');
+      result.current.setField('password', 'password123');
+    });
+
+    await act(async () => {
+      await result.current.register('invite-token-123');
+    });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      `${import.meta.env.VITE_BACKEND_URL}/api/register-invitation`,
+      expect.objectContaining({
+        method: 'POST',
+        body: JSON.stringify({
+          token: 'invite-token-123',
+          name: 'New Member',
+          email: 'newmember@example.com',
+          password: 'password123',
+        }),
+      })
+    );
   });
 
 });

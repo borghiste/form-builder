@@ -41,17 +41,20 @@ export default function InvitationPage() {
   }, []);
 
  
-  const [entries, setEntries] = useState<{ email: string; role: string, message: string }[]>([]);
+  const [entries, setEntries] = useState<{ id: string; email: string; role: string; message: string }[]>([]);
   const [localInput, setLocalInput] = useState("");
-  const [message, setMessage] = useState(null);
+  const [message, setMessage] = useState("");
   const [inputError, setInputError] = useState(false);
 
   const addEmail = (raw: string) => {
     const val = raw.trim().toLowerCase();
-    if (!val) return;
+    if (!val) {
+      setInputError(true);
+      return;
+    }
     if (!isValidEmail(val)) { setInputError(true); return; }
     if (entries.find((e) => e.email === val)) { setLocalInput(""); return; }
-    setEntries((prev) => [...prev, {email: val, role: "viewer", message: message }]);
+    setEntries((prev) => [...prev, { id: nanoid(), email: val, role: "viewer", message }]);
     setLocalInput("");
     setInputError(false);
   };
@@ -62,16 +65,26 @@ export default function InvitationPage() {
     if (e.key === "Enter" || e.key === ",") {
       e.preventDefault();
       addEmail(localInput);
+      return;
     }
     if (e.key === "Backspace" && localInput === "" && entries.length > 0) {
       setEntries((prev) => prev.slice(0, -1));
     }
   };
 
+  const handleSendInvitations = () => {
+    if (entries.length === 0) {
+      setInputError(true);
+      return;
+    }
+    sendInvitations(entries)
+    handleCancel();
+
+  }
   const handleCancel = () => {
     setEntries([]);
     setLocalInput("");
-    setMessage(null);
+    setMessage("");
     setInputError(false);
     setModalOpen(false);
     setModalMode(null);
@@ -80,17 +93,38 @@ export default function InvitationPage() {
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
       {/* Main Layout */}
-      <Box sx={{ maxWidth: 960, mx: "auto", px: 3, py: 6, display: "flex", gap: 3, alignItems: "flex-start" }}>
+      <Box
+        sx={{
+          maxWidth: 960,
+          mx: "auto",
+          px: { xs: 2, md: 3 },
+          py: { xs: 3, md: 6 },
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          gap: 3,
+          alignItems: { xs: "stretch", md: "flex-start" },
+        }}
+      >
 
         {/* Invite Card */}
-        <Card elevation={0} sx={{ flex: 1, border: "1px solid #e5e7eb", borderRadius: 3 }}>
-          <CardContent sx={{ p: 4 }}>
+        <Card elevation={0} sx={{ width: "100%", minWidth: 0, flex: 1, border: "1px solid #e5e7eb", borderRadius: 3 }}>
+          <CardContent sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
             {/* Header */}
-            <Stack direction="row" alignItems="center" spacing={1.5} mb={0.5}>
-              <Box sx={{ width: 40, height: 40, bgcolor: "#1a1a2e", borderRadius: 2, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <Stack
+              direction={{ xs: "column", sm: "row" }}
+              alignItems={{ xs: "flex-start", sm: "center" }}
+              spacing={1.5}
+              mb={0.5}
+            >
+              <Box sx={{ width: 40, height: 40, flexShrink: 0, bgcolor: "#1a1a2e", borderRadius: 2, display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <PersonAddAlt1Icon sx={{ color: "#fff", fontSize: 20 }} />
               </Box>
-              <Typography variant="h5">Invite new members</Typography>
+              <Typography
+                variant="h5"
+                sx={{ minWidth: 0, maxWidth: "100%", overflowWrap: "anywhere", fontSize: { xs: "1.25rem", sm: "1.5rem" } }}
+              >
+                Invite new members
+              </Typography>
             </Stack>
             <Typography variant="body2" color="text.secondary" mb={3}>
               Add the email addresses of the people you want to invite. You can assign them a role and write a personal message to include in the invitation email.
@@ -132,7 +166,7 @@ export default function InvitationPage() {
                 text='+'
                 size='medium'
                 color='gray.light'
-                onClick={() => handleKeyDown}/>
+                onClick={() => addEmail(localInput)}/>
               </Box>
             </Paper>
                 
@@ -212,47 +246,42 @@ export default function InvitationPage() {
                 text="Send invitation"
                 variant="contained"
                 color="cyan.main"
-                onClick={() => sendInvitations(entries)}
+                onClick={() => handleSendInvitations()}
               />
             </Stack>
           </CardContent>
         </Card>
 
         {/* Pending Invites */}
-        <Card elevation={0} sx={{ width: 240, border: "1px solid #e5e7eb", borderRadius: 3, flexShrink: 0 }}>
+        <Card sx={{ width: { xs: "100%", md: "20rem" }, maxHeight: { xs: "15rem", md: '100%'},  border: "1px solid #e5e7eb", borderRadius: 3, flexShrink: 0 }}>
           <CardContent sx={{ p: 2.5 }}>
             <Typography variant="subtitle2" fontWeight={700} mb={1.5}>
               Pending invites
             </Typography>
-            <Stack divider={<Divider flexItem />}>
+            <Stack
+              divider={<Divider flexItem />}
+              sx={{ maxHeight: { xs: "40vh", sm: "50vh", md: "calc(100vh - 180px)" }, overflowY: "auto", pr: 0.5 }}
+            >
               {pendingInvitations?.map(({ email, time, role }) => (
-                <Stack key={email} direction="row" alignItems="center" spacing={1.5} py={1.25}>
-                  <Avatar sx={{ width: 34, height: 34, fontSize: 12, fontWeight: 700 }}>
-                    {email.slice(0, 2).toUpperCase()}
-                  </Avatar>
-                  <Box sx={{ flex: 1, minWidth: 0 }}>
-                    <Typography variant="body2" fontWeight={600} fontSize={12} noWrap>{email}</Typography>
-                    <Typography variant="caption" color="text.secondary" fontSize={11}>{time}</Typography>
-                  </Box>
-                  <Chip
-                    label={role}
-                    size="small"
-                    sx={{ fontSize: 10, height: 20, fontWeight: 700, letterSpacing: "0.04em" }}
-                  />
-                 
-                </Stack>
+                <React.Fragment key={email}>
+                  <Stack direction="row" alignItems="center" spacing={1.5} py={1.25}>
+                    <Avatar sx={{ width: 34, height: 34, fontSize: 12, fontWeight: 700 }}>
+                      {email.slice(0, 2).toUpperCase()}
+                    </Avatar>
+                    <Box sx={{ flex: 1, minWidth: 0 }}>
+                      <Typography variant="body2" fontWeight={600} fontSize={12} noWrap>{email}</Typography>
+                      <Typography variant="caption" color="text.secondary" fontSize={11}>{time}</Typography>
+                    </Box>
+                    <Chip
+                      label={role}
+                      size="small"
+                      sx={{ fontSize: 10, height: 20, fontWeight: 700, letterSpacing: "0.04em" }}
+                    />
+                  </Stack>
+                </React.Fragment>
               ))}
             </Stack>
-            {/* <Button
-              fullWidth variant="outlined" size="small"
-              sx={{
-                mt: 1.5, borderColor: "#e5e7eb", color: "text.secondary",
-                fontSize: 12, fontWeight: 600,
-                "&:hover": { borderColor: "#9ca3af", bgcolor: "#f9fafb" },
-              }}
-            >
-              View all pending
-            </Button> */}
+          
           </CardContent>
         </Card>
 

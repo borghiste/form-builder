@@ -27,16 +27,16 @@ export default function ModalWindow({message}:{message:string}) {
 
   const boxStyle = {
      position: 'absolute',
-    overflow:'auto',
+    
     display:'flex',
     justifyContent:'center',
+   
      top: '50%',
      left: '50%',
      transform: 'translate(-50%, -50%)',
      maxWidth: '100%',
-     mazHeight:'100%',
-     
-     p: 0,
+     maxHeight:'100vh',
+
      
   }
 

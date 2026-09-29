@@ -48,7 +48,7 @@ public function acceptInvitation(string $token, Request $request)
 {
     $invitation = Invitation::where('token', $token)->firstOrFail();
 
-    if ($invitation->accepted_at !== null) {
+    if ($invitation->accepted_at !== null || $invitation->status === 'accepted') {
         return response()->json([
             'message' => 'This invitation has already been accepted.'
         ], 422);
@@ -60,16 +60,22 @@ public function acceptInvitation(string $token, Request $request)
         ], 422);
     }
 
-    $invitation->markAsAccepted();
+    if ($request->isMethod('post')) {
+        $invitation->markAsAccepted();
 
-    return response()->json([
-        'message' => 'Invitation accepted successfully.',
-        'redirect_to' => config('app.frontend_url') . '/register?token=' . $invitation->token,
-        'invitation' => [
-            'email' => $invitation->email,
-            'role' => $invitation->role,
-        ],
-    ], 200);
+        return response()->json([
+            'message' => 'Invitation accepted successfully.',
+            'redirect_to' => rtrim(config('app.frontend_url') ?: config('app.url'), '/') . '/signup?token=' . urlencode($invitation->token),
+            'invitation' => [
+                'email' => $invitation->email,
+                'role' => $invitation->role,
+            ],
+        ], 200);
+    }
+
+    $frontendUrl = rtrim(config('app.frontend_url') ?: config('app.url'), '/');
+
+    return redirect($frontendUrl . '/signup?token=' . urlencode($invitation->token) . '&email=' . urlencode($invitation->email));
 }
 
 

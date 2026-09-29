@@ -33,10 +33,10 @@ class SendInvitationsService
           
             
             Mail::to($invitation->email)->queue(new InvitationMail(
-                $invitationLink,
-                $item['role'],
-                $item['message'] ?? null,
-                $invitedBy
+                invitedBy: $invitedBy->name ?? $invitedBy->email,
+                role: $item['role'],
+                invitationMessage: $item['message'] ?? null,
+                invitationLink: $invitationLink
             ));
         }
     }
