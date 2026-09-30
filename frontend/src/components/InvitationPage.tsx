@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
   TextField,
   Chip,
-  Button,
+  
   Card,
   CardContent,
   Avatar,
@@ -18,11 +18,11 @@ import {
 } from "@mui/material";
 import BasicButton from "../components/UI/BasicButton";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
-import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
+
 import CloseIcon from "@mui/icons-material/Close";
 import { useInvitationsStore, useInviteFormStore, useModalStore } from "../stores/index";
 import { nanoid } from "nanoid";
-import { Email } from "@mui/icons-material";
+
 
 const roles = [
   { value: "viewer", label: "Viewer" },

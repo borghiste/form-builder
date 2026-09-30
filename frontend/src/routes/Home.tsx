@@ -27,7 +27,7 @@ function useIntersectionAnimation(threshold = 0.15) {
   return { ref, visible };
 }
 
-// Stili CSS iniettati una volta sola
+
 const ANIMATION_STYLES = `
   .feat-card {
     opacity: 0;
@@ -78,7 +78,7 @@ export default function Home(){
         {/* Beneficio 1 */}
        
          <Box component={'div'} sx={{display:'flex', flexDirection:{xs:'column', md:'row'}, justifyContent:'center', alignItems:'center'}}>
-         <img src={'https://placehold.co/600x400'}/>
+         <img alt="PickForm preview" src={'https://placehold.co/600x400'}/>
 
 
           <Box sx={{display:'flex', flexDirection:'column', justifyContent:'center',  flexWrap: 'wrap', gap:2}}>

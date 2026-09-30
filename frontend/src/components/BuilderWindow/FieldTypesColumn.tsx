@@ -34,7 +34,7 @@ export const fieldTypes = [
 
 
 
-export default function FieldTypesColumn({handleDragStart}) {
+export default function FieldTypesColumn({handleDragStart, handleDragEnd}) {
     
   return (
     <Box>
@@ -60,6 +60,7 @@ export default function FieldTypesColumn({handleDragStart}) {
             Icon={field.icon} 
             name={field.name} 
             handleDragStart={handleDragStart}
+            handleDragEnd={handleDragEnd}
             field={field}/>
         
           );

@@ -3,7 +3,7 @@ import React from "react";
 import { Box, Typography, Paper } from "@mui/material";
 
 
-export default function FieldButton({handleDragStart, 
+export default function FieldButton({handleDragStart, handleDragEnd,
   field, 
   Icon, 
   name
@@ -14,6 +14,7 @@ export default function FieldButton({handleDragStart,
 
                   draggable
                   onDragStart={(e) => handleDragStart(e, field)}
+                  onDragEnd={handleDragEnd}
                   onMouseDown={(e) => (e.currentTarget.style.cursor = 'grabbing')}
                   onMouseUp={(e) => (e.currentTarget.style.cursor = 'grab')}
                   sx={{

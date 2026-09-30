@@ -1,9 +1,6 @@
 import React from "react";
 // REDUX
 import { useDispatch, useSelector } from "react-redux";
-import { updateField } from "../../features/formSlice";
-import { selectField } from "../../features/fieldSlice";
-import {formField } from '../../features/formSlice'
 
 // MUI
 import { TextField, 

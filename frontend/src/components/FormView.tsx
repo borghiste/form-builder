@@ -3,9 +3,7 @@ import React, { useState } from "react";
 import BasicButton from './UI/BasicButton';
 //REDUX
 import { useDispatch, useSelector } from "react-redux";
-import {useAuthStore} from '../stores/index';
-import { submitNewEntry } from '../features/FormEntriesSlice';
-import { selectForm } from '../features/formSlice';
+import {useAuthStore, useFormListStore} from '../stores/index';
 
 import {
   TextField,
@@ -18,8 +16,7 @@ import {
   Paper,
   Grid,
   FormControlLabel,
-  Checkbox,
-  TextareaAutosize
+  Checkbox
 } from "@mui/material";
 
 interface Field {
@@ -84,8 +81,11 @@ const renderedComponent = {
 };
 
 export default function FormView({ disabledFields, entries }) {
-  const dispatch = useDispatch();
-  const form = useSelector(selectForm);
+  
+  const {getFormById, selectedForm} = useFormListStore();
+
+
+  
   const user = useAuthStore();
   const [entryData, setEntryData] = useState({form_fields: entries || {} });
 
@@ -105,7 +105,7 @@ export default function FormView({ disabledFields, entries }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(submitNewEntry({ entryData, form_id: form.id }));
+    dispatch(submitNewEntry({ entryData, form_id: selectedForm.id }));
   };
 
   const handleReset = () => {
@@ -125,14 +125,14 @@ export default function FormView({ disabledFields, entries }) {
     >
       <Box>
         <Typography variant="h5" component="h1" gutterBottom>
-          {form?.name}
+          {selectedForm?.name}
         </Typography>
         <Typography>
-          {form?.description || 'No description provided.'}
+          {selectedForm?.description || 'No description provided.'}
         </Typography>
         <Box component="form" onSubmit={handleSubmit}>
           <Grid container spacing={2} sx={{ display: 'flex', flexDirection: 'column' }}>
-            {form?.form_fields?.map((field) => {
+            {selectedForm?.form_fields?.map((field) => {
               const Component = renderedComponent[field.type];
               return (
                 <Grid item key={field.id}>

@@ -11,6 +11,7 @@ use App\Models\Invitation;
 
 class InvitationsTest extends TestCase
 {
+    
     /**
      * A basic feature test example.
      */
@@ -140,10 +141,12 @@ public function test_expired_token_is_rejected(): void
   // TEST 7: registrazione con email sbagliata → 403
   public function test_registration_with_wrong_email_is_rejected(): void
   {
+
+  
       Invitation::factory()->create([
           'token'    => 'valid-token',
           'status'   => 'pending',
-          'email'    => 'giusto@example.com',
+          'email'    => $rightEmail,
           'expires_at' => now()->addDays(2),
       ]);
 
@@ -165,7 +168,7 @@ public function test_expired_token_is_rejected(): void
      Invitation::factory()->create([
          'token'    => 'valid-token',
          'status'   => 'pending',
-         'email'    => 'giusto@example.com',
+         'email'    => $rightEmail,
          'expires_at' => now()->addDays(2),
      ]);
 

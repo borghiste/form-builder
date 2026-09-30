@@ -45,7 +45,7 @@ async function handleLogin(e) {
 
        navigate(`/${response.organization.subdomain}/forms`);
      } catch (error) {
-       const message = error instanceof Error ? error.message : 'Login failed';
+       const message = error instanceof Error && 'Login failed';
        setHelperText(message);
      }
 

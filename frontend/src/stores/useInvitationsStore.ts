@@ -14,10 +14,7 @@ export const useInvitationsStore = create<InvitationsState>((set) => ({
   pendingInvitations: null,
   getInvitations: async () => {
     try {
-        // await fetch (`${import.meta.env.VITE_BACKEND_URL}/sanctum/csrf-cookie`, {
-        //   method: 'GET',
-        //   credentials: 'include'
-        // });
+       
       const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/invitations`, {
         method: 'GET',
         credentials: 'include',

@@ -1,12 +1,11 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { nanoid } from 'nanoid';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, ButtonGroup, TextField } from '@mui/material';
 
 // stores
 import { useFieldState } from '../../stores/useFieldStore';
-import { selectField } from '../../features/fieldSlice';
-import { selectForm } from '../../features/formSlice';
+
 
 
 
@@ -37,10 +36,11 @@ const CONTEXT_TYPES = {
 
 export default function BuilderWindow({ handleModalClose }) {
   // Redux state
+  const dispatch = useDispatch();
   const {setField} = useFieldState();
    const form = useSelector(selectForm);
    const selectedField = useSelector(selectField);
-   const formFields = [];
+   const formFields = form?.form_fields ?? [];
 
  
 
@@ -57,6 +57,7 @@ export default function BuilderWindow({ handleModalClose }) {
    */
   const handleDragStart = (e, field) => {
     setDraggedField(field);
+    setDraggedFieldIndex(null);
     e.dataTransfer.effectAllowed = DROP_EFFECTS.COPY;
     // Set multiple formats for better cross-browser support
     try {
@@ -72,6 +73,7 @@ export default function BuilderWindow({ handleModalClose }) {
    * Handles drag start for existing fields (reordering)
    */
   const handleFieldDragStart = (e, index) => {
+    setDraggedField(null);
     setDraggedFieldIndex(index);
     e.dataTransfer.effectAllowed = DROP_EFFECTS.MOVE;
     // Set multiple formats for better cross-browser support
@@ -116,16 +118,23 @@ export default function BuilderWindow({ handleModalClose }) {
     if (draggedField !== null && draggedFieldIndex === null) {
       // Add new field
       const newField = createNewFieldFromTemplate(draggedField);
-      dispatch(addField({ form_fields: newField }));
-      updatedFields.push(newField);
+      updatedFields.splice(dropIndex, 0, newField);
     } else if (draggedFieldIndex !== null) {
       // Reorder existing field
       const startIndex = draggedFieldIndex;
+      if (startIndex < 0 || startIndex >= updatedFields.length) {
+        handleDragEnd();
+        return;
+      }
       const [movedField] = updatedFields.splice(startIndex, 1);
-      updatedFields.splice(dropIndex, 0, movedField);
+      const adjustedDropIndex = dropIndex > startIndex ? dropIndex - 1 : dropIndex;
+      updatedFields.splice(adjustedDropIndex, 0, movedField);
+    } else {
+      handleDragEnd();
+      return;
     }
 
-    dispatch(setForm({ ...form, form_fields: updatedFields }));
+    dispatch(setFormFields(updatedFields));
     
     // Clean up state
     setDraggedField(null);
@@ -285,7 +294,7 @@ export default function BuilderWindow({ handleModalClose }) {
             <TextField
               type="text"
               placeholder="Insert Form Name"
-              value={form && form.name ? form.name : ''}
+              value={form && form.name ? form.name : null}
               onChange={handleFormNameChange}
               sx={{
                 flex: 1,

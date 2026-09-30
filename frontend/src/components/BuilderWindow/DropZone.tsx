@@ -4,7 +4,7 @@ import { Box, Typography} from '@mui/material';
 import DraggableCard from '../UI/DraggableCard';
 // REDUX
 import { useDispatch, useSelector } from 'react-redux';
-import { selectForm, setFormFields  } from '../../features/formSlice';
+
 
 export default function FieldsList({
   handleFieldClick,
@@ -12,6 +12,7 @@ export default function FieldsList({
   selectedField,
   onDragOver,
   onDrop,
+  onDragEnd,
   handleDraggedField,
   formFields,
 
@@ -23,9 +24,16 @@ export default function FieldsList({
 
   const handleFieldDragStart = (e, index) => {
     setDraggedFieldIndex(index);
+    handleDraggedField(e, index);
     e.dataTransfer.effectAllowed = "move";
     e.dataTransfer.setData("reorder", "true");
     e.dataTransfer.setData("fieldIndex", index.toString());
+  };
+
+  const handleFieldDragEnd = () => {
+    setTargetIndex(null);
+    setDraggedFieldIndex(null);
+    onDragEnd();
   };
 
   const handleFieldDragOver = (e: React.DragEvent, index: number) => {
@@ -59,6 +67,7 @@ export default function FieldsList({
     <Box
       onDragOver={onDragOver}
       onDrop={handleEndDrop} 
+      onDragEnd={handleFieldDragEnd}
       data-testid="fields-list"
       sx={{
         minHeight: '5rem',

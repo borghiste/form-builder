@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 
 // MUI
@@ -20,16 +20,9 @@ import BasicButton from "../components/UI/BasicButton";
 import ModalWindow from "../components/ModalWindow";
 
 // REDUX
-import { useSelector, useDispatch } from "react-redux";
-import { AppDispatch } from "../app/store";
-
-import { fetchFormsList, deleteForm, getForm } from "../features/formsListSlice";
-import { selectForms } from "../features/formsListSlice";
-import { setFormFields, selectForm, setForm } from "../features/formSlice";
-
-
+import { useDispatch } from "react-redux";
 import { useModalStore } from "../stores/useModalStore";
-import { useAuthStore} from "../stores/index";
+import { useAuthStore, useFormListStore} from "../stores/index";
 
 // utils
 
@@ -38,52 +31,53 @@ import { useAuthStore} from "../stores/index";
 
 export default function FormsList() {
   const {setModalOpen, setModalMode} = useModalStore();
-  const dispatch = useDispatch<AppDispatch>();
-  const forms = useSelector(selectForms);
+  
+  const {getForms, forms, getFormById} = useFormListStore();
+  
   const {user} = useAuthStore();
   
-  const form = useSelector(selectForm);
   
-
+  
   useEffect(() => {
-     dispatch(fetchFormsList());
-   }, forms);
-
-  const handleModalClose = () => {
-     setModalOpen(false);
-    setModalMode(null);
-    dispatch(setForm({ ...form, name: '' }));
+    getForms();
+    
+  }, [getForms]);
+  
+  // const handleModalClose = () => {
+  //   setModalOpen(false);
+  //   setModalMode(null);
+  //   dispatch(setForm({ ...form, name: '' }));
+  // };
+  
+  const handleNewFormClick = () => {
+    setModalMode('newForm');
+    setModalOpen(true);
+    dispatch(setFormFields([]));
   };
-
-   const handleNewFormClick = () => {
-     setModalMode('newForm');
-     setModalOpen(true);
-     dispatch(setFormFields([]));
-   };
-
-   const handleViewForm = async (formId: number) => {
-     const selectedForm = await dispatch(getForm(formId)).unwrap();
-   
-     dispatch(setForm({id: selectedForm.id,name:selectedForm.name,
-                   form_fields: selectedForm?.form_fields
-     }))
-     setModalOpen(true);
-     setModalMode('view');
-   };
-
-   function handleInviteClick() {
+  
+  const handleViewForm = async (formId: number) => {
+    const selectedForm = await getFormById(formId);
+    console.log('selectedForm', selectedForm);
+    
+    
+    setModalOpen(true);
+    setModalMode('view');
+  };
+  
+  function handleInviteClick() {
     setModalMode('invite');
     setModalOpen(true);
-   }
-
+  }
+  
   const handleEditForm = async (formId: number) => {
     const selectedForm = await dispatch(getForm(formId)).unwrap();
     dispatch(setFormFields(selectedForm.form_fields));
     dispatch(setForm(selectedForm));
     setModalOpen(true);
-  
+    
   };
-
+  
+  
   return (
     
     <>

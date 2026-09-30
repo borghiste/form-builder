@@ -46,10 +46,7 @@ beforeAll(() => {
 describe('Home Page', () => {
 
 
-    it('renders home page component', () => {
-        renderPage();
-        
-    });
+
 
     it('direct to sign up page when clicking the sign up button', () => {
         renderPage();
