@@ -34,8 +34,7 @@ export const fieldTypes = [
 
 
 
-export default function FieldTypesColumn({handleDragStart, handleDragEnd}) {
-    
+export default function FieldTypesColumn({ handleDragStart, handleDragEnd }) {
   return (
     <Box>
       <Typography
@@ -44,28 +43,22 @@ export default function FieldTypesColumn({handleDragStart, handleDragEnd}) {
           fontSize: '1.125rem',
           fontWeight: 600,
           mb: 2,
-          
         }}
       >
         Form Fields
       </Typography>
 
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-       
-        {fieldTypes?.map((field) => {
-        
-
-          return (
-            <FieldButton key={field.id} 
-            Icon={field.icon} 
-            name={field.name} 
+        {fieldTypes?.map((field) => (
+          <FieldButton
+            key={field.name}
+            Icon={field.icon}
+            name={field.name}
             handleDragStart={handleDragStart}
             handleDragEnd={handleDragEnd}
-            field={field}/>
-        
-          );
-        })
-        }
+            field={field}
+          />
+        ))}
       </Box>
     </Box>
   );

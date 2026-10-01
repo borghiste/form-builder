@@ -1,27 +1,35 @@
-import React from "react";
-// REDUX
-import { useDispatch, useSelector } from "react-redux";
+import React from 'react';
 
-// MUI
-import { TextField, 
-  Typography,
+import {
   Box,
   FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   FormControlLabel,
+  InputLabel,
+  MenuItem,
+  Select,
   Switch,
+  TextField,
+  Typography,
+} from '@mui/material';
 
-  FormLabel
-} from "@mui/material";
+type BuilderField = {
+  id: string;
+  label: string;
+  type: string;
+  required?: boolean;
+  placeholder?: string;
+  description?: string;
+  validations?: Record<string, unknown>;
+  [key: string]: unknown;
+};
 
-export default function ValidationPanel() {
-  const dispatch = useDispatch();
-  const selectedField = useSelector(selectField);
-  
-  
-  if (selectedField === null) {
+type ValidationPanelProps = {
+  selectedField: BuilderField | null;
+  onFieldChange: (key: string, value: string | boolean | Record<string, unknown>) => void;
+};
+
+export default function ValidationPanel({ selectedField, onFieldChange }: ValidationPanelProps) {
+  if (!selectedField) {
     return (
       <Typography textAlign="center" mt={4}>
         Select a field to edit validations
@@ -31,134 +39,87 @@ export default function ValidationPanel() {
 
   const fieldType = selectedField.type;
 
-  // field changes global function
-  const handleFieldChange = (key: keyof formField, value: any) => {
-    dispatch(updateField({
-      id: selectedField.id,
-      changes: { [key]: value }
-    }));
-  };
-
   return (
-  
     <Box>
       <Typography variant="h6" mb={2} fontWeight={600}>
         Set Validations
       </Typography>
-    
+
       <Box display="flex" flexDirection="column" gap={3}>
-        {/* Field Type */}
         <FormControl fullWidth>
           <InputLabel id="field-type-label">Field Type</InputLabel>
           <Select
             labelId="field-type-label"
-            value={selectedField.type}
-            onChange={(e) => handleFieldChange('type', e.target.value)}
+            value={fieldType}
+            onChange={(e) => onFieldChange('type', e.target.value)}
           >
             <MenuItem value="text">Text</MenuItem>
-            <MenuItem value="text area">Text area</MenuItem>
+            <MenuItem value="textarea">Text area</MenuItem>
             <MenuItem value="email">Email</MenuItem>
             <MenuItem value="number">Number</MenuItem>
-            <MenuItem value="telephone">Telephone</MenuItem>
+            <MenuItem value="phone">Phone</MenuItem>
+            <MenuItem value="password">Password</MenuItem>
             <MenuItem value="date">Date</MenuItem>
             <MenuItem value="time">Time</MenuItem>
+            <MenuItem value="select">Select</MenuItem>
+            <MenuItem value="checkbox">Checkbox</MenuItem>
           </Select>
         </FormControl>
 
-        {/* Field Label */}
         <TextField
           label="Field Label"
           type="text"
-          
-          onChange={(e) => handleFieldChange('label', e.target.value)}
+          value={selectedField.label}
+          onChange={(e) => onFieldChange('label', e.target.value)}
           fullWidth
         />
 
-        {/* Required Field */}
+        <TextField
+          label="Placeholder"
+          type="text"
+          value={selectedField.placeholder ?? ''}
+          onChange={(e) => onFieldChange('placeholder', e.target.value)}
+          fullWidth
+        />
+
         <FormControlLabel
           control={
             <Switch
-            
-              onChange={(e) =>
-                handleFieldChange('required', e.target.checked)}
-              
+              checked={Boolean(selectedField.required)}
+              onChange={(e) => onFieldChange('required', e.target.checked)}
               color="primary"
             />
           }
           label="Required field"
         />
 
-        {/* Length Validations */}
-        {['text', 'text area', 'number', 'email', 'telephone'].includes(fieldType) && (
-          <FormControl
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              flexDirection: 'row',
-              alignItems: 'center',
-              maxWidth: '16rem',
-            }}
-          >
-            <FormLabel>Length:</FormLabel>
-            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-              <TextField
-                variant="outlined"
-                size="small"
-                label="Min"
-                type="number"
-                value={selectedField.validations?.minLength || ''}
-                onChange={(e) =>
-                  handleFieldChange('validations', {
-                    ...selectedField.validations,
-                    minLength: Number(e.target.value),
-                  })
-                }
-                sx={{ maxWidth: '8rem', mr: 1 }}
-              />
-              <TextField
-                variant="outlined"
-                size="small"
-                label="Max"
-                type="number"
-                value={selectedField.validations?.maxLength || ''}
-                onChange={(e) =>
-                  handleFieldChange('validations', {
-                    ...selectedField.validations,
-                    maxLength: Number(e.target.value),
-                  })
-                }
-                sx={{ maxWidth: '8rem' }}
-              />
-            </Box>
-          </FormControl>
+        {['text', 'textarea', 'number', 'email', 'phone', 'password'].includes(fieldType) && (
+          <Box sx={{ display: 'flex', gap: 2, flexDirection: 'column' }}>
+            <TextField
+              label="Min length"
+              type="number"
+              value={Number(selectedField.validations?.minLength ?? '') || ''}
+              onChange={(e) =>
+                onFieldChange('validations', {
+                  ...(selectedField.validations ?? {}),
+                  minLength: Number(e.target.value),
+                })
+              }
+            />
+            <TextField
+              label="Max length"
+              type="number"
+              value={Number(selectedField.validations?.maxLength ?? '') || ''}
+              onChange={(e) =>
+                onFieldChange('validations', {
+                  ...(selectedField.validations ?? {}),
+                  maxLength: Number(e.target.value),
+                })
+              }
+            />
+          </Box>
         )}
-
-        {/* Custom Validations */}
-        {/* <TextField
-          label="Custom Validations"
-          multiline
-          rows={3}
-          value={selectedField.validations?.customValidation || ''}
-          onChange={(e) =>
-            handleFieldChange('validations', {
-              ...selectedField.validations,
-              customValidation: e.target.value,
-            })
-          }
-          fullWidth
-          variant="outlined"
-        /> */}
-
-        {/* Apply Button */}
-        {/* <Button
-          variant="contained"
-          color="primary"
-          fullWidth
-          sx={{ fontWeight: 600 }}
-        >
-          APPLY
-        </Button> */}
       </Box>
     </Box>
-        );
+  );
 }

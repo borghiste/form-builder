@@ -1,21 +1,31 @@
-import { create } from "zustand";
+import { create } from 'zustand';
 
-type FieldState = {
-    id: string;
-    label: string;
-    type: string;
-    required: boolean;
-    setField: (field: string, value: string) => void;
-    
+export type FormFieldState = {
+  id: string;
+  name: string;
+  label: string;
+  type: string;
+  required: boolean;
+  description: string;
+  placeholder: string;
+  setField: (field: keyof Omit<FormFieldState, 'setField' | 'resetField'>, value: string | boolean) => void;
+  resetField: () => void;
+};
 
-  };
-  
-  export const useFieldState = create<FieldState>((set, get) => (
-    {
-      id: '',
-      label: '',
-      type: '',
-      required: false,
-      setField: (field, value) => set({[field]: value})  
-    } 
-  ));
+const initialFormFieldState = {
+  id: '',
+  name: '',
+  label: '',
+  type: 'text',
+  required: false,
+  description: '',
+  placeholder: '',
+};
+
+export const useFieldStore = create<FormFieldState>((set) => ({
+  ...initialFormFieldState,
+  setField: (field, value) => set((state) => ({ ...state, [field]: value } as Partial<FormFieldState>)),
+  resetField: () => set(initialFormFieldState),
+}));
+
+export const useFieldState = useFieldStore;

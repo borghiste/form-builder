@@ -16,10 +16,15 @@ import {
   TextareaAutosize
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useDispatch, useSelector } from "react-redux";
 
 
-type Field = { id: string; label: string; required?: boolean };
+type Field = {
+  id: string;
+  label: string;
+  type: string;
+  required?: boolean;
+  [key: string]: unknown;
+};
 
 type DraggableCardProps = {
   field: Field;
@@ -34,6 +39,7 @@ type DraggableCardProps = {
 
 export default function DraggableCard({
   field,
+  selectedField,
   handleFieldClick,
   handleDeleteField,
   onDragStart,
@@ -41,17 +47,11 @@ export default function DraggableCard({
   handleDrop,
 }: DraggableCardProps) {
   
-  const selectedField = useSelector(selectField);
-  const dispatch = useDispatch();
-  
-
-
-
   return (
     <Card
       draggable
       onDragStart={onDragStart}
-      onClick={() => {dispatch(setField(field))}}
+      onClick={() => handleFieldClick(field)}
       elevation={selectedField?.id === field.id ? 4 : 1}
       sx={{
         width: "100%",

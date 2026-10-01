@@ -15,6 +15,7 @@ class FormFieldFactory extends Factory
             'label' => $this->faker->word(),
             'type' => $this->faker->randomElement(['text', 'email', 'number']),
             'required' => $this->faker->boolean(),
+            'form_id' => 1
         ];
     }
 }

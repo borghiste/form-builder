@@ -32,7 +32,7 @@ import { useAuthStore, useFormListStore} from "../stores/index";
 export default function FormsList() {
   const {setModalOpen, setModalMode} = useModalStore();
   
-  const {getForms, forms, getFormById} = useFormListStore();
+  const {getForms, forms, getFormById, deleteForm} = useFormListStore();
   
   const {user} = useAuthStore();
   
@@ -40,6 +40,7 @@ export default function FormsList() {
   
   useEffect(() => {
     getForms();
+   
     
   }, [getForms]);
   
@@ -52,12 +53,12 @@ export default function FormsList() {
   const handleNewFormClick = () => {
     setModalMode('newForm');
     setModalOpen(true);
-    dispatch(setFormFields([]));
+    
   };
   
   const handleViewForm = async (formId: number) => {
     const selectedForm = await getFormById(formId);
-    console.log('selectedForm', selectedForm);
+    
     
     
     setModalOpen(true);
@@ -70,12 +71,15 @@ export default function FormsList() {
   }
   
   const handleEditForm = async (formId: number) => {
-    const selectedForm = await dispatch(getForm(formId)).unwrap();
-    dispatch(setFormFields(selectedForm.form_fields));
-    dispatch(setForm(selectedForm));
+    
+    
     setModalOpen(true);
     
   };
+
+  const handleDeleteForm = async (formId: number) => {
+    await deleteForm(formId);
+  }
   
   
   return (
@@ -132,13 +136,14 @@ export default function FormsList() {
                           <>
                             <BasicButton
                               text="Edit"
+                              color="cyan.main"
                               onClick={() => handleEditForm(form.id)}
                             />
                             <BasicButton
                               text="Delete"
                               color="magenta.dark"
                               textColor="black"
-                              onClick={() => dispatch(deleteForm(form.id))}
+                              onClick={() => handleDeleteForm(form.id)}
                             />
                           </>
                         )}

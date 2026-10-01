@@ -1,14 +1,7 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { nanoid } from 'nanoid';
-import { useDispatch, useSelector } from 'react-redux';
+
 import { Box, ButtonGroup, TextField } from '@mui/material';
-
-// stores
-import { useFieldState } from '../../stores/useFieldStore';
-
-
-
-
 
 // Components
 import BasicButton from '../UI/BasicButton';
@@ -17,217 +10,166 @@ import FieldTypesColumn from './FieldTypesColumn';
 import ValidationsPanel from './ValidationsPanel';
 import FormView from '../FormView';
 
-// Constants
 const DROP_EFFECTS = {
   COPY: 'copy',
-  MOVE: 'move'
+  MOVE: 'move',
+} as const;
+
+type BuilderField = {
+  id: string;
+  label: string;
+  name?: string;
+  type: string;
+  description?: string;
+  required?: boolean;
+  placeholder?: string;
+  validations?: Record<string, unknown>;
+  [key: string]: unknown;
 };
 
-const DRAG_DATA_KEYS = {
-  FIELD_INDEX: 'fieldIndex',
-  REORDER: 'reorder',
-  NEW_FIELD: 'newField'
+type FieldTemplate = {
+  name: string;
+  type: string;
+  description?: string;
+  icon?: unknown;
 };
 
-const CONTEXT_TYPES = {
-  NEW_FORM: 'newForm',
-  EDITING: 'editing'
-};
-
-export default function BuilderWindow({ handleModalClose }) {
-  // Redux state
-  const dispatch = useDispatch();
-  const {setField} = useFieldState();
-   const form = useSelector(selectForm);
-   const selectedField = useSelector(selectField);
-   const formFields = form?.form_fields ?? [];
-
- 
-
-  // Local state
-  const [draggedField, setDraggedField] = useState(null);
-  const [draggedFieldIndex, setDraggedFieldIndex] = useState(null);
-  const [targetIndex, setTargetIndex] = useState(null);
+export default function BuilderWindow({ handleModalClose = () => undefined }) {
+  const [form, setForm] = useState({ name: '', description: '' });
+  const [formFields, setFormFields] = useState<BuilderField[]>([]);
+  const [selectedFieldId, setSelectedFieldId] = useState<string | null>(null);
+  const [draggedField, setDraggedField] = useState<FieldTemplate | null>(null);
+  const [draggedFieldIndex, setDraggedFieldIndex] = useState<number | null>(null);
   const [preview, setPreview] = useState(false);
 
-  // ============ DRAG AND DROP HANDLERS ============
+  const selectedField = useMemo(
+    () => formFields.find((field) => field.id === selectedFieldId) ?? null,
+    [formFields, selectedFieldId],
+  );
 
-  /**
-   * Handles drag start for new field types from the column
-   */
-  const handleDragStart = (e, field) => {
-    setDraggedField(field);
-    setDraggedFieldIndex(null);
-    e.dataTransfer.effectAllowed = DROP_EFFECTS.COPY;
-    // Set multiple formats for better cross-browser support
-    try {
-      e.dataTransfer.setData('text/plain', DRAG_DATA_KEYS.NEW_FIELD);
-      e.dataTransfer.setData(DRAG_DATA_KEYS.NEW_FIELD, 'true');
-    } catch (err) {
-      // Fallback for older browsers
-      e.dataTransfer.setData('text', DRAG_DATA_KEYS.NEW_FIELD);
-    }
-  };
-
-  /**
-   * Handles drag start for existing fields (reordering)
-   */
-  const handleFieldDragStart = (e, index) => {
-    setDraggedField(null);
-    setDraggedFieldIndex(index);
-    e.dataTransfer.effectAllowed = DROP_EFFECTS.MOVE;
-    // Set multiple formats for better cross-browser support
-    try {
-      e.dataTransfer.setData('text/plain', index.toString());
-      e.dataTransfer.setData(DRAG_DATA_KEYS.FIELD_INDEX, index.toString());
-    } catch (err) {
-      // Fallback for older browsers
-      e.dataTransfer.setData('text', index.toString());
-    }
-  };
-
-  /**
-   * Allows drop by preventing default and setting effect
-   */
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    // Use state instead of dataTransfer for cross-browser compatibility
-    const isNewField = draggedField !== null && draggedFieldIndex === null;
-    
-    // Set dropEffect with fallback
-    try {
-      e.dataTransfer.dropEffect = isNewField ? DROP_EFFECTS.COPY : DROP_EFFECTS.MOVE;
-    } catch (err) {
-      // Some browsers don't support setting dropEffect
-      console.warn('dropEffect not supported');
-    }
-  };
-
-  /**
-   * Handles field drop - either adds new field or reorders existing
-   */
-  const handleDrop = (e, dropIndex) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    const updatedFields = [...formFields];
-
-    // Use state-based approach for better cross-browser compatibility
-    if (draggedField !== null && draggedFieldIndex === null) {
-      // Add new field
-      const newField = createNewFieldFromTemplate(draggedField);
-      updatedFields.splice(dropIndex, 0, newField);
-    } else if (draggedFieldIndex !== null) {
-      // Reorder existing field
-      const startIndex = draggedFieldIndex;
-      if (startIndex < 0 || startIndex >= updatedFields.length) {
-        handleDragEnd();
-        return;
-      }
-      const [movedField] = updatedFields.splice(startIndex, 1);
-      const adjustedDropIndex = dropIndex > startIndex ? dropIndex - 1 : dropIndex;
-      updatedFields.splice(adjustedDropIndex, 0, movedField);
-    } else {
-      handleDragEnd();
-      return;
-    }
-
-    dispatch(setFormFields(updatedFields));
-    
-    // Clean up state
-    setDraggedField(null);
-    setDraggedFieldIndex(null);
-    setTargetIndex(null);
-  };
-
-  /**
-   * Handles drag end - clean up state
-   */
-  const handleDragEnd = () => {
-    setDraggedField(null);
-    setDraggedFieldIndex(null);
-    setTargetIndex(null);
-  };
-
-  // ============ HELPER FUNCTIONS ============
-
-  /**
-   * Creates a new field instance from a field template
-   */
-  const createNewFieldFromTemplate = (fieldTemplate) => {
-    // Use object destructuring with rest operator safely
+  const createNewFieldFromTemplate = (fieldTemplate: FieldTemplate): BuilderField => {
     const fieldData = { ...fieldTemplate };
     delete fieldData.icon;
-    
+
     return {
       id: nanoid(),
       ...fieldData,
-      label: 'New ' + fieldTemplate.name + ' field',
+      label: `New ${fieldTemplate.name} field`,
       type: fieldTemplate.type,
-      required: false
+      required: false,
+      placeholder: '',
+      description: fieldTemplate.description ?? '',
     };
   };
 
-  // ============ EVENT HANDLERS ============
-
-  /**
-   * Handles field selection for editing
-   */
-  const handleFieldClick = (field) => {
-    dispatch(setField(field));
+  const handleDragStart = (e: React.DragEvent, field: FieldTemplate) => {
+    setDraggedField(field);
+    setDraggedFieldIndex(null);
+    e.dataTransfer.effectAllowed = DROP_EFFECTS.COPY;
+    e.dataTransfer.setData('text/plain', 'new-field');
+    e.dataTransfer.setData('application/json', JSON.stringify(field));
   };
 
-  /**
-   * Handles field deletion
-   */
-  const handleDeleteField = (fieldId) => {
-    if (selectedField && selectedField.id === fieldId) {
-      dispatch(setField(null));
+  const handleFieldDragStart = (e: React.DragEvent, index: number) => {
+    setDraggedField(null);
+    setDraggedFieldIndex(index);
+    e.dataTransfer.effectAllowed = DROP_EFFECTS.MOVE;
+    e.dataTransfer.setData('text/plain', String(index));
+    e.dataTransfer.setData('application/x-form-field-index', String(index));
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    e.dataTransfer.dropEffect = draggedField !== null && draggedFieldIndex === null ? DROP_EFFECTS.COPY : DROP_EFFECTS.MOVE;
+  };
+
+  const cleanupDragState = () => {
+    setDraggedField(null);
+    setDraggedFieldIndex(null);
+  };
+
+  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (draggedField !== null && draggedFieldIndex === null) {
+      const newField = createNewFieldFromTemplate(draggedField);
+      setFormFields((current) => {
+        const next = [...current];
+        const safeIndex = Math.max(0, Math.min(dropIndex, next.length));
+        next.splice(safeIndex, 0, newField);
+        return next;
+      });
+      setSelectedFieldId(newField.id);
+      cleanupDragState();
+      return;
     }
-  };
 
-  /**
-   * Handles form name change
-   */
-  const handleFormNameChange = (e) => {
-    dispatch(setForm({ ...form, name: e.target.value }));
-  };
+    if (draggedFieldIndex !== null) {
+      setFormFields((current) => {
+        const next = [...current];
+        const from = draggedFieldIndex;
+        if (from < 0 || from >= next.length) return current;
 
-  /**
-   * Handles form description change
-   */
-  const handleFormDescriptionChange = (e) => {
-    dispatch(setForm({ ...form, description: e.target.value }));
-  };
-
-  /**
-   * Saves the form (create new or update existing)
-   */
-  const handleSaveForm = function() {
-    const formToSave = { ...form };
-
-    if (context === CONTEXT_TYPES.NEW_FORM) {
-      dispatch(createNewForm(formToSave));
-    } else if (context === CONTEXT_TYPES.EDITING) {
-      console.log('updating', formToSave.form_fields);
-      dispatch(updateForm(formToSave));
+        const [movedField] = next.splice(from, 1);
+        const target = Math.max(0, Math.min(dropIndex, next.length));
+        const adjustedTarget = from < target ? target - 1 : target;
+        next.splice(adjustedTarget, 0, movedField);
+        return next;
+      });
+      cleanupDragState();
+      return;
     }
 
-    // Reset form name after save
-    dispatch(setForm({ ...form, name: '' }));
+    cleanupDragState();
+  };
+
+  const handleDragEnd = () => {
+    cleanupDragState();
+  };
+
+  const handleFieldClick = (field: BuilderField) => {
+    setSelectedFieldId(field.id);
+  };
+
+  const handleDeleteField = (fieldId: string) => {
+    setFormFields((current) => {
+      const next = current.filter((field) => field.id !== fieldId);
+      if (selectedFieldId === fieldId) {
+        setSelectedFieldId(next[0]?.id ?? null);
+      }
+      return next;
+    });
+  };
+
+  const handleSelectedFieldChange = (key: string, value: string | boolean | Record<string, unknown>) => {
+    if (!selectedFieldId) return;
+
+    setFormFields((current) =>
+      current.map((field) =>
+        field.id === selectedFieldId ? { ...field, [key]: value } : field,
+      ),
+    );
+  };
+
+  const handleFormNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm((current) => ({ ...current, name: e.target.value }));
+  };
+
+  const handleFormDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm((current) => ({ ...current, description: e.target.value }));
+  };
+
+  const handleSaveForm = () => {
+    const formToSave = { ...form, form_fields: formFields };
+    console.log('Saving form', formToSave);
     handleModalClose();
   };
 
-  /**
-   * Toggles between build and preview mode
-   */
-  const togglePreview = function(isPreview) {
+  const togglePreview = (isPreview: boolean) => {
     setPreview(isPreview);
   };
-
-  // ============ RENDER ============
 
   return (
     <Box
@@ -239,16 +181,15 @@ export default function BuilderWindow({ handleModalClose }) {
         backgroundColor: 'background.default',
         fontFamily: 'Inter, system-ui, sans-serif',
         WebkitOverflowScrolling: 'touch',
-
       }}
     >
-      <Box 
-        component="main" 
-        sx={{ 
-          paddingTop: '2.6rem', 
-          overflow: 'auto', 
+      <Box
+        component="main"
+        sx={{
+          paddingTop: '2.6rem',
+          overflow: 'auto',
           maxHeight: '100vh',
-          WebkitOverflowScrolling: 'touch' 
+          WebkitOverflowScrolling: 'touch',
         }}
       >
         <Box
@@ -257,10 +198,9 @@ export default function BuilderWindow({ handleModalClose }) {
             padding: '1.5rem',
             borderRadius: '0.5rem',
             boxShadow: '0 1px 3px rgba(0,0,0,0.12)',
-            overflow:'auto'
+            overflow: 'auto',
           }}
         >
-          {/* Top Controls */}
           <Box
             component="div"
             sx={{
@@ -269,32 +209,29 @@ export default function BuilderWindow({ handleModalClose }) {
               marginBottom: '2rem',
               alignItems: 'center',
               flexDirection: 'column',
-              
             }}
           >
-            {/* Build/Preview Toggle */}
             <ButtonGroup sx={{ display: 'flex', alignItems: 'center' }}>
               <BasicButton
                 text="build"
                 size="large"
-                onClick={function() { togglePreview(false); }}
+                onClick={() => togglePreview(false)}
                 textColor="black"
-                variant={preview ? '' : 'contained'}
+                variant={preview ? 'text' : 'contained'}
               />
               <BasicButton
                 text="preview"
                 size="large"
-                onClick={function() { togglePreview(true); }}
+                onClick={() => togglePreview(true)}
                 variant={preview ? 'contained' : 'text'}
                 textColor={preview ? 'black' : 'text.primary'}
               />
             </ButtonGroup>
 
-            {/* Form Name Input */}
             <TextField
               type="text"
               placeholder="Insert Form Name"
-              value={form && form.name ? form.name : null}
+              value={form.name}
               onChange={handleFormNameChange}
               sx={{
                 flex: 1,
@@ -304,16 +241,15 @@ export default function BuilderWindow({ handleModalClose }) {
                 '& .MuiInputBase-input::placeholder': {
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap',
-                  overflow: 'hidden'
-                }
+                  overflow: 'hidden',
+                },
               }}
             />
 
-            {/* Form Description Input */}
             <TextField
               type="text"
               placeholder="Insert Form description"
-              value={form && form.description ? form.description : ''}
+              value={form.description}
               onChange={handleFormDescriptionChange}
               sx={{
                 flex: 1,
@@ -323,35 +259,27 @@ export default function BuilderWindow({ handleModalClose }) {
                 '& .MuiInputBase-input::placeholder': {
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap',
-                  overflow: 'hidden'
-                }
+                  overflow: 'hidden',
+                },
               }}
             />
           </Box>
 
-          {/* Main Content Area */}
           {!preview ? (
             <Box
               component="div"
               sx={{
                 display: 'grid',
-               
-                gridTemplateColumns: { 
+                gridTemplateColumns: {
                   xs: '1fr',
-                  md: '1fr 2fr 1fr'
+                  md: '1fr 2fr 1fr',
                 },
                 gap: '1.5rem',
-          
-                WebkitOverflowScrolling: 'touch'
+                WebkitOverflowScrolling: 'touch',
               }}
             >
-              {/* Left Column - Field Types */}
-              <FieldTypesColumn 
-                handleDragStart={handleDragStart}
-                handleDragEnd={handleDragEnd}
-              />
+              <FieldTypesColumn handleDragStart={handleDragStart} handleDragEnd={handleDragEnd} />
 
-              {/* Center Column - Drop Zone */}
               <DropZone
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
@@ -361,23 +289,22 @@ export default function BuilderWindow({ handleModalClose }) {
                 formFields={formFields}
                 selectedField={selectedField}
                 handleDraggedField={handleFieldDragStart}
+                handleDeleteField={handleDeleteField}
               />
 
-              {/* Right Column - Validations */}
-              <ValidationsPanel />
+              <ValidationsPanel selectedField={selectedField} onFieldChange={handleSelectedFieldChange} />
             </Box>
           ) : (
             <FormView disabledFields={true} />
           )}
 
-          {/* Bottom Controls */}
           <Box
             component="div"
             sx={{
               display: 'flex',
               gap: '1rem',
               alignItems: 'center',
-              justifyContent: 'flex-end'
+              justifyContent: 'flex-end',
             }}
           >
             <ButtonGroup sx={{ p: 3 }}>

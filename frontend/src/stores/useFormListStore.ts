@@ -19,10 +19,11 @@ type FormRecord = {
 
 type FormListState = {
     forms: FormRecord[];
-    selectedForm: FormRecord| null;
-   
+    selectedForm: FormRecord | null;
+
     getForms: () => Promise<void>;
     getFormById: (formId: number) => FormRecord;
+    deleteForm: (formId: number) => Promise<void>;
 };
 
 export const useFormListStore = create<FormListState>((set, get) => ({
@@ -63,5 +64,38 @@ export const useFormListStore = create<FormListState>((set, get) => ({
         set({selectedForm});
         return selectedForm;
         
-    }
+    },
+
+    deleteForm: async (formId: number) => {
+        await fetch(`${import.meta.env.VITE_BACKEND_URL}/sanctum/csrf-cookie`, {
+            method: 'GET',
+            credentials: 'include',
+        });
+
+        const xsrfCookie = document.cookie
+            .split('; ')
+            .find((row) => row.startsWith('XSRF-TOKEN='));
+
+        const xsrfToken = xsrfCookie
+            ? decodeURIComponent(xsrfCookie.substring('XSRF-TOKEN='.length))
+            : '';
+
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/forms/${formId}`, {
+            method: 'DELETE',
+            credentials: 'include',
+            headers: {
+                Accept: 'application/json',
+                'X-XSRF-TOKEN': xsrfToken,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to delete form (${response.status})`);
+        }
+
+        set((state) => ({
+            forms: state.forms.filter((form) => form.id !== formId),
+            selectedForm: state.selectedForm && state.selectedForm.id === formId ? null : state.selectedForm,
+        }));
+    },
 }));
