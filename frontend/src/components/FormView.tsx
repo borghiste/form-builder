@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 //COMPONENTS
 import BasicButton from './UI/BasicButton';
-//REDUX
-import { useDispatch, useSelector } from "react-redux";
-import {useAuthStore, useFormListStore} from '../stores/index';
+//STORE
+
+import { useAuthStore, useFormListStore, useNewFormStore, useFormBuilderStore } from '../stores/index';
+
+//UTILS
+import handleModalClose from '../utils/handleModalClose';
 
 import {
   TextField,
@@ -17,8 +20,8 @@ import {
   Grid,
   FormControlLabel,
   Checkbox,
-  ButtonGroup
-} from "@mui/material";
+  ButtonGroup,
+} from '@mui/material';
 
 interface Field {
   id: string;
@@ -50,21 +53,22 @@ type RenderProps = {
   fullWidth?: boolean;
 };
 
-const renderedComponent: Record<string, (props: RenderProps) => React.ReactNode> = {
-  text: (props: RenderProps) => <TextField type="text" {...props} />,
-  textarea: (props: RenderProps) => (
-    <TextField
-      multiline
-      rows={4}
-      {...props}
-    />
+const renderedComponent: Record<
+  string,
+  (props: RenderProps) => React.ReactNode
+> = {
+  text: (props: RenderProps) => <TextField type='text' {...props} />,
+  textarea: (props: RenderProps) => <TextField multiline rows={4} {...props} />,
+  email: (props: RenderProps) => <TextField type='email' {...props} />,
+  number: (props: RenderProps) => <TextField type='number' {...props} />,
+  phone: (props: RenderProps) => <TextField type='tel' {...props} />,
+  password: (props: RenderProps) => <TextField type='password' {...props} />,
+  date: (props: RenderProps) => (
+    <TextField type='date' InputLabelProps={{ shrink: true }} {...props} />
   ),
-  email: (props: RenderProps) => <TextField type="email" {...props} />,
-  number: (props: RenderProps) => <TextField type="number" {...props} />,
-  phone: (props: RenderProps) => <TextField type="tel" {...props} />,
-  password: (props: RenderProps) => <TextField type="password" {...props} />,
-  date: (props: RenderProps) => <TextField type="date" InputLabelProps={{ shrink: true }} {...props} />,
-  time: (props: RenderProps) => <TextField type="time" InputLabelProps={{ shrink: true }} {...props} />,
+  time: (props: RenderProps) => (
+    <TextField type='time' InputLabelProps={{ shrink: true }} {...props} />
+  ),
   selectList: (props: RenderProps) => (
     <FormControl fullWidth>
       <InputLabel id={`${props.name}-label`}>{props.label}</InputLabel>
@@ -102,9 +106,18 @@ const renderedComponent: Record<string, (props: RenderProps) => React.ReactNode>
   ),
 };
 
-export default function FormView({ disabledFields, entries }: { disabledFields?: boolean; entries?: any }) {
+export default function FormView({
+  disabledFields,
+  entries,
+}: {
+  disabledFields?: boolean;
+  entries?: any;
+}) {
   const { selectedForm } = useFormListStore();
-  const userName = useAuthStore((state) => state.user as { name?: string } | null)?.name ?? '';
+  const formFields = useFormBuilderStore((state) => state.formFields);
+  const { form_name, setForm, form_description } = useNewFormStore();
+  const userName =
+    useAuthStore((state) => state.user as { name?: string } | null)?.name ?? '';
   const [entryData, setEntryData] = useState({ form_fields: entries || {} });
 
   const handleChange = (e: any) => {
@@ -138,21 +151,60 @@ export default function FormView({ disabledFields, entries }: { disabledFields?:
         backgroundColor: 'background.default',
         width: { xs: '50vw', sm: '100%', md: '50vw' },
         overflowY: 'auto',
-       
       }}
-      elevation={3}
-    >
+      elevation={3}>
       <Box>
-        <Typography variant="h5" component="h1" gutterBottom>
-          {selectedForm?.name}
-        </Typography>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mb: 2,
+          }}
+        >
+          
+          <Typography variant='h5' component='h1' gutterBottom>
+          { selectedForm?.name ? selectedForm.name : form_name}
+          </Typography>
+          {!disabledFields && (
+            <BasicButton
+              color='magenta.main'
+              text='x'
+              size='small'
+              onClick={handleModalClose}
+            />
+          )}
+        </Box>
         <Typography>
-          {selectedForm?.description || 'No description provided.'}
+          {selectedForm?.description || form_description ? form_description  : 'No description provided.'}
         </Typography>
-        <Box component="form" onSubmit={handleSubmit}>
-          <Grid container spacing={1} sx={{ display: 'flex', flexDirection: 'column' }}>
+        <Box component='form' onSubmit={handleSubmit}>
+          <Grid
+            container
+            spacing={1}
+            sx={{ display: 'flex', flexDirection: 'column' }}
+          >
             {selectedForm?.form_fields?.map((field: any) => {
-              const Component = renderedComponent[field.type] ?? renderedComponent.text;
+              const Component =
+                renderedComponent[field.type] ?? renderedComponent.text;
+              return (
+                <Grid key={String(field.id)}>
+                  <Component
+                    label={field.label}
+                    name={field.name || field.id}
+                    value={entryData.form_fields[field.name || field.id] || ''}
+                    onChange={handleChange}
+                    disabled={disabledFields}
+                    required={field.required}
+                    options={field.options}
+                    fullWidth
+                  />
+                </Grid>
+              );
+            })}
+            {formFields?.map((field: any) => {
+              const Component =
+                renderedComponent[field.type] ?? renderedComponent.text;
               return (
                 <Grid key={String(field.id)}>
                   <Component
@@ -169,25 +221,29 @@ export default function FormView({ disabledFields, entries }: { disabledFields?:
               );
             })}
             {/* submit button */}
-            <ButtonGroup sx={{ mt: 2, mb: 2, display: 'flex', justifyContent: 'space-between' }}>
-
+            <ButtonGroup
+              sx={{
+                mt: 2,
+                mb: 2,
+                display: 'flex',
+                justifyContent: 'space-between',
+              }}
+            >
               <BasicButton
                 text={'submit'}
                 type={'submit'}
                 color={'cyan.main'}
-                textColor={'white'}
-                />
-            
-            {/* reset button */}
-            
+                textColor={'white'}/>
+
+              {/* reset button */}
+
               <BasicButton
                 text={'reset'}
                 variant={'outlined'}
                 onClick={handleReset}
                 type={'button'}
-                />
-                </ButtonGroup>
-            
+              />
+            </ButtonGroup>
           </Grid>
         </Box>
       </Box>

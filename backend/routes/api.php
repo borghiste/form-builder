@@ -89,4 +89,3 @@ Route::get('entries', [FormEntriesController::class, 'getFormsEntries']);
 Route::post('forms/entries/submit', [FormEntryController::class, 'submitFormEntry']
 );
 });
-

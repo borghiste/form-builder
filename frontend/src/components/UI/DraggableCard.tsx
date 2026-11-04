@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 /// MUI
 import {
   Card,
@@ -13,10 +13,9 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  TextareaAutosize
-} from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-
+  TextareaAutosize,
+} from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 type Field = {
   id: string;
@@ -46,7 +45,6 @@ export default function DraggableCard({
   onDragOver,
   handleDrop,
 }: DraggableCardProps) {
-  
   return (
     <Card
       draggable
@@ -54,79 +52,82 @@ export default function DraggableCard({
       onClick={() => handleFieldClick(field)}
       elevation={selectedField?.id === field.id ? 4 : 1}
       sx={{
-        width: "100%",
-        cursor: "grab",
-        backgroundColor: "background.default",
+        width: '100%',
+        cursor: 'grab',
+        backgroundColor: 'background.default',
         p: 2,
-        "&:hover": { boxShadow: 3 },
+        '&:hover': { boxShadow: 3 },
       }}
     >
-      <CardContent sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-        
-      <FormControl>
- 
-               
-                    <>
-                   <Typography
-                   component="label"
-                   sx={{
-                     display: "block",
-                     fontSize: 14,
-                     fontWeight: 500,
-                     mb: 1,
-                     zIndex: 9}}>
-                     { field.label}
-                     {!!field.required && (
-                       <Box component="span" sx={{ color: "red" }}>
-                          *
-                       </Box>
-                     ) }
-                   </Typography>
+      <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+        <FormControl>
+          <>
+            <Typography
+              component='label'
+              sx={{
+                display: 'block',
+                fontSize: 14,
+                fontWeight: 500,
+                mb: 1,
+                zIndex: 9,
+              }}
+            >
+              {field.label}
+              {!!field.required && (
+                <Box component='span' sx={{ color: 'red' }}>
+                  *
+                </Box>
+              )}
+            </Typography>
 
-                   {['text', 'email', 'number', 'phone', 'password'].includes(field.type) && ( <TextField type={field.type} disabled label={field.label}/>)}
+            {['text', 'email', 'number', 'phone', 'password'].includes(
+              field.type,
+            ) && <TextField type={field.type} disabled label={field.label} />}
 
-                   {field.type == 'textarea' && (<TextareaAutosize/>)}
+            {field.type == 'textarea' && <TextareaAutosize />}
 
-                   {
-                   ['time', 'date'].includes(field.type) && (<TextField type={field.type} disabled/>)}
+            {['time', 'date'].includes(field.type) && (
+              <TextField type={field.type} disabled />
+            )}
 
-                   {field.type == 'select' && (
-                   <FormControl fullWidth>
-                   <InputLabel id="demo-simple-select-label">{field.label}</InputLabel>
-                   <Select
-                   disabled
-                     labelId="demo-simple-select-label"
-                     id="demo-simple-select"
-                    
-                     label={field.label}>
-                     <MenuItem value={10}></MenuItem>
-                     <MenuItem value={20}></MenuItem>
-                     <MenuItem value={30}>Thirty</MenuItem>
-                   </Select>
-                 </FormControl> 
-                   )
-                   
-                   }
-               
+            {field.type == 'select' && (
+              <FormControl fullWidth>
+                <InputLabel id='demo-simple-select-label'>
+                  {field.label}
+                </InputLabel>
+                <Select
+                  disabled
+                  labelId='demo-simple-select-label'
+                  id='demo-simple-select'
 
-                   {
-                   field.type == 'checkbox' && <FormControlLabel control={<Checkbox  disabled />} label={ field.label} />
-                   }
-                     </>
-                  
-            
+                  label={field.label}
+                >
+                  <MenuItem value={10}></MenuItem>
+                  <MenuItem value={20}></MenuItem>
+                  <MenuItem value={30}>Thirty</MenuItem>
+                </Select>
+              </FormControl>
+            )}
 
-            </FormControl>
-            <IconButton
+            {field.type == 'checkbox' && (
+              <FormControlLabel
+                control={<Checkbox disabled />}
+                label={field.label}
+              />
+            )}
+          </>
+        </FormControl>
+        <IconButton
           onClick={(e) => {
             e.stopPropagation();
             handleDeleteField(field.id);
           }}
         >
-          <DeleteIcon fontSize="medium" sx={{"&:hover": {color:'magenta.dark'}}} />
-        </IconButton> 
-
-        
+          <DeleteIcon
+            fontSize='medium'
+            sx={{ '&:hover': { color: 'magenta.dark' } }}
+          />
+        </IconButton>
       </CardContent>
     </Card>
   );

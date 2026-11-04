@@ -27,21 +27,28 @@ class FormController extends Controller
             'form_fields.*.type' => 'required|string|max:255',
             'form_fields.*.required' => 'boolean']);
 
-            $newForm = Form::create(([
-                'name'=> $validate['name'],
-                'description'=>$validate['description'] ?? null
-            ]));
-foreach($validate['form_fields'] as $index => $field){
-    $newForm->formFields()->create([
-        'label'=> $field['label'],
-        'type'=> $field['type'],
-        'required'=> $field['required'] ?? false,
-        'order'=> $index
-    ]);
-};
-return response()->json([
-    'message' => 'form created sucessfully',
-    'form' => $newForm->load('formFields')]);
+            $user = auth()->user();
+
+            $newForm = Form::create([
+                'name' => $validate['name'],
+                'description' => $validate['description'] ?? null,
+                'organization_id' => $user?->organization_id,
+                'created_by' => $user?->id,
+            ]);
+
+            foreach ($validate['form_fields'] as $index => $field) {
+                $newForm->formFields()->create([
+                    'label' => $field['label'],
+                    'type' => $field['type'],
+                    'required' => $field['required'] ?? false,
+                    'order' => $index,
+                ]);
+            }
+
+            return response()->json([
+                'message' => 'form created successfully',
+                'form' => $newForm->load('formFields'),
+            ]);
 
     }
 

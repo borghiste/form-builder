@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Box, Typography } from '@mui/material';
-
 import DraggableCard from '../UI/DraggableCard';
 
+// store
+import { useFormBuilderStore, useNewFormStore } from '../../stores/index';
+
 type FieldItem = {
-  id: string;
+  id: string | number;
   label: string;
   type: string;
   required?: boolean;
@@ -13,19 +15,17 @@ type FieldItem = {
 
 type FieldsListProps = {
   handleFieldClick: (field: FieldItem) => void;
-  draggedField: unknown;
   selectedField: FieldItem | null;
   onDragOver: (e: React.DragEvent) => void;
   onDrop: (e: React.DragEvent, dropIndex: number) => void;
   onDragEnd: () => void;
   handleDraggedField: (e: React.DragEvent, index: number) => void;
-  handleDeleteField: (fieldId: string) => void;
+  handleDeleteField: (fieldId: string | number) => void;
   formFields: FieldItem[];
 };
 
 export default function FieldsList({
   handleFieldClick,
-  draggedField,
   selectedField,
   onDragOver,
   onDrop,
@@ -35,10 +35,12 @@ export default function FieldsList({
   formFields,
 }: FieldsListProps) {
   const [targetIndex, setTargetIndex] = useState<number | null>(null);
-  const [draggedFieldIndex, setDraggedFieldIndex] = useState<number | null>(null);
+  const draggedFieldIndex = useFormBuilderStore(
+    (state) => state.draggedFieldIndex,
+  );
+  const form_name = useNewFormStore((state) => state.form_name);
 
   const handleFieldDragStart = (e: React.DragEvent, index: number) => {
-    setDraggedFieldIndex(index);
     handleDraggedField(e, index);
     e.dataTransfer.effectAllowed = 'move';
     e.dataTransfer.setData('reorder', 'true');
@@ -47,7 +49,6 @@ export default function FieldsList({
 
   const handleFieldDragEnd = () => {
     setTargetIndex(null);
-    setDraggedFieldIndex(null);
     onDragEnd();
   };
 
@@ -57,32 +58,32 @@ export default function FieldsList({
     setTargetIndex(index);
   };
 
+  // Handle dropping a field at a specific index
   const handleFieldDrop = (e: React.DragEvent, dropIndex: number) => {
     e.preventDefault();
     e.stopPropagation();
     onDrop(e, dropIndex);
     setTargetIndex(null);
-    setDraggedFieldIndex(null);
   };
 
+  // Handle dropping a field at the end of the list
   const handleEndDrop = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
     onDrop(e, formFields.length);
     setTargetIndex(null);
-    setDraggedFieldIndex(null);
   };
 
   return (
     <Box
       onDragOver={onDragOver}
-      onDrop={handleEndDrop} 
+      onDrop={handleEndDrop}
       onDragEnd={handleFieldDragEnd}
-      data-testid="fields-list"
+      data-testid='fields-list'
       sx={{
         minHeight: '5rem',
-       minWidth:{sm:'15rem'},
-        border: `2px dashed gray`, 
+        minWidth: { sm: '15rem' },
+        border: `2px dashed gray`,
         borderRadius: '0.5rem',
         p: 3,
         transition: 'background-color 0.2s',
@@ -91,37 +92,44 @@ export default function FieldsList({
         justifyContent: formFields?.length === 0 ? 'center' : 'flex-start',
       }}
     >
+
+      {/* form name */}
+      <Typography sx={{}}>{form_name}</Typography>
       {formFields?.length === 0 ? (
         <Box
           sx={{
             height: '100%',
-            maxWidth:'100%',
+            maxWidth: '100%',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
           }}
-        >
-          <Typography variant="body1" sx={{ fontStyle: 'italic', color:'text.primary' }}>
+          >
+          
+          <Typography
+            variant='body1'
+            sx={{ fontStyle: 'italic', color: 'text.primary' }}
+          >
             Drag and drop fields here to create your form
           </Typography>
         </Box>
       ) : (
         <>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            
             {formFields?.map((field, index) => (
               <React.Fragment key={`${field.id}`}>
                 {/* Drop zone */}
                 <Box
-                data-testid={`field-${field.id}`}
+                  data-testid={`field-${field.id}`}
                   onDragOver={(e) => handleFieldDragOver(e, index)}
                   onDrop={(e) => handleFieldDrop(e, index)}
                   sx={{
-                    height: targetIndex === index ? 20 : 10, 
-                    backgroundColor: targetIndex === index ? 'cyan.main' : 'transparent',
+                    height: targetIndex === index ? 20 : 10,
+                    backgroundColor:
+                      targetIndex === index ? 'cyan.main' : 'transparent',
                     borderradius: 8,
-                    transition: 'all 0.2s'
+                    transition: 'all 0.2s',
                   }}
                 />
                 <DraggableCard
@@ -137,27 +145,30 @@ export default function FieldsList({
             ))}
           </Box>
 
-          {/* Drop zone finale */}
+
+          {/* Drop zone  */}
           <Box
-          
-            onDragOver={(e) => {e.preventDefault(); setTargetIndex(formFields.length); }}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setTargetIndex(formFields.length);
+            }}
             onDrop={handleEndDrop}
             sx={{
               minHeight: targetIndex === formFields.length ? '4rem' : '3rem',
-              border: "2px dashed lightgray",
+              border: '2px dashed lightgray',
               borderRadius: 1,
-              textAlign: "center",
-              lineHeight: "40px",
-              color: "gray",
+              textAlign: 'center',
+              lineHeight: '40px',
+              color: 'gray',
               fontSize: 14,
               mt: 1,
-              backgroundColor: targetIndex === formFields.length ? 'cyan.main' : 'transparent',
-              transition: 'all 0.2s'
+              backgroundColor:
+                targetIndex === formFields.length ? 'cyan.main' : 'transparent',
+              transition: 'all 0.2s',
             }}
           >
             <Typography color='text.primary'>
-
-            Drag and Drop fields here to add at the end
+              Drag and Drop fields here to add at the end
             </Typography>
           </Box>
         </>

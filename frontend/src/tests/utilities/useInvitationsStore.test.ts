@@ -31,9 +31,11 @@ describe('useInvitationsStore', () => {
 
     expect(fetch).toHaveBeenCalledWith(
       `${BACKEND}/api/invitations`,
-      expect.objectContaining({ method: 'GET' })
+      expect.objectContaining({ method: 'GET' }),
     );
-    expect(useInvitationsStore.getState().pendingInvitations).toEqual(mockInvitations);
+    expect(useInvitationsStore.getState().pendingInvitations).toEqual(
+      mockInvitations,
+    );
   });
 
   it('handles fetch failure', async () => {

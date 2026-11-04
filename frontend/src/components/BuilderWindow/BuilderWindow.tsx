@@ -1,5 +1,4 @@
-import React, { useMemo, useState } from 'react';
-import { nanoid } from 'nanoid';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { Box, ButtonGroup, TextField } from '@mui/material';
 
@@ -10,69 +9,84 @@ import FieldTypesColumn from './FieldTypesColumn';
 import ValidationsPanel from './ValidationsPanel';
 import FormView from '../FormView';
 
+// store
+import {
+  type FieldTemplate,
+  useFormBuilderStore,
+  useFormListStore,
+  useNewFormStore,
+} from '../../stores/index';
+
+//utils
+import handleModalClose from '../../utils/handleModalClose';
+import { handleSaveNewForm } from '../../utilities/handleSaveNewForm';
+
 const DROP_EFFECTS = {
   COPY: 'copy',
   MOVE: 'move',
 } as const;
 
-type BuilderField = {
-  id: string;
-  label: string;
-  name?: string;
-  type: string;
-  description?: string;
-  required?: boolean;
-  placeholder?: string;
-  validations?: Record<string, unknown>;
-  [key: string]: unknown;
-};
+export default function BuilderWindow() {
+  // new form state
+  const {form_name, setForm, form_description} = useNewFormStore();
+  const {formFields}= useFormBuilderStore();
+  const newForm = {
+    name: form_name,
+    description: form_description,
+    form_fields: (formFields ?? []).map(({ label, type, required }) => ({
+      label,
+      type,
+      required,
+    })),
+  };
 
-type FieldTemplate = {
-  name: string;
-  type: string;
-  description?: string;
-  icon?: unknown;
-};
-
-export default function BuilderWindow({ handleModalClose = () => undefined }) {
-  const [form, setForm] = useState({ name: '', description: '' });
-  const [formFields, setFormFields] = useState<BuilderField[]>([]);
-  const [selectedFieldId, setSelectedFieldId] = useState<string | null>(null);
-  const [draggedField, setDraggedField] = useState<FieldTemplate | null>(null);
-  const [draggedFieldIndex, setDraggedFieldIndex] = useState<number | null>(null);
+  const { selectedForm } = useFormListStore();
+  const [SaveError, setSaveError] = useState<string | null>(null);
+  
+  const selectedFieldId = useFormBuilderStore(
+    (state) => state.selectedFieldId,
+  );
+  const draggedField = useFormBuilderStore((state) => state.draggedField);
+  const draggedFieldIndex = useFormBuilderStore(
+    (state) => state.draggedFieldIndex,
+  );
+  const initializeFormFields = useFormBuilderStore(
+    (state) => state.initializeFormFields,
+  );
+  const startTemplateDrag = useFormBuilderStore(
+    (state) => state.startTemplateDrag,
+  );
+  const startFieldDrag = useFormBuilderStore((state) => state.startFieldDrag);
+  const dropField = useFormBuilderStore((state) => state.dropField);
+  const clearDragState = useFormBuilderStore((state) => state.clearDragState);
+  const setSelectedFieldId = useFormBuilderStore(
+    (state) => state.setSelectedFieldId,
+  );
+  const updateField = useFormBuilderStore((state) => state.updateField);
+  const deleteField = useFormBuilderStore((state) => state.deleteField);
   const [preview, setPreview] = useState(false);
+
+  useEffect(() => {
+    initializeFormFields(selectedForm?.form_fields ?? []);
+  }, [initializeFormFields, selectedForm]);
 
   const selectedField = useMemo(
     () => formFields.find((field) => field.id === selectedFieldId) ?? null,
     [formFields, selectedFieldId],
   );
 
-  const createNewFieldFromTemplate = (fieldTemplate: FieldTemplate): BuilderField => {
-    const fieldData = { ...fieldTemplate };
-    delete fieldData.icon;
-
-    return {
-      id: nanoid(),
-      ...fieldData,
-      label: `New ${fieldTemplate.name} field`,
-      type: fieldTemplate.type,
-      required: false,
-      placeholder: '',
-      description: fieldTemplate.description ?? '',
-    };
-  };
-
-  const handleDragStart = (e: React.DragEvent, field: FieldTemplate) => {
-    setDraggedField(field);
-    setDraggedFieldIndex(null);
+  const handleDragStart = (
+    e: React.DragEvent,
+    field: FieldTemplate,
+  ) => {
+    startTemplateDrag(field);
     e.dataTransfer.effectAllowed = DROP_EFFECTS.COPY;
     e.dataTransfer.setData('text/plain', 'new-field');
     e.dataTransfer.setData('application/json', JSON.stringify(field));
   };
 
   const handleFieldDragStart = (e: React.DragEvent, index: number) => {
-    setDraggedField(null);
-    setDraggedFieldIndex(index);
+    startFieldDrag(index);
     e.dataTransfer.effectAllowed = DROP_EFFECTS.MOVE;
     e.dataTransfer.setData('text/plain', String(index));
     e.dataTransfer.setData('application/x-form-field-index', String(index));
@@ -81,99 +95,60 @@ export default function BuilderWindow({ handleModalClose = () => undefined }) {
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    e.dataTransfer.dropEffect = draggedField !== null && draggedFieldIndex === null ? DROP_EFFECTS.COPY : DROP_EFFECTS.MOVE;
-  };
-
-  const cleanupDragState = () => {
-    setDraggedField(null);
-    setDraggedFieldIndex(null);
+    e.dataTransfer.dropEffect =
+      draggedField !== null && draggedFieldIndex === null
+        ? DROP_EFFECTS.COPY
+        : DROP_EFFECTS.MOVE;
   };
 
   const handleDrop = (e: React.DragEvent, dropIndex: number) => {
     e.preventDefault();
     e.stopPropagation();
-
-    if (draggedField !== null && draggedFieldIndex === null) {
-      const newField = createNewFieldFromTemplate(draggedField);
-      setFormFields((current) => {
-        const next = [...current];
-        const safeIndex = Math.max(0, Math.min(dropIndex, next.length));
-        next.splice(safeIndex, 0, newField);
-        return next;
-      });
-      setSelectedFieldId(newField.id);
-      cleanupDragState();
-      return;
-    }
-
-    if (draggedFieldIndex !== null) {
-      setFormFields((current) => {
-        const next = [...current];
-        const from = draggedFieldIndex;
-        if (from < 0 || from >= next.length) return current;
-
-        const [movedField] = next.splice(from, 1);
-        const target = Math.max(0, Math.min(dropIndex, next.length));
-        const adjustedTarget = from < target ? target - 1 : target;
-        next.splice(adjustedTarget, 0, movedField);
-        return next;
-      });
-      cleanupDragState();
-      return;
-    }
-
-    cleanupDragState();
+    dropField(dropIndex);
   };
 
   const handleDragEnd = () => {
-    cleanupDragState();
+    clearDragState();
   };
 
-  const handleFieldClick = (field: BuilderField) => {
+  const handleFieldClick = (field: { id: string | number }) => {
     setSelectedFieldId(field.id);
   };
 
-  const handleDeleteField = (fieldId: string) => {
-    setFormFields((current) => {
-      const next = current.filter((field) => field.id !== fieldId);
-      if (selectedFieldId === fieldId) {
-        setSelectedFieldId(next[0]?.id ?? null);
-      }
-      return next;
-    });
+  const handleDeleteField = (fieldId: string | number) => {
+    deleteField(fieldId);
   };
 
-  const handleSelectedFieldChange = (key: string, value: string | boolean | Record<string, unknown>) => {
-    if (!selectedFieldId) return;
-
-    setFormFields((current) =>
-      current.map((field) =>
-        field.id === selectedFieldId ? { ...field, [key]: value } : field,
-      ),
-    );
+  const handleSelectedFieldChange = (
+    key: string,
+    value: string | boolean | Record<string, unknown>,
+  ) => {
+    if (selectedFieldId === null) return;
+    updateField(selectedFieldId, key, value);
   };
 
   const handleFormNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm((current) => ({ ...current, name: e.target.value }));
+    useNewFormStore.setState((current) => ({
+      ...current,
+      form_name: e.target.value,
+    }));
   };
 
-  const handleFormDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm((current) => ({ ...current, description: e.target.value }));
+  const handleFormDescriptionChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    useNewFormStore.setState((current) => ({
+      ...current,
+      form_description: e.target.value,
+    }));
   };
-
-  const handleSaveForm = () => {
-    const formToSave = { ...form, form_fields: formFields };
-    console.log('Saving form', formToSave);
-    handleModalClose();
-  };
-
   const togglePreview = (isPreview: boolean) => {
     setPreview(isPreview);
   };
 
   return (
     <Box
-      component="div"
+      component='div'
       sx={{
         minWidth: '100%',
         minHeight: '100%',
@@ -184,16 +159,23 @@ export default function BuilderWindow({ handleModalClose = () => undefined }) {
       }}
     >
       <Box
-        component="main"
+        component='main'
         sx={{
-          paddingTop: '2.6rem',
+          paddingTop: '1.6rem',
           overflow: 'auto',
-          maxHeight: '100vh',
+          maxHeight: '90vh',
           WebkitOverflowScrolling: 'touch',
         }}
       >
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 2 }}>
+          <BasicButton
+            text='x'
+            color='magenta.main'
+            onClick={handleModalClose}
+          />
+        </Box>
         <Box
-          component="div"
+          component='div'
           sx={{
             padding: '1.5rem',
             borderRadius: '0.5rem',
@@ -202,7 +184,7 @@ export default function BuilderWindow({ handleModalClose = () => undefined }) {
           }}
         >
           <Box
-            component="div"
+            component='div'
             sx={{
               display: 'flex',
               gap: '1rem',
@@ -213,15 +195,15 @@ export default function BuilderWindow({ handleModalClose = () => undefined }) {
           >
             <ButtonGroup sx={{ display: 'flex', alignItems: 'center' }}>
               <BasicButton
-                text="build"
-                size="large"
+                text='build'
+                size='large'
                 onClick={() => togglePreview(false)}
-                textColor="black"
+                textColor='black'
                 variant={preview ? 'text' : 'contained'}
               />
               <BasicButton
-                text="preview"
-                size="large"
+                text='preview'
+                size='large'
                 onClick={() => togglePreview(true)}
                 variant={preview ? 'contained' : 'text'}
                 textColor={preview ? 'black' : 'text.primary'}
@@ -229,9 +211,9 @@ export default function BuilderWindow({ handleModalClose = () => undefined }) {
             </ButtonGroup>
 
             <TextField
-              type="text"
-              placeholder="Insert Form Name"
-              value={form.name}
+              type='text'
+              placeholder='Insert Form Name'
+             
               onChange={handleFormNameChange}
               sx={{
                 flex: 1,
@@ -247,9 +229,9 @@ export default function BuilderWindow({ handleModalClose = () => undefined }) {
             />
 
             <TextField
-              type="text"
-              placeholder="Insert Form description"
-              value={form.description}
+              type='text'
+              placeholder='Insert Form description'
+              value={form_description}
               onChange={handleFormDescriptionChange}
               sx={{
                 flex: 1,
@@ -267,7 +249,7 @@ export default function BuilderWindow({ handleModalClose = () => undefined }) {
 
           {!preview ? (
             <Box
-              component="div"
+              component='div'
               sx={{
                 display: 'grid',
                 gridTemplateColumns: {
@@ -278,28 +260,33 @@ export default function BuilderWindow({ handleModalClose = () => undefined }) {
                 WebkitOverflowScrolling: 'touch',
               }}
             >
-              <FieldTypesColumn handleDragStart={handleDragStart} handleDragEnd={handleDragEnd} />
+              <FieldTypesColumn
+                handleDragStart={handleDragStart}
+                handleDragEnd={handleDragEnd}
+              />
 
               <DropZone
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
                 onDragEnd={handleDragEnd}
                 handleFieldClick={handleFieldClick}
-                draggedField={draggedField}
                 formFields={formFields}
                 selectedField={selectedField}
                 handleDraggedField={handleFieldDragStart}
                 handleDeleteField={handleDeleteField}
               />
 
-              <ValidationsPanel selectedField={selectedField} onFieldChange={handleSelectedFieldChange} />
+              <ValidationsPanel
+                selectedField={selectedField}
+                onFieldChange={handleSelectedFieldChange}
+              />
             </Box>
           ) : (
-            <FormView disabledFields={true} />
+            <FormView disabledFields={ true} />
           )}
 
           <Box
-            component="div"
+            component='div'
             sx={{
               display: 'flex',
               gap: '1rem',
@@ -309,21 +296,43 @@ export default function BuilderWindow({ handleModalClose = () => undefined }) {
           >
             <ButtonGroup sx={{ p: 3 }}>
               <BasicButton
-                text="save"
-                size="large"
-                onClick={handleSaveForm}
-                variant="outlined"
+                text='save'
+                size='large'
+               onClick={async () => {
+  try {
+    await handleSaveNewForm(newForm);
+  } catch (error) {
+    setSaveError(error instanceof Error ? error.message : 'Errore');
+  }
+}}
+                variant='outlined'
                 textColor={preview ? 'black' : 'text.primary'}
               />
               <BasicButton
-                text="cancel"
-                variant="outlined"
+                text='cancel'
+                variant='outlined'
                 textColor={preview ? 'black' : 'text.primary'}
-                size="large"
+                size='large'
                 onClick={handleModalClose}
               />
             </ButtonGroup>
           </Box>
+            {SaveError && (
+              <Box
+                component='div'
+                sx={{
+                  color: 'error.main',
+                  fontSize: '1rem',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  
+                  
+                }}
+              >
+                {SaveError}
+              </Box>
+            )}
         </Box>
       </Box>
     </Box>

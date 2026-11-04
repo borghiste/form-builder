@@ -1,12 +1,11 @@
-import React, { createContext, useState, useEffect} from 'react';
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import React, { createContext, useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import { ThemeProvider } from '@emotion/react';
 import { LightTheme, DarkTheme } from '../src/theme/theme';
 import { useSelector } from 'react-redux';
 
-
-import { useThemeStore,useAuthStore } from './stores/index';
+import { useThemeStore, useAuthStore } from './stores/index';
 
 // COMPONENTS
 import Home from '../src/routes/Home';
@@ -20,56 +19,54 @@ import TermsAndPrivacy from './routes/TermsandPrivacy';
 import NotFound from './routes/NotFound';
 import InvitationPage from '../src/components/InvitationPage';
 
-
-
 // ---------------------- APP ----------------------
 export default function App() {
-  const { darkMode} = useThemeStore(); 
-  const { subdomain, initializeAuth, user} = useAuthStore();
-  
+  const { darkMode } = useThemeStore();
+  const { subdomain, initializeAuth, user } = useAuthStore();
+
   useEffect(() => {
-    initializeAuth(); 
+    initializeAuth();
   }, []);
 
-
-
   return (
-    
-      <ThemeProvider theme={ darkMode ? DarkTheme : LightTheme}>
-        <BrowserRouter>
-          <Layout>
-            <Routes>
-              <Route path={`/`} element={<Home />} />
-              <Route path={"/signup"} element={ user ? <Login/> : <RegisterForm/>} />
-              <Route path="/login" element={user?.id ? null : <Login/>} />
-              <Route
-                path={`/${subdomain}/forms`}
-                element={ user?.id ?
-                   (<ProtectedRoute>
-                    <FormsList/>
-                   </ProtectedRoute>) : <Login/>
-                }
-              />
-
-              
-
-              <Route
-                path={`/${subdomain}/entries`}
-                element={  
+    <ThemeProvider theme={darkMode ? DarkTheme : LightTheme}>
+      <BrowserRouter>
+        <Layout>
+          <Routes>
+            <Route path={`/`} element={<Home />} />
+            <Route
+              path={'/signup'}
+              element={user ? <Login /> : <RegisterForm />}
+            />
+            <Route path='/login' element={user?.id ? null : <Login />} />
+            <Route
+              path={`/${subdomain}/forms`}
+              element={
+                user?.id ? (
                   <ProtectedRoute>
-                    <FormEntriesTable/>
-                  </ProtectedRoute >
-                }
-              />
+                    <FormsList />
+                  </ProtectedRoute>
+                ) : (
+                  <Login />
+                )
+              }
+            />
 
-<Route path='terms-and-privacy' element={<TermsAndPrivacy/>}/>
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="*" element={<NotFound/>} />
-            </Routes>
-          </Layout>
-        </BrowserRouter>
-      </ThemeProvider>
-    
+            <Route
+              path={`/${subdomain}/entries`}
+              element={
+                <ProtectedRoute>
+                  <FormEntriesTable />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route path='terms-and-privacy' element={<TermsAndPrivacy />} />
+            <Route path='/about' element={<AboutPage />} />
+            <Route path='*' element={<NotFound />} />
+          </Routes>
+        </Layout>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
-

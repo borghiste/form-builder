@@ -1,9 +1,8 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import "@testing-library/jest-dom";
-import { BrowserRouter } from "react-router-dom";
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import { BrowserRouter } from 'react-router-dom';
 import LoginPage from '../../routes/LoginPage';
-
 
 // --------------------------------------------------------------------------- mocks ---------------------------------------------------------------------------
 
@@ -13,7 +12,7 @@ const mockLogoutUser = vi.fn();
 const mockUseNavigate = vi.fn();
 const mockUseAuthentication = vi.fn();
 
-vi.mock("react-router-dom", async () => {
+vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
   return { ...actual, useNavigate: () => mockUseNavigate };
 });
@@ -22,10 +21,11 @@ vi.mock('../../stores/useAuthStore', () => ({
   useAuthStore: () => mockUseAuthentication(),
 }));
 
-
-vi.mock("../../components/UI/BasicButton", () => ({
+vi.mock('../../components/UI/BasicButton', () => ({
   default: ({ text, type }: { text: string; type?: string }) => (
-    <button type={(type ?? "submit") as "submit" | "button" | "reset"}>{text}</button>
+    <button type={(type ?? 'submit') as 'submit' | 'button' | 'reset'}>
+      {text}
+    </button>
   ),
 }));
 
@@ -48,14 +48,14 @@ const defaultStoreState = {
 const renderPage = () => {
   render(
     <BrowserRouter>
-      <LoginPage/>
-    </BrowserRouter>
+      <LoginPage />
+    </BrowserRouter>,
   );
 };
 
 // --------------------------------------------------------------------------- tests ---------------------------------------------------------------------------
 
-describe("LoginPage component", () => {
+describe('LoginPage component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockUseAuthentication.mockReturnValue(defaultStoreState);
@@ -65,7 +65,7 @@ describe("LoginPage component", () => {
     vi.useRealTimers();
   });
 
-  it("should render LoginPage component", () => {
+  it('should render LoginPage component', () => {
     renderPage();
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
@@ -91,7 +91,9 @@ describe("LoginPage component", () => {
   it('should show error if email or password are empty on submit', async () => {
     renderPage();
     fireEvent.submit(screen.getByRole('login'));
-    expect(await screen.findByText(/email and password are required/i)).toBeInTheDocument();
+    expect(
+      await screen.findByText(/email and password are required/i),
+    ).toBeInTheDocument();
     expect(mockLoginUser).not.toHaveBeenCalled();
   });
 

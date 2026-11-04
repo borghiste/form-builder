@@ -8,9 +8,13 @@ class FormField extends Model
 {
     use HasFactory;
     protected $table = 'form_fields';
-    protected $fillable = ['label', 'type', 'required', 'form_id'
-    // 'order', 
-    // 'placeholder', 'description', 
+    protected $fillable = [
+        'label',
+        'type',
+        'required',
+        'form_id',
+        'order',
+        // 'placeholder', 'description',
     ];
 
     public function form(){
