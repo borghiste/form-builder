@@ -2,10 +2,9 @@
 
 namespace Database\Factories;
 
-use App\Models\FormField;
 use Illuminate\Database\Eloquent\Factories\Factory;
-
 use App\Models\Form;
+use App\Models\User;
 
 
 
@@ -22,20 +21,13 @@ class FormFactory extends Factory
 
     public function definition(): array
     {
+        
         return [
             'name' => $this->faker->sentence(3),
             'description' => $this->faker->paragraph(),
+            'created_by' => User::factory(),
+            'organization_id' => fn (array $attributes) => User::findOrFail($attributes['created_by'])->organization_id,
         ];
-    }
-
-   
-    public function configure()
-    {
-        return $this->afterCreating(function (Form $form) {
-            FormField::factory()->count(3)->create([
-                'form_id' => $form->id, //  
-            ]);
-        });
     }
 }
 

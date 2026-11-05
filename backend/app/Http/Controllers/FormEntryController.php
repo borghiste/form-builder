@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\FormEntry;
+use App\Models\FormSubmission;
 use Illuminate\Http\Request;
 
 class FormEntryController extends Controller
@@ -25,7 +25,7 @@ public function submitFormEntry(Request $request){
     
     // Test 3: Try to create entry
     try {
-        $entry = FormEntry::create([
+        $entry = FormSubmission::create([
             'form_id' => $request->form_id,
             'form_version' => 1, // Default version
             'data' => $request->entryData['form_fields']
@@ -40,4 +40,3 @@ public function submitFormEntry(Request $request){
 }
      }
     
-

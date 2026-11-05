@@ -12,7 +12,7 @@ export default function NotFound() {
     <Box
       sx={{
         minHeight: '100vh',
-        bgcolor: 'grey.100',
+        
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -52,7 +52,7 @@ export default function NotFound() {
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
             <SearchIcon sx={{ color: 'primary.main', fontSize: 28 }} />
             <Typography
-              variant="caption"
+              variant='caption'
               sx={{
                 color: 'text.secondary',
                 fontWeight: 600,
@@ -69,13 +69,13 @@ export default function NotFound() {
         <Box sx={{ width: '100%', height: '1px', bgcolor: 'divider', mb: 3 }} />
 
         {/* Message */}
-        <Typography variant="h6" fontWeight={600} mb={1} textAlign="center">
+        <Typography variant='h6' fontWeight={600} mb={1} textAlign='center'>
           This page doesn't exist
         </Typography>
         <Typography
-          variant="body2"
-          color="text.secondary"
-          textAlign="center"
+          variant='body2'
+          color='text.secondary'
+          textAlign='center'
           sx={{ lineHeight: 1.7, mb: 3.5 }}
         >
           The page you're looking for may have been moved, deleted, or never
@@ -85,10 +85,10 @@ export default function NotFound() {
         {/* Search field */}
         <Box sx={{ width: '100%', mb: 0.5 }}>
           <Typography
-            variant="caption"
+            variant='caption'
             fontWeight={500}
-            color="text.secondary"
-            display="block"
+            color='text.secondary'
+            display='block'
             mb={0.75}
           >
             Looking for something specific?
@@ -113,11 +113,16 @@ export default function NotFound() {
             <SearchIcon sx={{ color: 'text.disabled', fontSize: 18 }} />
             <InputBase
               fullWidth
-              placeholder="Search forms..."
+              placeholder='Search forms...'
               sx={{ fontSize: 13 }}
             />
           </Box>
-          <Typography variant="caption" color="text.disabled" mt={0.5} display="block">
+          <Typography
+            variant='caption'
+            color='text.disabled'
+            mt={0.5}
+            display='block'
+          >
             Search by form name or description
           </Typography>
         </Box>
@@ -126,7 +131,7 @@ export default function NotFound() {
         <Box sx={{ display: 'flex', gap: 1.5, width: '100%', mt: 2.5 }}>
           <Button
             fullWidth
-            variant="outlined"
+            variant='outlined'
             startIcon={<ArrowBackIcon />}
             onClick={() => navigate(-1)}
             sx={{ textTransform: 'none', fontWeight: 500 }}
@@ -135,7 +140,7 @@ export default function NotFound() {
           </Button>
           <Button
             fullWidth
-            variant="contained"
+            variant='contained'
             startIcon={<DashboardIcon />}
             onClick={() => navigate('/')}
             sx={{ textTransform: 'none', fontWeight: 600 }}

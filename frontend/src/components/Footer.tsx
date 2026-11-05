@@ -1,13 +1,12 @@
-
 import React from 'react';
 import { Box, Container, Typography, Link } from '@mui/material';
 
-export default function Footer(){
+export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
     <Box
-      component="footer"
+      component='footer'
       sx={{
         py: 3,
         px: 2,
@@ -20,7 +19,7 @@ export default function Footer(){
         borderColor: 'divider',
       }}
     >
-      <Container maxWidth="xl">
+      <Container maxWidth='xl'>
         <Box
           sx={{
             display: 'flex',
@@ -30,26 +29,26 @@ export default function Footer(){
             gap: 2,
           }}
         >
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant='body2' color='text.secondary'>
             © {currentYear} · Developed by{' '}
             <Link
-              href="https://www.linkedin.com/in/borghi-stefano"
-              target="_blank"
-              underline="hover"
-              color="primary"
+              href='https://www.linkedin.com/in/borghi-stefano'
+              target='_blank'
+              underline='hover'
+              color='primary'
               sx={{ fontWeight: 500 }}
             >
-            Stefano Borghi
+              Stefano Borghi
             </Link>
           </Typography>
 
           <Box sx={{ display: 'flex', gap: 3 }}>
             <Link
-              href="/terms-and-privacy"
-              target="_blank"
-              underline="hover"
-              color="text.secondary"
-              variant="body2"
+              href='/terms-and-privacy'
+              target='_blank'
+              underline='hover'
+              color='text.secondary'
+              variant='body2'
               sx={{
                 '&:hover': {
                   color: 'primary.main',
@@ -59,10 +58,10 @@ export default function Footer(){
               Privacy Policy
             </Link>
             <Link
-              href="/about"
-              underline="hover"
-              color="text.secondary"
-              variant="body2"
+              href='/about'
+              underline='hover'
+              color='text.secondary'
+              variant='body2'
               sx={{
                 '&:hover': {
                   color: 'primary.main',
@@ -76,6 +75,4 @@ export default function Footer(){
       </Container>
     </Box>
   );
-};
-
- 
+}

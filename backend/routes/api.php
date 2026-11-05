@@ -59,7 +59,8 @@ Route::middleware('auth:sanctum')->group(function () {
 // fORMS ACTION ROUTES
 Route::get('forms', [FormListController::class, 'getFormList']);
 
- Route::post('forms', [FormListController::class, 'addNewForm']);
+
+//  Route::post('forms', [FormListController::class, 'addNewForm']);
 
 //GET ENTRIES
 Route::get('forms/entries', [FormEntriesController::class, 'getFormsEntries']);
@@ -88,4 +89,3 @@ Route::get('entries', [FormEntriesController::class, 'getFormsEntries']);
 Route::post('forms/entries/submit', [FormEntryController::class, 'submitFormEntry']
 );
 });
-

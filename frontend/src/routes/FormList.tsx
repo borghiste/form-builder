@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useContext } from "react";
-import { Outlet } from "react-router-dom";
+import React, { useEffect } from 'react';
+import { Outlet } from 'react-router-dom';
 
 // MUI
 import {
@@ -13,138 +13,140 @@ import {
   Paper,
   Box,
   TableFooter,
-} from "@mui/material";
+} from '@mui/material';
 
 // COMPONENTS
-import BasicButton from "../components/UI/BasicButton";
-import ModalWindow from "../components/ModalWindow";
+import BasicButton from '../components/UI/BasicButton';
+import ModalWindow from '../components/ModalWindow';
 
-// REDUX
-import { useSelector, useDispatch } from "react-redux";
-import { AppDispatch } from "../app/store";
+// STORE
 
-import { fetchFormsList, deleteForm, getForm } from "../features/formsListSlice";
-import { selectForms } from "../features/formsListSlice";
-import { setFormFields, selectForm, setForm } from "../features/formSlice";
-
-
-import { useModalStore } from "../stores/useModalStore";
-import { useAuthStore} from "../stores/index";
+import { useModalStore } from '../stores/useModalStore';
+import { useAuthStore, useFormListStore } from '../stores/index';
 
 // utils
 
-
-
-
 export default function FormsList() {
-  const {setModalOpen, setModalMode} = useModalStore();
-  const dispatch = useDispatch<AppDispatch>();
-  const forms = useSelector(selectForms);
-  const {user} = useAuthStore();
-  
-  const form = useSelector(selectForm);
-  
+  const { setModalOpen, setModalMode } = useModalStore();
+
+  const { getForms, forms, getFormById, deleteForm, setSelectedForm } =
+    useFormListStore();
+
+  const { user } = useAuthStore();
 
   useEffect(() => {
-     dispatch(fetchFormsList());
-   }, forms);
+    getForms();
+  }, [getForms]);
 
-  const handleModalClose = () => {
-     setModalOpen(false);
-    setModalMode(null);
-    dispatch(setForm({ ...form, name: '' }));
+  const handleNewFormClick = () => {
+    setModalMode('newForm');
+    setSelectedForm(null);
+
+    setModalOpen(true);
   };
 
-   const handleNewFormClick = () => {
-     setModalMode('newForm');
-     setModalOpen(true);
-     dispatch(setFormFields([]));
-   };
+  const handleViewForm = async (formId: number) => {
+    await getFormById(formId);
 
-   const handleViewForm = async (formId: number) => {
-     const selectedForm = await dispatch(getForm(formId)).unwrap();
-   
-     dispatch(setForm({id: selectedForm.id,name:selectedForm.name,
-                   form_fields: selectedForm?.form_fields
-     }))
-     setModalOpen(true);
-     setModalMode('view');
-   };
+    setModalOpen(true);
+    setModalMode('view');
+  };
 
-   function handleInviteClick() {
+  function handleInviteClick() {
     setModalMode('invite');
     setModalOpen(true);
-   }
+  }
 
   const handleEditForm = async (formId: number) => {
-    const selectedForm = await dispatch(getForm(formId)).unwrap();
-    dispatch(setFormFields(selectedForm.form_fields));
-    dispatch(setForm(selectedForm));
+    await getFormById(formId);
+    setModalMode('editing');
+
     setModalOpen(true);
-  
+  };
+
+  const handleDeleteForm = async (formId: number) => {
+    await deleteForm(formId);
   };
 
   return (
-    
     <>
-       <ModalWindow/> 
+      <ModalWindow />
 
-      <Container sx={{ minHeight: "100vh", mt: 4 }}>
-    
-
-        <TableContainer component={Paper} sx={{ mt: 2, 
-           bgcolor:'background.default' }}>
-          <Table sx={{ minWidth: '100%' }} aria-label="forms table">
+      <Container sx={{ minHeight: '100vh', mt: 4 }}>
+        <TableContainer
+          component={Paper}
+          sx={{ mt: 2, bgcolor: 'background.default' }}
+        >
+          <Table sx={{ minWidth: '100%' }} aria-label='forms table'>
             <TableHead>
               <TableRow>
-                <TableCell><b>Form Name</b></TableCell>
-                <TableCell><b>Created Time</b></TableCell>
-                <TableCell><b>Updated Time</b></TableCell>
-                <TableCell sx={{display:'flex', justifyContent:'space-between', alignItems:'center'}}><b>Actions</b>
-                {user?.role === "admin" && (
-          <BasicButton
-            text="+ new form"
-            variant="contained"
-            color="gray.light"
-            textColor="black"
-           
-             onClick={handleNewFormClick}
-          />
-        )}
-        </TableCell>
-               
+                <TableCell>
+                  <b>Form Name</b>
+                </TableCell>
+                <TableCell>
+                  <b>Created Time</b>
+                </TableCell>
+                <TableCell>
+                  <b>Updated Time</b>
+                </TableCell>
+                <TableCell
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}
+                >
+                  <b>Actions</b>
+                  {user?.role === 'admin' && (
+                    <BasicButton
+                      text='+ new form'
+                      variant='contained'
+                      color='gray.light'
+                      textColor='black'
+
+                      onClick={handleNewFormClick}
+                    />
+                  )}
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              
               {forms?.map((form) => {
-                const createdDate = new Date(form.created_at).toISOString().slice(0, 10);
-                const updatedDate = new Date(form.updated_at).toISOString().slice(0, 10);
+                const createdDate = new Date(form.created_at)
+                  .toISOString()
+                  .slice(0, 10);
+                const updatedDate = new Date(form.updated_at)
+                  .toISOString()
+                  .slice(0, 10);
 
                 return (
                   <TableRow key={form.id} hover>
-                    <TableCell component="th" scope="row">{form.name}</TableCell>
+                    <TableCell component='th' scope='row'>
+                      {form.name}
+                    </TableCell>
                     <TableCell>{createdDate}</TableCell>
                     <TableCell>{updatedDate}</TableCell>
                     <TableCell>
-                      <Box sx={{ display: "flex", gap: 1 }}>
+                      <Box sx={{ display: 'flex', gap: 1 }}>
                         <BasicButton
-                          text="View"
-                          color="cyan.dark"
-                          textColor="white"
+                          text='View'
+                          color='cyan.dark'
+                          textColor='white'
                           onClick={() => handleViewForm(form.id)}
                         />
-                        {user.role === "admin" && (
+                        {user.role === 'admin' && (
                           <>
                             <BasicButton
-                              text="Edit"
+                              text='Edit'
+                              color='cyan.main'
+                              textColor='white'
                               onClick={() => handleEditForm(form.id)}
                             />
                             <BasicButton
-                              text="Delete"
-                              color="magenta.dark"
-                              textColor="black"
-                              onClick={() => dispatch(deleteForm(form.id))}
+                              text='Delete'
+                              color='magenta.dark'
+                              textColor='white'
+                              onClick={() => handleDeleteForm(form.id)}
                             />
                           </>
                         )}
@@ -155,28 +157,28 @@ export default function FormsList() {
               })}
             </TableBody>
           </Table>
-          
 
-        <TableFooter sx={{display:'flex', justifyContent:'end'}}>
-          
-              <TableRow sx={{display:'flex', maxWidth:'100%'}}>
-                
-                <TableCell sx={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
-                {user?.role === "admin" && (
-          <BasicButton
-            text="+ invite"
-            variant="contained"
-            color="gray.light"
-            textColor="black"
-            onClick={() => handleInviteClick()}
-           
-            
-          />
-        )}
-        </TableCell>
-               
-              </TableRow>
-            </TableFooter>
+          <TableFooter sx={{ display: 'flex', justifyContent: 'end' }}>
+            <TableRow sx={{ display: 'flex', maxWidth: '100%' }}>
+              <TableCell
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
+                {user?.role === 'admin' && (
+                  <BasicButton
+                    text='+ invite'
+                    variant='contained'
+                    color='gray.light'
+                    textColor='black'
+                    onClick={() => handleInviteClick()}
+                  />
+                )}
+              </TableCell>
+            </TableRow>
+          </TableFooter>
         </TableContainer>
       </Container>
 

@@ -1,7 +1,14 @@
-
 import React, { useState } from 'react';
 // MUI
-import { Box, Switch, Button, Typography, AppBar, Link, ButtonGroup } from '@mui/material';
+import {
+  Box,
+  Switch,
+  Button,
+  Typography,
+  AppBar,
+  Link,
+  ButtonGroup,
+} from '@mui/material';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -12,28 +19,21 @@ import Container from '@mui/material/Container';
 import MenuItem from '@mui/material/MenuItem';
 
 // COMPONENTS
-import SignUpButton from './UI/SignUpButton';
+
 // REDUX
 
-import {useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { switchToDarkMode, selectMode } from '../features/themeSlice';
 import BasicButton from './UI/BasicButton';
 import { useThemeStore, useAuthStore } from '../stores/index';
 
-
 export default function Header() {
-  
   const navigate = useNavigate();
-  const {organization, user, subdomain, logoutUser} = useAuthStore();
-  const {darkMode, toggleDarkMode} = useThemeStore();
-
- 
-  
+  const { organization, user, subdomain, logoutUser } = useAuthStore();
+  const { darkMode, toggleDarkMode } = useThemeStore();
 
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
-
-
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -57,31 +57,43 @@ export default function Header() {
     { name: 'Home', path: '/' },
     ...(user?.id
       ? [
-          { name: 'forms', path: (subdomain != undefined && user) ? `/${subdomain}/forms` : '/login' },
-          {name:'signup', path:'signup'},
+          {
+            name: 'forms',
+            path:
+              subdomain != undefined && user ? `/${subdomain}/forms` : '/login',
+          },
+          {
+            name: 'signup',
+            path:
+              subdomain != undefined && user
+                ? `/${subdomain}/signup`
+                : '/login',
+          },
           ...(user?.role === 'admin'
             ? [{ name: 'entries', path: `/${subdomain}/entries` }]
-            : []
-          ),
-          { 
-            name: 'Logout', 
-            path: '/login', 
-            onClick: handleLogout 
+            : []),
+          {
+            name: 'Logout',
+            path: '/login',
+            onClick: handleLogout,
           },
         ]
-      : [{ name: 'Login', path: '/login' }]
-    ),
+      : [{ name: 'Login', path: '/login' }]),
   ];
 
   return (
-    <AppBar component="header" position="sticky" sx={{ bgcolor: 'background.default' }}>
-      <Container maxWidth="xl">
+    <AppBar
+      component='header'
+      position='sticky'
+      sx={{ bgcolor: 'background.default' }}
+    >
+      <Container maxWidth='xl'>
         <Toolbar disableGutters>
           {/* Logo / Brand - Desktop */}
           <Typography
-            variant="h5"
-            component="a"
-            href="/"
+            variant='h5'
+            component='a'
+            href='/'
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -99,18 +111,18 @@ export default function Header() {
           {/* Menu Mobile */}
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
-              size="large"
-              aria-label="menu di navigazione"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
+              size='large'
+              aria-label='menu di navigazione'
+              aria-controls='menu-appbar'
+              aria-haspopup='true'
               onClick={handleOpenNavMenu}
-              color="inherit"
+              color='inherit'
             >
               <MenuIcon />
             </IconButton>
 
             <Menu
-              id="menu-appbar"
+              id='menu-appbar'
               anchorEl={anchorElNav}
               anchorOrigin={{
                 vertical: 'bottom',
@@ -123,8 +135,7 @@ export default function Header() {
               }}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
-              sx={{ display: { xs: 'block', md: 'none' }
-              }}
+              sx={{ display: { xs: 'block', md: 'none' } }}
             >
               {pages.map((page) => (
                 <MenuItem
@@ -137,7 +148,7 @@ export default function Header() {
                   }}
                 >
                   <Typography
-                    component="a"
+                    component='a'
                     href={page.path}
                     sx={{
                       textAlign: 'center',
@@ -152,30 +163,36 @@ export default function Header() {
               ))}
             </Menu>
           </Box>
-              <Box sx={{display:'flex', flexDirection:'column', alignItems:'center', marginRight:' 10rem'}}>
-          {/* Logo / Brand - Mobile */}
-          <Typography
-            variant="h6"
-            component="a"
-            href="/"
+          <Box
             sx={{
-              flexGrow: 1,
-              display: { xs: 'flex', md: 'none' },
-              fontFamily: 'monospace',
-              fontWeight: 650,
-              letterSpacing: '.2rem',
-              color: 'text.primary',
-              textDecoration: 'none',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              marginRight: ' 10rem',
             }}
           >
-             PickForm
-          </Typography>
-         
+            {/* Logo / Brand - Mobile */}
+            <Typography
+              variant='h6'
+              component='a'
+              href='/'
+              sx={{
+                flexGrow: 1,
+                display: { xs: 'flex', md: 'none' },
+                fontFamily: 'monospace',
+                fontWeight: 650,
+                letterSpacing: '.2rem',
+                color: 'text.primary',
+                textDecoration: 'none',
+              }}
+            >
+              PickForm
+            </Typography>
           </Box>
 
           {/* Menu Desktop */}
           <Box
-            component="nav"
+            component='nav'
             sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}
           >
             {pages.map((page) => (
@@ -217,7 +234,7 @@ export default function Header() {
               }}
             />
             <Switch
-              color="primary"
+              color='primary'
               checked={darkMode}
               onChange={handleThemeToggle}
               inputProps={{ 'aria-label': 'change light/dark theme' }}
@@ -230,8 +247,8 @@ export default function Header() {
 
             {user?.id && (
               <Typography
-                variant="body2"
-                component="span"
+                variant='body2'
+                component='span'
                 sx={{
                   ml: 2,
                   color: 'text.primary',

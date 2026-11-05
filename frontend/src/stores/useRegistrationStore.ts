@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { useNavigate } from 'react-router-dom';
 
-
 type RegistrationState = {
   owner_name: string;
   email: string;
@@ -14,7 +13,13 @@ type RegistrationState = {
   error: string | null;
   errors: Record<string, string[]>;
   success: boolean;
-  setField: (field: keyof Omit<RegistrationState, 'loading' | 'error' | 'success' | 'setField' | 'register'>, value: string | boolean) => void;
+  setField: (
+    field: keyof Omit<
+      RegistrationState,
+      'loading' | 'error' | 'success' | 'setField' | 'register'
+    >,
+    value: string | boolean,
+  ) => void;
   register: (tokenOverride?: string) => Promise<any>;
 };
 
@@ -33,7 +38,15 @@ export const useRegistration = create<RegistrationState>((set, get) => ({
   setField: (field, value) => set({ [field]: value }),
 
   register: async (tokenOverride?: string) => {
-    const { owner_name, email, organization_name, password, password_confirmation, acceptedTerms, token } = get();
+    const {
+      owner_name,
+      email,
+      organization_name,
+      password,
+      password_confirmation,
+      acceptedTerms,
+      token,
+    } = get();
     const invitationToken = tokenOverride ?? token;
     const isInviteRegistration = Boolean(invitationToken);
 
@@ -69,7 +82,11 @@ export const useRegistration = create<RegistrationState>((set, get) => ({
       const data = await res.json();
 
       if (!res.ok) {
-        set({ loading: false, errors: data.errors ?? {}, error: data.message ?? 'Registration failed' });
+        set({
+          loading: false,
+          errors: data.errors ?? {},
+          error: data.message ?? 'Registration failed',
+        });
         return null;
       }
 
@@ -79,7 +96,9 @@ export const useRegistration = create<RegistrationState>((set, get) => ({
       set({
         loading: false,
         success: false,
-        error: e?.message ?? 'Too many registration attempts. Please try again later.',
+        error:
+          e?.message ??
+          'Too many registration attempts. Please try again later.',
       });
       return null;
     }

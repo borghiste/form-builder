@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 //COMPONENTS
 import BasicButton from './UI/BasicButton';
-//REDUX
-import { useDispatch, useSelector } from "react-redux";
-import {useAuthStore} from '../stores/index';
-import { submitNewEntry } from '../features/FormEntriesSlice';
-import { selectForm } from '../features/formSlice';
+//STORE
+
+import { useAuthStore, useFormListStore, useNewFormStore, useFormBuilderStore } from '../stores/index';
+
+//UTILS
+import handleModalClose from '../utils/handleModalClose';
 
 import {
   TextField,
@@ -19,8 +20,8 @@ import {
   Grid,
   FormControlLabel,
   Checkbox,
-  TextareaAutosize
-} from "@mui/material";
+  ButtonGroup,
+} from '@mui/material';
 
 interface Field {
   id: string;
@@ -31,22 +32,44 @@ interface Field {
   options?: string[];
 }
 
-const renderedComponent = {
-  text: (props) => <TextField type="text" {...props} />,
-  textarea: (props) => (
-    <TextField
-      multiline
-      rows={4}
-      {...props}
-    />
+type FormFieldRecord = {
+  id: string | number;
+  name?: string;
+  type: string;
+  label: string;
+  required?: boolean;
+  options?: string[];
+  [key: string]: any;
+};
+
+type RenderProps = {
+  name?: string;
+  label?: string;
+  value?: any;
+  onChange?: (event: any) => void;
+  disabled?: boolean;
+  required?: boolean;
+  options?: string[];
+  fullWidth?: boolean;
+};
+
+const renderedComponent: Record<
+  string,
+  (props: RenderProps) => React.ReactNode
+> = {
+  text: (props: RenderProps) => <TextField type='text' {...props} />,
+  textarea: (props: RenderProps) => <TextField multiline rows={4} {...props} />,
+  email: (props: RenderProps) => <TextField type='email' {...props} />,
+  number: (props: RenderProps) => <TextField type='number' {...props} />,
+  phone: (props: RenderProps) => <TextField type='tel' {...props} />,
+  password: (props: RenderProps) => <TextField type='password' {...props} />,
+  date: (props: RenderProps) => (
+    <TextField type='date' InputLabelProps={{ shrink: true }} {...props} />
   ),
-  email: (props) => <TextField type="email" {...props} />,
-  number: (props) => <TextField type="number" {...props} />,
-  phone: (props) => <TextField type="tel" {...props} />,
-  password: (props) => <TextField type="password" {...props} />,
-  date: (props) => <TextField type="date" InputLabelProps={{ shrink: true }} {...props} />,
-  time: (props) => <TextField type="time" InputLabelProps={{ shrink: true }} {...props} />,
-  selectList: (props) => (
+  time: (props: RenderProps) => (
+    <TextField type='time' InputLabelProps={{ shrink: true }} {...props} />
+  ),
+  selectList: (props: RenderProps) => (
     <FormControl fullWidth>
       <InputLabel id={`${props.name}-label`}>{props.label}</InputLabel>
       <Select
@@ -67,7 +90,7 @@ const renderedComponent = {
       </Select>
     </FormControl>
   ),
-  checkbox: (props) => (
+  checkbox: (props: RenderProps) => (
     <FormControlLabel
       control={
         <Checkbox
@@ -80,36 +103,44 @@ const renderedComponent = {
       }
       label={props.label}
     />
-  )
+  ),
 };
 
-export default function FormView({ disabledFields, entries }) {
-  const dispatch = useDispatch();
-  const form = useSelector(selectForm);
-  const user = useAuthStore();
-  const [entryData, setEntryData] = useState({form_fields: entries || {} });
+export default function FormView({
+  disabledFields,
+  entries,
+}: {
+  disabledFields?: boolean;
+  entries?: any;
+}) {
+  const { selectedForm } = useFormListStore();
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const formFields = useFormBuilderStore((state) => state.formFields);
+  const { form_name, form_description } = useNewFormStore();
+  const userName =
+    useAuthStore((state) => state.user as { name?: string } | null)?.name ?? '';
+  const [entryData, setEntryData] = useState({ form_fields: entries || {} });
 
-  const handleChange = (e) => {
+  const handleChange = (e: any) => {
     const { name, value, type, checked } = e.target;
-    setEntryData(prev => ({
+    setEntryData((prev) => ({
       ...prev,
-      
-      form_fields: {name: user.name,
+      form_fields: {
+        name: userName,
         ...prev.form_fields,
-        [name]: type === 'checkbox' ? checked : value
-      }
+        [name]: type === 'checkbox' ? checked : value,
+      },
     }));
-    console.log('user.name', user.name);
-
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(submitNewEntry({ entryData, form_id: form.id }));
-  };
+    // try {}
+    
+  }
 
   const handleReset = () => {
-    setFormData({ form_fields: entries || {} });
+    setEntryData({ form_fields: entries || {} });
   };
 
   return (
@@ -119,23 +150,65 @@ export default function FormView({ disabledFields, entries }) {
         borderRadius: 3,
         display: 'flex',
         flexDirection: 'column',
-        backgroundColor: 'background.default'
+        backgroundColor: 'background.default',
+        width: { xs: '50vw', sm: '100%', md: '50vw' },
+        overflowY: 'auto',
       }}
-      elevation={3}
-    >
+      elevation={3}>
       <Box>
-        <Typography variant="h5" component="h1" gutterBottom>
-          {form?.name}
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mb: 2,
+          }}
+        >
+          
+          <Typography variant='h5' component='h1' gutterBottom>
+          { selectedForm?.name ? selectedForm.name : form_name}
+          </Typography>
+          {!disabledFields && (
+            <BasicButton
+              color='magenta.dark'
+              text='x'
+              size='small'
+              onClick={handleModalClose}
+            />
+          )}
+        </Box>
+        <Typography sx={{ mb: 2 }} variant='body1' color='text.secondary'>
+          {selectedForm?.description || form_description ? form_description  : 'No description provided.'}
         </Typography>
-        <Typography>
-          {form?.description || 'No description provided.'}
-        </Typography>
-        <Box component="form" onSubmit={handleSubmit}>
-          <Grid container spacing={2} sx={{ display: 'flex', flexDirection: 'column' }}>
-            {form?.form_fields?.map((field) => {
-              const Component = renderedComponent[field.type];
+        <Box component='form' onSubmit={handleSubmit}>
+          <Grid
+            container
+            spacing={2}
+            sx={{ display: 'flex', flexDirection: 'column' }}
+          >
+            {selectedForm?.form_fields?.map((field: any) => {
+              const Component =
+                renderedComponent[field.type] ?? renderedComponent.text;
               return (
-                <Grid item key={field.id}>
+                <Grid key={String(field.id)}>
+                  <Component
+                    label={field.label}
+                    name={field.name || field.id}
+                    value={entryData.form_fields[field.name || field.id] || ''}
+                    onChange={handleChange}
+                    disabled={disabledFields}
+                    required={field.required}
+                    options={field.options}
+                    fullWidth
+                  />
+                </Grid>
+              );
+            })}
+            {formFields?.map((field: any) => {
+              const Component =
+                renderedComponent[field.type] ?? renderedComponent.text;
+              return (
+                <Grid key={String(field.id)}>
                   <Component
                     label={field.label}
                     name={field.name || field.id}
@@ -150,23 +223,29 @@ export default function FormView({ disabledFields, entries }) {
               );
             })}
             {/* submit button */}
-            <Grid item>
+            <ButtonGroup
+              sx={{
+                mt: 2,
+                mb: 2,
+                display: 'flex',
+                justifyContent: 'center',
+              }}
+            >
               <BasicButton
                 text={'submit'}
                 type={'submit'}
                 color={'cyan.main'}
-                textColor={'white'}
-              />
-            </Grid>
-            {/* reset button */}
-            <Grid item>
+                textColor={'white'}/>
+
+              {/* reset button */}
+
               <BasicButton
                 text={'reset'}
                 variant={'outlined'}
                 onClick={handleReset}
                 type={'button'}
               />
-            </Grid>
+            </ButtonGroup>
           </Grid>
         </Box>
       </Box>

@@ -2,19 +2,20 @@
 
 namespace Database\Seeders;
 
-use App\Models\FormEntry;
+use App\Models\FormSubmission;
 use Illuminate\Database\Seeder;
 
-class FormEntrySeeder extends Seeder
+class FormSubmissionSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        FormEntry::factory()->create([
-            'form_version' => 1,
+        FormSubmission::factory()->create([
+            
             'data' => json_encode([
+                'form_id' => 1,
                 'name' => 'Jon Doe',
                 'email' => 'Jon@example.com',
                 'role' => 'user',

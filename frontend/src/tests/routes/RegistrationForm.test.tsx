@@ -1,140 +1,151 @@
-import {describe, it, expect, vi, beforeEach} from "vitest";
-import {render, screen, waitFor} from "@testing-library/react";
-import "@testing-library/jest-dom";
-import userEvent from "@testing-library/user-event";
-import {BrowserRouter} from "react-router-dom";
-import RegistrationForm from "../../routes/RegistrationForm";
-import {act} from "react";
-
-
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import userEvent from '@testing-library/user-event';
+import { BrowserRouter } from 'react-router-dom';
+import RegistrationForm from '../../routes/RegistrationForm';
+import { act } from 'react';
 
 // // ---------------------------------------------------------------------------
-// // State and mocks — 
+// // State and mocks —
 // // ---------------------------------------------------------------------------
- let mockState: Record<string, any> = {
-   owner_name: "",
-   email: "",
-   organization_name: "",
-   password: "",
-   password_confirmation: "",
-   acceptedTerms: false,
- };
+let mockState: Record<string, any> = {
+  owner_name: '',
+  email: '',
+  organization_name: '',
+  password: '',
+  password_confirmation: '',
+  acceptedTerms: false,
+};
 
 // // setField updates mockState to simulate reactive getters in useRegistrationStore
- const mockSetField = vi.fn((field: string, value: any) => {
-   mockState[field] = value;
- });
+const mockSetField = vi.fn((field: string, value: any) => {
+  mockState[field] = value;
+});
 
- const mockRegister = vi.fn();
- const mockUseNavigate = vi.fn();
- const mockMessage = vi.fn();
-
-// // ---------------------------------------------------------------------------
-// // Mock react-router-dom 
-// // ---------------------------------------------------------------------------
- vi.mock("react-router-dom", async () => {
-   const actual = await vi.importActual("react-router-dom");
-   return { ...actual, useNavigate: () => mockUseNavigate };
- });
+const mockRegister = vi.fn();
+const mockUseNavigate = vi.fn();
+const mockMessage = vi.fn();
 
 // // ---------------------------------------------------------------------------
-// // Mock useRegistrationStore 
+// // Mock react-router-dom
 // // ---------------------------------------------------------------------------
- vi.mock("../../stores/useRegistrationStore", () => ({
-   useRegistration: () => ({
-     get owner_name() { return mockState.owner_name; },
-     get email() { return mockState.email; },
-     get organization_name() { return mockState.organization_name; },
-     get password() { return mockState.password; },
-     get password_confirmation() { return mockState.password_confirmation; },
-     get acceptedTerms() { return mockState.acceptedTerms; },
-     loading: false,
-     error: null,
-     errors: null,
-     success: false,
-     setField: mockSetField,
-     register: mockRegister,
-   }),
- }));
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual('react-router-dom');
+  return { ...actual, useNavigate: () => mockUseNavigate };
+});
+
+// // ---------------------------------------------------------------------------
+// // Mock useRegistrationStore
+// // ---------------------------------------------------------------------------
+vi.mock('../../stores/useRegistrationStore', () => ({
+  useRegistration: () => ({
+    get owner_name() {
+      return mockState.owner_name;
+    },
+    get email() {
+      return mockState.email;
+    },
+    get organization_name() {
+      return mockState.organization_name;
+    },
+    get password() {
+      return mockState.password;
+    },
+    get password_confirmation() {
+      return mockState.password_confirmation;
+    },
+    get acceptedTerms() {
+      return mockState.acceptedTerms;
+    },
+    loading: false,
+    error: null,
+    errors: null,
+    success: false,
+    setField: mockSetField,
+    register: mockRegister,
+  }),
+}));
 
 // // ---------------------------------------------------------------------------
 // // Mock useModalStore — non usato nei test ma importato dal componente
 // // ---------------------------------------------------------------------------
- vi.mock("../../stores/useModalStore", () => ({
+vi.mock('../../stores/useModalStore', () => ({
   useModalStore: () => ({
-     open: false,
-     message: "",
-     openModal: vi.fn(),
-     closeModal: vi.fn(),
-   }),
- }));
+    open: false,
+    message: '',
+    openModal: vi.fn(),
+    closeModal: vi.fn(),
+  }),
+}));
 
 // // ---------------------------------------------------------------------------
 // // Mock componenti UI
 // // ---------------------------------------------------------------------------
- vi.mock("../../components/UI/BasicButton", () => ({
-   default: ({ text, type }: { text: string; type?: string }) => (
-     <button type={type ?? "button"}>{text}</button>
-   ),
- }));
+vi.mock('../../components/UI/BasicButton', () => ({
+  default: ({ text, type }: { text: string; type?: string }) => (
+    <button type={type ?? 'button'}>{text}</button>
+  ),
+}));
 
- vi.mock("../../components/ModalWindow", () => ({
-   default: ({ message }: { message: string }) => <div>{message}</div>,
- }));
+vi.mock('../../components/ModalWindow', () => ({
+  default: ({ message }: { message: string }) => <div>{message}</div>,
+}));
 
 // // ---------------------------------------------------------------------------
 // // Helper — render
 // // ---------------------------------------------------------------------------
- const renderForm = () =>
-   render(
-     <BrowserRouter>
-       <RegistrationForm />
-     </BrowserRouter>
-   );
+const renderForm = () =>
+  render(
+    <BrowserRouter>
+      <RegistrationForm />
+    </BrowserRouter>,
+  );
 
 // // ---------------------------------------------------------------------------
 // // Helper — compila tutti i campi del form
 // // Accetta overrides per personalizzare i valori per test specifici
 // // ---------------------------------------------------------------------------
- const fillForm = async (overrides: Record<string, string> = {}) => {
-   const defaults = {
-     owner_name: "Mario Rossi",
-     email: "mario@example.com",
-     company: "Acme Srl",
-     password: "Password1!",
-     confirmPassword: "Password1!",
-   };
-   const data = { ...defaults, ...overrides };
+const fillForm = async (overrides: Record<string, string> = {}) => {
+  const defaults = {
+    owner_name: 'Mario Rossi',
+    email: 'mario@example.com',
+    company: 'Acme Srl',
+    password: 'Password1!',
+    confirmPassword: 'Password1!',
+  };
+  const data = { ...defaults, ...overrides };
 
-   await userEvent.type(screen.getByLabelText(/full name/i), data.owner_name);
-   await userEvent.type(screen.getByLabelText(/^email/i), data.email);
-   await userEvent.type(screen.getByLabelText(/company name/i), data.company);
-   await userEvent.type(screen.getByLabelText(/^password/i), data.password);
-   await userEvent.type(screen.getByLabelText(/confirm password/i), data.confirmPassword);
-   await userEvent.click(screen.getByLabelText(/accept terms/i));
- };
-
+  await userEvent.type(screen.getByLabelText(/full name/i), data.owner_name);
+  await userEvent.type(screen.getByLabelText(/^email/i), data.email);
+  await userEvent.type(screen.getByLabelText(/company name/i), data.company);
+  await userEvent.type(screen.getByLabelText(/^password/i), data.password);
+  await userEvent.type(
+    screen.getByLabelText(/confirm password/i),
+    data.confirmPassword,
+  );
+  await userEvent.click(screen.getByLabelText(/accept terms/i));
+};
 
 // // ---------------------------------------------------------------------------
 // // Suite
 // // --------------------------------------------------------------------------
 
-
-describe("RegistrationForm component", () => {
+describe('RegistrationForm component', () => {
   beforeEach(() => {
     // reset
     mockState = {
-      owner_name: "",
-      email: "",
-      organization_name: "",
-      password: "",
-      password_confirmation: "",
+      owner_name: '',
+      email: '',
+      organization_name: '',
+      password: '',
+      password_confirmation: '',
       acceptedTerms: false,
     };
     vi.clearAllMocks();
-  })
+  });
 
-  it("should render all form fields", () => {
+  it('should render all form fields', () => {
     renderForm();
 
     expect(screen.getByLabelText(/full name/i)).toBeInTheDocument();
@@ -143,35 +154,36 @@ describe("RegistrationForm component", () => {
     expect(screen.getByLabelText(/^password/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/confirm password/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/accept terms/i)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /register/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /register/i }),
+    ).toBeInTheDocument();
   });
 
   it('should call register, show success message and redirect to /login after 3s', async () => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
-    mockRegister.mockResolvedValue({ message: "Registration successful. Please check your email for verification." });
+    mockRegister.mockResolvedValue({
+      message:
+        'Registration successful. Please check your email for verification.',
+    });
 
     renderForm();
     await fillForm();
-    await userEvent.click(screen.getByRole("button", { name: /register/i }));
+    await userEvent.click(screen.getByRole('button', { name: /register/i }));
 
-    // register 
+    // register
     await waitFor(() => {
       expect(mockRegister).toHaveBeenCalledTimes(1);
     });
-
-
 
     // redirect after 3 seconds
     await act(async () => vi.advanceTimersByTime(3000));
 
     await waitFor(() => {
-      expect(mockUseNavigate).toHaveBeenCalledWith("/login");
+      expect(mockUseNavigate).toHaveBeenCalledWith('/login');
     });
 
     vi.useRealTimers();
   });
-
-
 });
 // import { describe, it, expect, vi, beforeEach } from "vitest";
 // import { render, screen, waitFor } from "@testing-library/react";
@@ -182,7 +194,7 @@ describe("RegistrationForm component", () => {
 // import { act } from "react";
 
 // // ---------------------------------------------------------------------------
-// // State and mocks — 
+// // State and mocks —
 // // ---------------------------------------------------------------------------
 // let mockState: Record<string, any> = {
 //   owner_name: "",
@@ -202,7 +214,7 @@ describe("RegistrationForm component", () => {
 // const mockUseNavigate = vi.fn();
 
 // // ---------------------------------------------------------------------------
-// // Mock react-router-dom 
+// // Mock react-router-dom
 // // ---------------------------------------------------------------------------
 // vi.mock("react-router-dom", async () => {
 //   const actual = await vi.importActual("react-router-dom");
@@ -210,7 +222,7 @@ describe("RegistrationForm component", () => {
 // });
 
 // // ---------------------------------------------------------------------------
-// // Mock useRegistrationStore 
+// // Mock useRegistrationStore
 // // ---------------------------------------------------------------------------
 // vi.mock("../../stores/useRegistrationStore", () => ({
 //   useRegistration: () => ({
@@ -384,7 +396,7 @@ describe("RegistrationForm component", () => {
 //     // primi 5 tentativi — register viene chiamata normalmente
 //     for (let i = 0; i < 5; i++) {
 //       await userEvent.click(screen.getByRole("button", { name: /Register/i }));
-      
+
 //     }
 
 //     await waitFor(() => {

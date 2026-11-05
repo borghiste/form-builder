@@ -25,25 +25,43 @@ describe('Invitation registration flow', () => {
   it('reads the invite token from the URL and submits the invitation registration form', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
-      json: async () => ({ message: 'Registration successful', user: { id: 9, email: 'newmember@example.com' } }),
+      json: async () => ({
+        message: 'Registration successful',
+        user: { id: 9, email: 'newmember@example.com' },
+      }),
     });
     global.fetch = fetchMock as typeof fetch;
 
     render(
-      <MemoryRouter initialEntries={['/signup?token=invite-token-456&email=newmember@example.com']}>
+      <MemoryRouter
+        initialEntries={[
+          '/signup?token=invite-token-456&email=newmember@example.com',
+        ]}
+      >
         <Routes>
-          <Route path="/signup" element={<RegistrationForm />} />
+          <Route path='/signup' element={<RegistrationForm />} />
         </Routes>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     await userEvent.type(screen.getByLabelText(/full name/i), 'New Member');
     await userEvent.clear(screen.getByLabelText(/email/i));
-    await userEvent.type(screen.getByLabelText(/email/i), 'newmember@example.com');
+    await userEvent.type(
+      screen.getByLabelText(/email/i),
+      'newmember@example.com',
+    );
     await userEvent.type(screen.getByLabelText(/company name/i), 'Acme');
-    await userEvent.type(screen.getAllByLabelText(/password/i)[0], 'password123');
-    await userEvent.type(screen.getByLabelText(/confirm password/i), 'password123');
-    await userEvent.click(screen.getByLabelText(/accept terms and privacy policy/i));
+    await userEvent.type(
+      screen.getAllByLabelText(/password/i)[0],
+      'password123',
+    );
+    await userEvent.type(
+      screen.getByLabelText(/confirm password/i),
+      'password123',
+    );
+    await userEvent.click(
+      screen.getByLabelText(/accept terms and privacy policy/i),
+    );
     await userEvent.click(screen.getByRole('button', { name: /register/i }));
 
     await waitFor(() => {
@@ -57,7 +75,7 @@ describe('Invitation registration flow', () => {
             email: 'newmember@example.com',
             password: 'password123',
           }),
-        })
+        }),
       );
     });
   });

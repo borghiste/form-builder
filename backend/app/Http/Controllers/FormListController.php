@@ -22,4 +22,6 @@ class FormListController extends Controller
         $formFields->each->delete();
         return response()->json(['message' => 'Form deleted']);
     }
+
+    
 }

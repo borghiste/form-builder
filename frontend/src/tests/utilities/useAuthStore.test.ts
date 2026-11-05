@@ -139,7 +139,11 @@ describe('loginUser', () => {
     global.fetch = vi
       .fn()
       .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve({}) }) // csrf
-      .mockResolvedValueOnce({ ok: true, status: 200, json: () => Promise.resolve(loginPayload) }); // login
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: () => Promise.resolve(loginPayload),
+      }); // login
 
     const promise = loginWith('user@example.com', 'pass');
     // loading becomes true synchronously inside loginUser before first await
@@ -158,7 +162,11 @@ describe('loginUser', () => {
     global.fetch = vi
       .fn()
       .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve({}) })
-      .mockResolvedValueOnce({ ok: true, status: 200, json: () => Promise.resolve(loginPayload) });
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: () => Promise.resolve(loginPayload),
+      });
 
     await loginWith('bob@example.com', 'secret');
 
@@ -180,7 +188,9 @@ describe('loginUser', () => {
         json: () => Promise.resolve({ message: 'Invalid credentials' }),
       });
 
-    await expect(loginWith('bad@example.com', 'wrong')).rejects.toThrow('Invalid credentials');
+    await expect(loginWith('bad@example.com', 'wrong')).rejects.toThrow(
+      'Invalid credentials',
+    );
 
     const state = useAuthStore.getState();
     expect(state.error).toBe('Invalid credentials');
@@ -210,7 +220,9 @@ describe('loginUser', () => {
       .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve({}) })
       .mockRejectedValueOnce(new Error('Network failure'));
 
-    await expect(loginWith('u@example.com', 'p')).rejects.toThrow('Network failure');
+    await expect(loginWith('u@example.com', 'p')).rejects.toThrow(
+      'Network failure',
+    );
 
     expect(useAuthStore.getState().error).toBe('Network failure');
   });
@@ -222,7 +234,8 @@ describe('loginUser', () => {
       .mockResolvedValueOnce({
         ok: true,
         status: 200,
-        json: () => Promise.resolve({ user: {}, organization: { subdomain: 's' } }),
+        json: () =>
+          Promise.resolve({ user: {}, organization: { subdomain: 's' } }),
       });
     global.fetch = fetchMock;
 
@@ -272,7 +285,9 @@ describe('logoutUser', () => {
   it('sets error and re-throws when fetch throws', async () => {
     global.fetch = vi.fn().mockRejectedValue(new Error('Network down'));
 
-    await expect(useAuthStore.getState().logoutUser()).rejects.toThrow('Network down');
+    await expect(useAuthStore.getState().logoutUser()).rejects.toThrow(
+      'Network down',
+    );
 
     const state = useAuthStore.getState();
     expect(state.error).toBe('Network down');

@@ -1,12 +1,11 @@
 // useRegistrationStore.test.ts
 import { renderHook, act } from '@testing-library/react';
 import { useRegistration } from '../../stores/useRegistrationStore';
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 describe('useRegistrationStore', () => {
-
   beforeEach(() => {
     // reset store
     useRegistration.setState({
@@ -49,7 +48,10 @@ describe('useRegistrationStore', () => {
     // mock fetch
     global.fetch = vi.fn().mockResolvedValue({
       ok: true,
-      json: async () => ({ message: 'Organization created successfully', organization: { id: 1 } }),
+      json: async () => ({
+        message: 'Organization created successfully',
+        organization: { id: 1 },
+      }),
     });
 
     act(() => {
@@ -61,7 +63,6 @@ describe('useRegistrationStore', () => {
       await result.current.register();
     });
 
-  
     expect(result.current.loading).toBe(false);
   });
 
@@ -108,8 +109,7 @@ describe('useRegistrationStore', () => {
           email: 'newmember@example.com',
           password: 'password123',
         }),
-      })
+      }),
     );
   });
-
 });

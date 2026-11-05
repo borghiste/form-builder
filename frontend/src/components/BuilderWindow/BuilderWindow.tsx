@@ -1,15 +1,6 @@
-import React, { useState, useContext } from 'react';
-import { nanoid } from 'nanoid';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useMemo, useState } from 'react';
+
 import { Box, ButtonGroup, TextField } from '@mui/material';
-
-// stores
-import { useFieldState } from '../../stores/useFieldStore';
-import { selectField } from '../../features/fieldSlice';
-import { selectForm } from '../../features/formSlice';
-
-
-
 
 // Components
 import BasicButton from '../UI/BasicButton';
@@ -18,211 +9,146 @@ import FieldTypesColumn from './FieldTypesColumn';
 import ValidationsPanel from './ValidationsPanel';
 import FormView from '../FormView';
 
-// Constants
+// store
+import {
+  type FieldTemplate,
+  useFormBuilderStore,
+  useFormListStore,
+  useNewFormStore,
+} from '../../stores/index';
+
+//utils
+import handleModalClose from '../../utils/handleModalClose';
+import { handleSaveNewForm } from '../../utils/handleSaveNewForm';
+
 const DROP_EFFECTS = {
   COPY: 'copy',
-  MOVE: 'move'
-};
+  MOVE: 'move',
+} as const;
 
-const DRAG_DATA_KEYS = {
-  FIELD_INDEX: 'fieldIndex',
-  REORDER: 'reorder',
-  NEW_FIELD: 'newField'
-};
+export default function BuilderWindow() {
+  // new form state
+  const {form_name, setForm, form_description} = useNewFormStore();
+  const {formFields}= useFormBuilderStore();
+  const newForm = {
+    name: form_name,
+    description: form_description,
+    form_fields: (formFields ?? []).map(({ label, type, required }) => ({
+      label,
+      type,
+      required,
+    })),
+  };
 
-const CONTEXT_TYPES = {
-  NEW_FORM: 'newForm',
-  EDITING: 'editing'
-};
-
-export default function BuilderWindow({ handleModalClose }) {
-  // Redux state
-  const {setField} = useFieldState();
-   const form = useSelector(selectForm);
-   const selectedField = useSelector(selectField);
-   const formFields = [];
-
- 
-
-  // Local state
-  const [draggedField, setDraggedField] = useState(null);
-  const [draggedFieldIndex, setDraggedFieldIndex] = useState(null);
-  const [targetIndex, setTargetIndex] = useState(null);
+  const { selectedForm } = useFormListStore();
+  const [SaveError, setSaveError] = useState<string | null>(null);
+  
+  const selectedFieldId = useFormBuilderStore(
+    (state) => state.selectedFieldId,
+  );
+  const draggedField = useFormBuilderStore((state) => state.draggedField);
+  const draggedFieldIndex = useFormBuilderStore(
+    (state) => state.draggedFieldIndex,
+  );
+  const initializeFormFields = useFormBuilderStore(
+    (state) => state.initializeFormFields,
+  );
+  const startTemplateDrag = useFormBuilderStore(
+    (state) => state.startTemplateDrag,
+  );
+  const startFieldDrag = useFormBuilderStore((state) => state.startFieldDrag);
+  const dropField = useFormBuilderStore((state) => state.dropField);
+  const clearDragState = useFormBuilderStore((state) => state.clearDragState);
+  const setSelectedFieldId = useFormBuilderStore(
+    (state) => state.setSelectedFieldId,
+  );
+  const updateField = useFormBuilderStore((state) => state.updateField);
+  const deleteField = useFormBuilderStore((state) => state.deleteField);
   const [preview, setPreview] = useState(false);
 
-  // ============ DRAG AND DROP HANDLERS ============
+  useEffect(() => {
+    initializeFormFields(selectedForm?.form_fields ?? []);
+  }, [initializeFormFields, selectedForm]);
 
-  /**
-   * Handles drag start for new field types from the column
-   */
-  const handleDragStart = (e, field) => {
-    setDraggedField(field);
+  const selectedField = useMemo(
+    () => formFields.find((field) => field.id === selectedFieldId) ?? null,
+    [formFields, selectedFieldId],
+  );
+
+  const handleDragStart = (
+    e: React.DragEvent,
+    field: FieldTemplate,
+  ) => {
+    startTemplateDrag(field);
     e.dataTransfer.effectAllowed = DROP_EFFECTS.COPY;
-    // Set multiple formats for better cross-browser support
-    try {
-      e.dataTransfer.setData('text/plain', DRAG_DATA_KEYS.NEW_FIELD);
-      e.dataTransfer.setData(DRAG_DATA_KEYS.NEW_FIELD, 'true');
-    } catch (err) {
-      // Fallback for older browsers
-      e.dataTransfer.setData('text', DRAG_DATA_KEYS.NEW_FIELD);
-    }
+    e.dataTransfer.setData('text/plain', 'new-field');
+    e.dataTransfer.setData('application/json', JSON.stringify(field));
   };
 
-  /**
-   * Handles drag start for existing fields (reordering)
-   */
-  const handleFieldDragStart = (e, index) => {
-    setDraggedFieldIndex(index);
+  const handleFieldDragStart = (e: React.DragEvent, index: number) => {
+    startFieldDrag(index);
     e.dataTransfer.effectAllowed = DROP_EFFECTS.MOVE;
-    // Set multiple formats for better cross-browser support
-    try {
-      e.dataTransfer.setData('text/plain', index.toString());
-      e.dataTransfer.setData(DRAG_DATA_KEYS.FIELD_INDEX, index.toString());
-    } catch (err) {
-      // Fallback for older browsers
-      e.dataTransfer.setData('text', index.toString());
-    }
+    e.dataTransfer.setData('text/plain', String(index));
+    e.dataTransfer.setData('application/x-form-field-index', String(index));
   };
 
-  /**
-   * Allows drop by preventing default and setting effect
-   */
-  const handleDragOver = (e) => {
+  const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
-    // Use state instead of dataTransfer for cross-browser compatibility
-    const isNewField = draggedField !== null && draggedFieldIndex === null;
-    
-    // Set dropEffect with fallback
-    try {
-      e.dataTransfer.dropEffect = isNewField ? DROP_EFFECTS.COPY : DROP_EFFECTS.MOVE;
-    } catch (err) {
-      // Some browsers don't support setting dropEffect
-      console.warn('dropEffect not supported');
-    }
+    e.dataTransfer.dropEffect =
+      draggedField !== null && draggedFieldIndex === null
+        ? DROP_EFFECTS.COPY
+        : DROP_EFFECTS.MOVE;
   };
 
-  /**
-   * Handles field drop - either adds new field or reorders existing
-   */
-  const handleDrop = (e, dropIndex) => {
+  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
     e.preventDefault();
     e.stopPropagation();
-
-    const updatedFields = [...formFields];
-
-    // Use state-based approach for better cross-browser compatibility
-    if (draggedField !== null && draggedFieldIndex === null) {
-      // Add new field
-      const newField = createNewFieldFromTemplate(draggedField);
-      dispatch(addField({ form_fields: newField }));
-      updatedFields.push(newField);
-    } else if (draggedFieldIndex !== null) {
-      // Reorder existing field
-      const startIndex = draggedFieldIndex;
-      const [movedField] = updatedFields.splice(startIndex, 1);
-      updatedFields.splice(dropIndex, 0, movedField);
-    }
-
-    dispatch(setForm({ ...form, form_fields: updatedFields }));
-    
-    // Clean up state
-    setDraggedField(null);
-    setDraggedFieldIndex(null);
-    setTargetIndex(null);
+    dropField(dropIndex);
   };
 
-  /**
-   * Handles drag end - clean up state
-   */
   const handleDragEnd = () => {
-    setDraggedField(null);
-    setDraggedFieldIndex(null);
-    setTargetIndex(null);
+    clearDragState();
   };
 
-  // ============ HELPER FUNCTIONS ============
-
-  /**
-   * Creates a new field instance from a field template
-   */
-  const createNewFieldFromTemplate = (fieldTemplate) => {
-    // Use object destructuring with rest operator safely
-    const fieldData = { ...fieldTemplate };
-    delete fieldData.icon;
-    
-    return {
-      id: nanoid(),
-      ...fieldData,
-      label: 'New ' + fieldTemplate.name + ' field',
-      type: fieldTemplate.type,
-      required: false
-    };
+  const handleFieldClick = (field: { id: string | number }) => {
+    setSelectedFieldId(field.id);
   };
 
-  // ============ EVENT HANDLERS ============
-
-  /**
-   * Handles field selection for editing
-   */
-  const handleFieldClick = (field) => {
-    dispatch(setField(field));
+  const handleDeleteField = (fieldId: string | number) => {
+    deleteField(fieldId);
   };
 
-  /**
-   * Handles field deletion
-   */
-  const handleDeleteField = (fieldId) => {
-    if (selectedField && selectedField.id === fieldId) {
-      dispatch(setField(null));
-    }
+  const handleSelectedFieldChange = (
+    key: string,
+    value: string | boolean | Record<string, unknown>,
+  ) => {
+    if (selectedFieldId === null) return;
+    updateField(selectedFieldId, key, value);
   };
 
-  /**
-   * Handles form name change
-   */
-  const handleFormNameChange = (e) => {
-    dispatch(setForm({ ...form, name: e.target.value }));
+  const handleFormNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    useNewFormStore.setState((current) => ({
+      ...current,
+      form_name: e.target.value,
+    }));
   };
 
-  /**
-   * Handles form description change
-   */
-  const handleFormDescriptionChange = (e) => {
-    dispatch(setForm({ ...form, description: e.target.value }));
+  const handleFormDescriptionChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    useNewFormStore.setState((current) => ({
+      ...current,
+      form_description: e.target.value,
+    }));
   };
-
-  /**
-   * Saves the form (create new or update existing)
-   */
-  const handleSaveForm = function() {
-    const formToSave = { ...form };
-
-    if (context === CONTEXT_TYPES.NEW_FORM) {
-      dispatch(createNewForm(formToSave));
-    } else if (context === CONTEXT_TYPES.EDITING) {
-      console.log('updating', formToSave.form_fields);
-      dispatch(updateForm(formToSave));
-    }
-
-    // Reset form name after save
-    dispatch(setForm({ ...form, name: '' }));
-    handleModalClose();
-  };
-
-  /**
-   * Toggles between build and preview mode
-   */
-  const togglePreview = function(isPreview) {
+  const togglePreview = (isPreview: boolean) => {
     setPreview(isPreview);
   };
 
-  // ============ RENDER ============
-
   return (
     <Box
-      component="div"
+      component='div'
       sx={{
         minWidth: '100%',
         minHeight: '100%',
@@ -230,62 +156,64 @@ export default function BuilderWindow({ handleModalClose }) {
         backgroundColor: 'background.default',
         fontFamily: 'Inter, system-ui, sans-serif',
         WebkitOverflowScrolling: 'touch',
-
       }}
     >
-      <Box 
-        component="main" 
-        sx={{ 
-          paddingTop: '2.6rem', 
-          overflow: 'auto', 
-          maxHeight: '100vh',
-          WebkitOverflowScrolling: 'touch' 
+      <Box
+        component='main'
+        sx={{
+          paddingTop: '1.6rem',
+          overflow: 'auto',
+          maxHeight: '90vh',
+          WebkitOverflowScrolling: 'touch',
         }}
       >
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 2 }}>
+          <BasicButton
+            text='x'
+            color='magenta.main'
+            onClick={handleModalClose}
+          />
+        </Box>
         <Box
-          component="div"
+          component='div'
           sx={{
             padding: '1.5rem',
             borderRadius: '0.5rem',
             boxShadow: '0 1px 3px rgba(0,0,0,0.12)',
-            overflow:'auto'
+            overflow: 'auto',
           }}
         >
-          {/* Top Controls */}
           <Box
-            component="div"
+            component='div'
             sx={{
               display: 'flex',
               gap: '1rem',
               marginBottom: '2rem',
               alignItems: 'center',
               flexDirection: 'column',
-              
             }}
           >
-            {/* Build/Preview Toggle */}
             <ButtonGroup sx={{ display: 'flex', alignItems: 'center' }}>
               <BasicButton
-                text="build"
-                size="large"
-                onClick={function() { togglePreview(false); }}
-                textColor="black"
-                variant={preview ? '' : 'contained'}
+                text='build'
+                size='large'
+                onClick={() => togglePreview(false)}
+                textColor='black'
+                variant={preview ? 'text' : 'contained'}
               />
               <BasicButton
-                text="preview"
-                size="large"
-                onClick={function() { togglePreview(true); }}
+                text='preview'
+                size='large'
+                onClick={() => togglePreview(true)}
                 variant={preview ? 'contained' : 'text'}
                 textColor={preview ? 'black' : 'text.primary'}
               />
             </ButtonGroup>
 
-            {/* Form Name Input */}
             <TextField
-              type="text"
-              placeholder="Insert Form Name"
-              value={form && form.name ? form.name : ''}
+              type='text'
+              placeholder='Insert Form Name'
+             
               onChange={handleFormNameChange}
               sx={{
                 flex: 1,
@@ -295,16 +223,15 @@ export default function BuilderWindow({ handleModalClose }) {
                 '& .MuiInputBase-input::placeholder': {
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap',
-                  overflow: 'hidden'
-                }
+                  overflow: 'hidden',
+                },
               }}
             />
 
-            {/* Form Description Input */}
             <TextField
-              type="text"
-              placeholder="Insert Form description"
-              value={form && form.description ? form.description : ''}
+              type='text'
+              placeholder='Insert Form description'
+              value={form_description}
               onChange={handleFormDescriptionChange}
               sx={{
                 flex: 1,
@@ -314,80 +241,98 @@ export default function BuilderWindow({ handleModalClose }) {
                 '& .MuiInputBase-input::placeholder': {
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap',
-                  overflow: 'hidden'
-                }
+                  overflow: 'hidden',
+                },
               }}
             />
           </Box>
 
-          {/* Main Content Area */}
           {!preview ? (
             <Box
-              component="div"
+              component='div'
               sx={{
                 display: 'grid',
-               
-                gridTemplateColumns: { 
+                gridTemplateColumns: {
                   xs: '1fr',
-                  md: '1fr 2fr 1fr'
+                  md: '1fr 2fr 1fr',
                 },
                 gap: '1.5rem',
-          
-                WebkitOverflowScrolling: 'touch'
+                WebkitOverflowScrolling: 'touch',
               }}
             >
-              {/* Left Column - Field Types */}
-              <FieldTypesColumn 
+              <FieldTypesColumn
                 handleDragStart={handleDragStart}
                 handleDragEnd={handleDragEnd}
               />
 
-              {/* Center Column - Drop Zone */}
               <DropZone
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
                 onDragEnd={handleDragEnd}
                 handleFieldClick={handleFieldClick}
-                draggedField={draggedField}
                 formFields={formFields}
                 selectedField={selectedField}
                 handleDraggedField={handleFieldDragStart}
+                handleDeleteField={handleDeleteField}
               />
 
-              {/* Right Column - Validations */}
-              <ValidationsPanel />
+              <ValidationsPanel
+                selectedField={selectedField}
+                onFieldChange={handleSelectedFieldChange}
+              />
             </Box>
           ) : (
-            <FormView disabledFields={true} />
+            <FormView disabledFields={ true} />
           )}
 
-          {/* Bottom Controls */}
           <Box
-            component="div"
+            component='div'
             sx={{
               display: 'flex',
               gap: '1rem',
               alignItems: 'center',
-              justifyContent: 'flex-end'
+              justifyContent: 'flex-end',
             }}
           >
             <ButtonGroup sx={{ p: 3 }}>
               <BasicButton
-                text="save"
-                size="large"
-                onClick={handleSaveForm}
-                variant="outlined"
+                text='save'
+                size='large'
+               onClick={async () => {
+  try {
+    await handleSaveNewForm(newForm);
+  } catch (error) {
+    setSaveError(error instanceof Error ? error.message : 'Errore');
+  }
+}}
+                variant='outlined'
                 textColor={preview ? 'black' : 'text.primary'}
               />
               <BasicButton
-                text="cancel"
-                variant="outlined"
+                text='cancel'
+                variant='outlined'
                 textColor={preview ? 'black' : 'text.primary'}
-                size="large"
+                size='large'
                 onClick={handleModalClose}
               />
             </ButtonGroup>
           </Box>
+            {SaveError && (
+              <Box
+                component='div'
+                sx={{
+                  color: 'error.main',
+                  fontSize: '1rem',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  
+                  
+                }}
+              >
+                {SaveError}
+              </Box>
+            )}
         </Box>
       </Box>
     </Box>
