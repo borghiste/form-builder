@@ -83,6 +83,39 @@ describe('useFormListStore', () => {
     expect(useFormListStore.getState().forms).toEqual([createdForm]);
   });
 
+  it('surfaces backend validation errors when form creation fails', async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({ ok: true, status: 204 })
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 422,
+        json: () =>
+          Promise.resolve({
+            message: 'The given data was invalid.',
+            errors: {
+              name: ['The name field is required.'],
+              'form_fields.0.label': [
+                'The form_fields.0.label field is required.',
+              ],
+            },
+          }),
+      });
+
+    global.fetch = fetchMock;
+
+    await expect(
+      useFormListStore.getState().insertNewForm({
+        name: '',
+        description: null,
+        form_fields: [{ label: '', type: 'text' }],
+      }),
+    ).rejects.toThrow(
+      'name: The name field is required. form_fields.0.label: The form_fields.0.label field is required.',
+    );
+    expect(useFormListStore.getState().forms).toEqual([]);
+  });
+
   it('fetches the csrf cookie and sends the xsrf token when deleting a form', async () => {
     const fetchMock = vi
       .fn()

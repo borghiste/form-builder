@@ -7,6 +7,7 @@ import { useModalStore } from './useModalStore';
 import { useThemeStore } from './useThemeStore';
 import { useNewFormStore } from './useNewFormStore';
 import { useFormBuilderStore } from './useFormBuilderStore';
+import {useEntriesStore} from '../stores/useEntriesStore';
 
 export type { BuilderField, FieldTemplate } from './useFormBuilderStore';
 
@@ -21,4 +22,5 @@ export {
   useThemeStore,
   useNewFormStore,
   useFormBuilderStore,
+  useEntriesStore,
 };

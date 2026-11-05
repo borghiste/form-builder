@@ -1,6 +1,6 @@
-# Form Builder
+# PickForm 
 
-**Form Builder** is a full-stack web application that allows you to create, edit, and fill dynamic forms. The project provides an intuitive interface to add custom fields, configure options, and handle validations both on the client and server side via REST APIs.  
+**PickForm** is a full-stack web application that allows you to create, edit, and fill dynamic forms. The project provides an intuitive interface to add custom fields, configure options, and handle validations both on the client and server side via REST APIs.  
 
 ---
 

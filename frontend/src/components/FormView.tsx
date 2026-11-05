@@ -114,8 +114,9 @@ export default function FormView({
   entries?: any;
 }) {
   const { selectedForm } = useFormListStore();
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const formFields = useFormBuilderStore((state) => state.formFields);
-  const { form_name, setForm, form_description } = useNewFormStore();
+  const { form_name, form_description } = useNewFormStore();
   const userName =
     useAuthStore((state) => state.user as { name?: string } | null)?.name ?? '';
   const [entryData, setEntryData] = useState({ form_fields: entries || {} });
@@ -134,8 +135,9 @@ export default function FormView({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('submit entry', { entryData, form_id: selectedForm?.id });
-  };
+    // try {}
+    
+  }
 
   const handleReset = () => {
     setEntryData({ form_fields: entries || {} });
@@ -168,20 +170,20 @@ export default function FormView({
           </Typography>
           {!disabledFields && (
             <BasicButton
-              color='magenta.main'
+              color='magenta.dark'
               text='x'
               size='small'
               onClick={handleModalClose}
             />
           )}
         </Box>
-        <Typography>
+        <Typography sx={{ mb: 2 }} variant='body1' color='text.secondary'>
           {selectedForm?.description || form_description ? form_description  : 'No description provided.'}
         </Typography>
         <Box component='form' onSubmit={handleSubmit}>
           <Grid
             container
-            spacing={1}
+            spacing={2}
             sx={{ display: 'flex', flexDirection: 'column' }}
           >
             {selectedForm?.form_fields?.map((field: any) => {
@@ -226,7 +228,7 @@ export default function FormView({
                 mt: 2,
                 mb: 2,
                 display: 'flex',
-                justifyContent: 'space-between',
+                justifyContent: 'center',
               }}
             >
               <BasicButton

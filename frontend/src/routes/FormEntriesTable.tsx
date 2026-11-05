@@ -1,13 +1,14 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 //COMPONENTS
 import ModalWindow from '../components/ModalWindow';
 
 //MUI
 
-//REDUX
+//STORE
+import {useEntriesStore, useModalStore} from '../stores/index';
 
-import { useDispatch, useSelector } from 'react-redux';
-import { useModalStore } from '../stores/index';
+
+
 
 import {
   Table,
@@ -22,34 +23,33 @@ import {
 import BasicButton from '../components/UI/BasicButton';
 
 export default function FormEntriesTable() {
-  const dispatch = useDispatch();
-  const entries = useSelector(selectEntries);
-  const { modalOpen, setModalOpen, setModalMode } = useModalStore();
+  const { entries, error, getEntries } = useEntriesStore();
+  const { setModalOpen, setModalMode } = useModalStore();
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
   useEffect(() => {
-    dispatch(fetchFormEntries());
-  }, entries);
 
-  const handleModalClose = () => {
-    setModalOpen(false);
-  };
-  const viewSubmission = (entry) => {
-    dispatch(setModalOpen(true));
+    try{
 
-    dispatch(setMode('submission'));
-    dispatch(setEntryObj(entry));
+      getEntries();
+    } catch (e) {
+      setErrorMessage('Failed to retrieve entries');
+      console.log(e)
+    }
 
+  }, [getEntries]);
+
+  const viewSubmission = () => {
+    setModalMode('submission');
     setModalOpen(true);
   };
 
+  if (error) return <div role="alert">{error}</div>;
   if (entries.length === 0) return <div>No entries</div>;
 
   return (
     <>
-      <ModalWindow
-        modalIsOpen={modalOpen}
-        handleModalClose={handleModalClose}
-      />
+      <ModalWindow message="" />
       <Container sx={{ minHeight: '100vh', mt: 4 }}>
         <TableContainer
           component={Paper}
@@ -79,12 +79,12 @@ export default function FormEntriesTable() {
                     <TableCell>{entry.id}</TableCell>
                     <TableCell>{submitDate}</TableCell>
                     <TableCell>{updatedDate}</TableCell>
-                    <TableCell>{entry.data.name}</TableCell>
-                    <TableCell>{entry.data.role}</TableCell>
+                    <TableCell>{String(entry.data.name ?? '')}</TableCell>
+                    <TableCell>{String(entry.data.role ?? '')}</TableCell>
                     <TableCell>
                       <BasicButton
                         text={'view'}
-                        onClick={() => viewSubmission(entry)}
+                        onClick={viewSubmission}
                       />
                     </TableCell>
                   </TableRow>

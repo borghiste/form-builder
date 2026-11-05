@@ -19,7 +19,7 @@ import {
 
 //utils
 import handleModalClose from '../../utils/handleModalClose';
-import { handleSaveNewForm } from '../../utilities/handleSaveNewForm';
+import { handleSaveNewForm } from '../../utils/handleSaveNewForm';
 
 const DROP_EFFECTS = {
   COPY: 'copy',

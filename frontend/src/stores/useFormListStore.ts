@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 
+// Define the structure of a form field
 type FormFieldRecord = {
   id: number;
   label: string;
@@ -8,6 +9,7 @@ type FormFieldRecord = {
   order?: number;
 };
 
+// Define the structure of a form record
 export type FormRecord = {
   id: number;
   name: string;
@@ -162,7 +164,22 @@ export const useFormListStore = create<FormListState>((set, get) => ({
     );
 
     if (!response.ok) {
-      throw new Error(`Failed to insert new form (${response.status})`);
+      const errorResponse = (await response.json().catch(() => null)) as {
+        message?: unknown;
+        errors?: Record<string, string[]>;
+      } | null;
+      const validationErrors = Object.entries(errorResponse?.errors ?? {})
+        .flatMap(([field, messages]) =>
+          messages.map((message) => `${field}: ${message}`),
+        )
+        .join(' ');
+
+      throw new Error(
+        validationErrors ||
+          (typeof errorResponse?.message === 'string'
+            ? errorResponse.message
+            : `Failed to insert new form (${response.status})`),
+      );
     }
 
     const { form: createdForm } = (await response.json()) as {

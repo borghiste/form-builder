@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\FormEntry;
+use App\Models\FormSubmission;
 
 class FormEntriesController extends Controller
 {
     // Get entries list from database
     public function getFormsEntries()
     {
-        $entries = FormEntry::all();
+        $entries = FormSubmission::all();
 
       
        

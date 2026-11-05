@@ -12,7 +12,7 @@ export default function NotFound() {
     <Box
       sx={{
         minHeight: '100vh',
-        bgcolor: 'grey.100',
+        
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
