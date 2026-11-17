@@ -14,12 +14,13 @@ import {
   type FieldTemplate,
   useFormBuilderStore,
   useFormListStore,
-  useNewFormStore,
+
 } from '../../stores/index';
 
 //utils
 import handleModalClose from '../../utils/handleModalClose';
-import { handleSaveNewForm } from '../../utils/handleSaveNewForm';
+import handleSaveForm from '../../utils/handleSaveForm';
+
 
 const DROP_EFFECTS = {
   COPY: 'copy',
@@ -27,51 +28,34 @@ const DROP_EFFECTS = {
 } as const;
 
 export default function BuilderWindow() {
-  // new form state
-  const {form_name, setForm, form_description} = useNewFormStore();
-  const {formFields}= useFormBuilderStore();
-  const newForm = {
-    name: form_name,
-    description: form_description,
-    form_fields: (formFields ?? []).map(({ label, type, required }) => ({
-      label,
-      type,
-      required,
-    })),
-  };
-
-  const { selectedForm } = useFormListStore();
+  const formName = useFormBuilderStore((state) => state.formName);
+  const formDescription = useFormBuilderStore((state) => state.formDescription);
+  const formFields = useFormBuilderStore((state) => state.formFields);
+  const selectedForm = useFormListStore((state) => state.selectedForm);
   const [SaveError, setSaveError] = useState<string | null>(null);
   
   const selectedFieldId = useFormBuilderStore(
     (state) => state.selectedFieldId,
   );
-  const draggedField = useFormBuilderStore((state) => state.draggedField);
-  const draggedFieldIndex = useFormBuilderStore(
-    (state) => state.draggedFieldIndex,
-  );
-  const initializeFormFields = useFormBuilderStore(
-    (state) => state.initializeFormFields,
-  );
+
+  const initializeForm = useFormBuilderStore((state) => state.initializeForm);
   const startTemplateDrag = useFormBuilderStore(
     (state) => state.startTemplateDrag,
   );
-  const startFieldDrag = useFormBuilderStore((state) => state.startFieldDrag);
-  const dropField = useFormBuilderStore((state) => state.dropField);
+
   const clearDragState = useFormBuilderStore((state) => state.clearDragState);
-  const setSelectedFieldId = useFormBuilderStore(
-    (state) => state.setSelectedFieldId,
-  );
+
+
   const updateField = useFormBuilderStore((state) => state.updateField);
-  const deleteField = useFormBuilderStore((state) => state.deleteField);
+ 
   const [preview, setPreview] = useState(false);
 
   useEffect(() => {
-    initializeFormFields(selectedForm?.form_fields ?? []);
-  }, [initializeFormFields, selectedForm]);
+    initializeForm(selectedForm);
+  }, [initializeForm, selectedForm]);
 
   const selectedField = useMemo(
-    () => formFields.find((field) => field.id === selectedFieldId) ?? null,
+    () => formFields?.find((field) => field.id === selectedFieldId) ?? null,
     [formFields, selectedFieldId],
   );
 
@@ -85,64 +69,34 @@ export default function BuilderWindow() {
     e.dataTransfer.setData('application/json', JSON.stringify(field));
   };
 
-  const handleFieldDragStart = (e: React.DragEvent, index: number) => {
-    startFieldDrag(index);
-    e.dataTransfer.effectAllowed = DROP_EFFECTS.MOVE;
-    e.dataTransfer.setData('text/plain', String(index));
-    e.dataTransfer.setData('application/x-form-field-index', String(index));
-  };
 
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    e.dataTransfer.dropEffect =
-      draggedField !== null && draggedFieldIndex === null
-        ? DROP_EFFECTS.COPY
-        : DROP_EFFECTS.MOVE;
-  };
 
-  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
-    e.preventDefault();
-    e.stopPropagation();
-    dropField(dropIndex);
-  };
+
+
+
 
   const handleDragEnd = () => {
     clearDragState();
   };
 
-  const handleFieldClick = (field: { id: string | number }) => {
-    setSelectedFieldId(field.id);
-  };
 
-  const handleDeleteField = (fieldId: string | number) => {
-    deleteField(fieldId);
-  };
 
-  const handleSelectedFieldChange = (
-    key: string,
-    value: string | boolean | Record<string, unknown>,
-  ) => {
-    if (selectedFieldId === null) return;
-    updateField(selectedFieldId, key, value);
-  };
+
+
 
   const handleFormNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    useNewFormStore.setState((current) => ({
-      ...current,
-      form_name: e.target.value,
-    }));
+
+    useFormBuilderStore.getState().setFormName(e.target.value)
   };
 
   const handleFormDescriptionChange = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    useNewFormStore.setState((current) => ({
-      ...current,
-      form_description: e.target.value,
-    }));
-  };
+    useFormBuilderStore.getState().setFormDescription(e.target.value)
+    };
+  
   const togglePreview = (isPreview: boolean) => {
+
     setPreview(isPreview);
   };
 
@@ -213,7 +167,7 @@ export default function BuilderWindow() {
             <TextField
               type='text'
               placeholder='Insert Form Name'
-             
+              value={formName}
               onChange={handleFormNameChange}
               sx={{
                 flex: 1,
@@ -231,7 +185,7 @@ export default function BuilderWindow() {
             <TextField
               type='text'
               placeholder='Insert Form description'
-              value={form_description}
+              value={formDescription}
               onChange={handleFormDescriptionChange}
               sx={{
                 flex: 1,
@@ -261,25 +215,11 @@ export default function BuilderWindow() {
               }}
             >
               <FieldTypesColumn
-                handleDragStart={handleDragStart}
-                handleDragEnd={handleDragEnd}
-              />
+                handleDragStart={handleDragStart} />
 
-              <DropZone
-                onDragOver={handleDragOver}
-                onDrop={handleDrop}
-                onDragEnd={handleDragEnd}
-                handleFieldClick={handleFieldClick}
-                formFields={formFields}
-                selectedField={selectedField}
-                handleDraggedField={handleFieldDragStart}
-                handleDeleteField={handleDeleteField}
-              />
+              <DropZone />
 
-              <ValidationsPanel
-                selectedField={selectedField}
-                onFieldChange={handleSelectedFieldChange}
-              />
+              <ValidationsPanel/>
             </Box>
           ) : (
             <FormView disabledFields={ true} />
@@ -298,16 +238,11 @@ export default function BuilderWindow() {
               <BasicButton
                 text='save'
                 size='large'
-               onClick={async () => {
-  try {
-    await handleSaveNewForm(newForm);
-  } catch (error) {
-    setSaveError(error instanceof Error ? error.message : 'Errore');
-  }
-}}
+                onClick={() => {
+                  void handleSaveForm({ setSaveError });
+                }}
                 variant='outlined'
-                textColor={preview ? 'black' : 'text.primary'}
-              />
+                textColor={preview ? 'black' : 'text.primary'}/>
               <BasicButton
                 text='cancel'
                 variant='outlined'
@@ -338,3 +273,4 @@ export default function BuilderWindow() {
     </Box>
   );
 }
+

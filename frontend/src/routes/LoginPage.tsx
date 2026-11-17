@@ -42,8 +42,9 @@ export default function LoginPage() {
 
       navigate(`/${response.organization.subdomain}/forms`);
     } catch (error) {
-      const message = error instanceof Error && 'Login failed';
-      setHelperText(message);
+      
+      setHelperText(error ? error.message || 'Login failed' : 'Login failed');
+      console.error('Login failed:', error);
     }
   }
 

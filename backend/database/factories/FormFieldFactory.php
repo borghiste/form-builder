@@ -12,7 +12,7 @@ class FormFieldFactory extends Factory
 
     public function definition(): array
     {
-        $formId = Form::query()->inRandomOrder()->value('id');
+        $formId = Form::inRandomOrder()->value('id');
 
         if (! $formId) {
             $formId = Form::factory()->create()->id;
@@ -26,4 +26,3 @@ class FormFieldFactory extends Factory
         ];
     }
 }
-

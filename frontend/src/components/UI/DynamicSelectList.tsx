@@ -40,7 +40,7 @@ export default function DynamicSelectList() {
 
         {/* Input per aggiungere nuove opzioni */}
         <div>
-          <label>Aggiungi una nuova opzione</label>
+          <label htmlFor='new option'>add new option</label>
           <div>
             <input
               type='text'
@@ -92,7 +92,7 @@ export default function DynamicSelectList() {
 
         {/* Select dropdown */}
         <div className='mb-4'>
-          <label className='block text-sm font-medium text-gray-700 mb-2'>
+          <label htmlFor='selected-option' className='block text-sm font-medium text-gray-700 mb-2'>
             Seleziona un'opzione
           </label>
           <select

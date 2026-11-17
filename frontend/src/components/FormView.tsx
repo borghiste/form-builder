@@ -3,10 +3,11 @@ import React, { useState } from 'react';
 import BasicButton from './UI/BasicButton';
 //STORE
 
-import { useAuthStore, useFormListStore, useNewFormStore, useFormBuilderStore } from '../stores/index';
+import { useAuthStore, useFormListStore, useFormBuilderStore } from '../stores/index';
 
 //UTILS
 import handleModalClose from '../utils/handleModalClose';
+
 
 import {
   TextField,
@@ -116,7 +117,8 @@ export default function FormView({
   const { selectedForm } = useFormListStore();
   const [submitError, setSubmitError] = useState<string | null>(null);
   const formFields = useFormBuilderStore((state) => state.formFields);
-  const { form_name, form_description } = useNewFormStore();
+
+  
   const userName =
     useAuthStore((state) => state.user as { name?: string } | null)?.name ?? '';
   const [entryData, setEntryData] = useState({ form_fields: entries || {} });
@@ -135,7 +137,7 @@ export default function FormView({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // try {}
+  
     
   }
 
@@ -166,7 +168,7 @@ export default function FormView({
         >
           
           <Typography variant='h5' component='h1' gutterBottom>
-          { selectedForm?.name ? selectedForm.name : form_name}
+          { selectedForm?.name && selectedForm.name }
           </Typography>
           {!disabledFields && (
             <BasicButton
@@ -178,7 +180,7 @@ export default function FormView({
           )}
         </Box>
         <Typography sx={{ mb: 2 }} variant='body1' color='text.secondary'>
-          {selectedForm?.description || form_description ? form_description  : 'No description provided.'}
+          {selectedForm?.description ? selectedForm.description  : 'No description provided.'}
         </Typography>
         <Box component='form' onSubmit={handleSubmit}>
           <Grid
@@ -186,29 +188,13 @@ export default function FormView({
             spacing={2}
             sx={{ display: 'flex', flexDirection: 'column' }}
           >
-            {selectedForm?.form_fields?.map((field: any) => {
-              const Component =
-                renderedComponent[field.type] ?? renderedComponent.text;
-              return (
-                <Grid key={String(field.id)}>
-                  <Component
-                    label={field.label}
-                    name={field.name || field.id}
-                    value={entryData.form_fields[field.name || field.id] || ''}
-                    onChange={handleChange}
-                    disabled={disabledFields}
-                    required={field.required}
-                    options={field.options}
-                    fullWidth
-                  />
-                </Grid>
-              );
-            })}
+          
             {formFields?.map((field: any) => {
               const Component =
                 renderedComponent[field.type] ?? renderedComponent.text;
               return (
                 <Grid key={String(field.id)}>
+                  
                   <Component
                     label={field.label}
                     name={field.name || field.id}

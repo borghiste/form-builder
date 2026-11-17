@@ -1,13 +1,14 @@
 import '@testing-library/jest-dom';
-import { fireEvent, render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi, } from 'vitest';
+
 
 //COMPONENTS
 import BuilderWindow from '../../components/BuilderWindow/BuilderWindow';
 import FormView from '../../components/FormView';
 import { useFormListStore } from '../../stores/useFormListStore';
 import { useModalStore } from '../../stores/useModalStore';
-import { useNewFormStore } from '../../stores/useNewFormStore';
+import { useFormBuilderStore } from '../../stores/useFormBuilderStore';
 
 vi.mock('../../components/FormView', () => ({
   default: () => <div data-testid='form-preview'>Form preview</div>,
@@ -16,7 +17,7 @@ vi.mock('../../components/FormView', () => ({
 describe('BuilderWindow', () => {
   beforeEach(() => {
     useFormListStore.setState({ selectedForm: null });
-    useNewFormStore.setState({ form_name: '', form_description: '' });
+    useFormBuilderStore.getState().initializeForm(null);
     useModalStore.setState({ modalOpen: false, modalMode: null });
   });
 
@@ -89,11 +90,11 @@ describe('BuilderWindow', () => {
       target: { value: 'This is a test form' },
     });
 
-    expect(useNewFormStore.getState().form_name).toBe('My Form');
-    expect(useNewFormStore.getState().form_description).toBe(
+    expect(useFormBuilderStore.getState().formName).toBe('My Form');
+    expect(useFormBuilderStore.getState().formDescription).toBe(
       'This is a test form',
     );
-  })
+  });
 
   it('successfully updates the form name and description in preview mode', () => {
 
@@ -110,16 +111,33 @@ describe('BuilderWindow', () => {
 
     
   })
-  it('successfully send and creates a new form', () => {
 
- const mockInsert = vi.fn().mockResolvedValue(undefined);
-useFormListStore.setState({ insertNewForm: mockInsert });
+  it('successfully sends and creates a new form', async () => {
+  const mockInsert = vi.fn().mockResolvedValue(undefined);
+  useFormListStore.setState({ insertForm: mockInsert });
+  useModalStore.setState({ modalMode: 'newForm' });
 
-render(<BuilderWindow />);
-fireEvent.click(screen.getByRole('button', { name: 'save' }));
+  render(<BuilderWindow />);
+  fireEvent.change(screen.getByPlaceholderText('Insert Form Name'), {
+    target: { value: 'New form' },
+  });
 
-expect(mockInsert).toHaveBeenCalled();
+  const dataTransfer = {
+    effectAllowed: '',
+    dropEffect: '',
+    setData: vi.fn(),
+  };
 
-  })
+  fireEvent.dragStart(
+    screen.getByText('text').closest('[draggable="true"]')!,
+    { dataTransfer },
+  );
+  fireEvent.drop(screen.getByTestId('fields-list'), { dataTransfer });
 
+  fireEvent.click(screen.getByRole('button', { name: 'save' }));
+
+  await waitFor(() => {
+    expect(mockInsert).toHaveBeenCalled();
+  });
 });
+})

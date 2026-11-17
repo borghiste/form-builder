@@ -23,7 +23,7 @@ describe('useFormBuilderStore', () => {
 
     const state = useFormBuilderStore.getState();
     expect(state.formFields).toHaveLength(1);
-    expect(state.formFields[0]).toMatchObject({
+    expect(state.formFields?.[0]).toMatchObject({
       label: 'New text field',
       type: 'text',
       required: false,

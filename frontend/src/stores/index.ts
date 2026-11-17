@@ -5,7 +5,6 @@ import { useInvitationsStore } from './useInvitationsStore';
 import { useInviteFormStore } from './useInviteFormStore';
 import { useModalStore } from './useModalStore';
 import { useThemeStore } from './useThemeStore';
-import { useNewFormStore } from './useNewFormStore';
 import { useFormBuilderStore } from './useFormBuilderStore';
 import {useEntriesStore} from '../stores/useEntriesStore';
 
@@ -20,7 +19,6 @@ export {
   useInviteFormStore,
   useModalStore,
   useThemeStore,
-  useNewFormStore,
   useFormBuilderStore,
   useEntriesStore,
 };

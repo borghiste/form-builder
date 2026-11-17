@@ -8,8 +8,10 @@ use App\Models\FormField;
 class FormListController extends Controller
 {
     // Get forms list from database
-    public function getFormList(){
-        $forms = Form::with('formFields')->get();
+    public function getFormList(Request $request){
+        $forms = Form::with('formFields')
+            ->where('organization_id', $request->user()->organization_id)
+            ->get();
         return response()->json($forms);
     }
 

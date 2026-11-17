@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useFormListStore } from '../../stores/useFormListStore';
 
 const BACKEND = 'http://localhost';
@@ -23,8 +23,6 @@ afterEach(() => {
   vi.restoreAllMocks();
   vi.unstubAllEnvs();
 });
-
-import { afterEach } from 'vitest';
 
 describe('useFormListStore', () => {
   it('creates a form with the CSRF token and stores the returned form record', async () => {
@@ -51,7 +49,7 @@ describe('useFormListStore', () => {
 
     global.fetch = fetchMock;
 
-    await useFormListStore.getState().insertNewForm({
+    await useFormListStore.getState().insertForm({
       name: createdForm.name,
       description: createdForm.description,
       form_fields: [{ label: 'Email', type: 'email', required: true }],
@@ -105,7 +103,7 @@ describe('useFormListStore', () => {
     global.fetch = fetchMock;
 
     await expect(
-      useFormListStore.getState().insertNewForm({
+      useFormListStore.getState().insertForm({
         name: '',
         description: null,
         form_fields: [{ label: '', type: 'text' }],
@@ -114,6 +112,64 @@ describe('useFormListStore', () => {
       'name: The name field is required. form_fields.0.label: The form_fields.0.label field is required.',
     );
     expect(useFormListStore.getState().forms).toEqual([]);
+  });
+
+  it('updates a form and replaces its stored record with the server response', async () => {
+    const updatedForm = {
+      id: 7,
+      name: 'Updated contact form',
+      description: null,
+      created_at: '2025-01-01T00:00:00.000000Z',
+      updated_at: '2025-01-02T00:00:00.000000Z',
+      form_fields: [
+        { id: 9, label: 'Phone', type: 'tel', required: false },
+      ],
+    };
+    useFormListStore.setState({
+      forms: [
+        {
+          ...updatedForm,
+          name: 'Old contact form',
+          form_fields: [],
+        },
+      ],
+      selectedForm: {
+        ...updatedForm,
+        name: 'Old contact form',
+        form_fields: [],
+      },
+    });
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({ ok: true, status: 204 })
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: () => Promise.resolve({ form: updatedForm }),
+      });
+    global.fetch = fetchMock;
+
+    await useFormListStore.getState().updateForm({
+      id: 7,
+      name: updatedForm.name,
+      description: null,
+      form_fields: [{ label: 'Phone', type: 'tel', required: false }],
+    });
+
+    expect(fetchMock).toHaveBeenNthCalledWith(
+      2,
+      `${BACKEND}/api/forms/7`,
+      expect.objectContaining({
+        method: 'PUT',
+        body: JSON.stringify({
+          name: updatedForm.name,
+          description: null,
+          form_fields: [{ label: 'Phone', type: 'tel', required: false }],
+        }),
+      }),
+    );
+    expect(useFormListStore.getState().forms).toEqual([updatedForm]);
+    expect(useFormListStore.getState().selectedForm).toEqual(updatedForm);
   });
 
   it('fetches the csrf cookie and sends the xsrf token when deleting a form', async () => {
@@ -148,5 +204,31 @@ describe('useFormListStore', () => {
         }),
       }),
     );
+  });
+
+  it('should fetch the form list from the backend and update the store', async () => {
+    const mockForms = [{
+      id: 1,
+      name: 'Form 1',
+    }]
+
+    const fetchMock = vi.fn().mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockForms,
+    });
+
+    vi.stubGlobal('fetch', fetchMock);
+
+    await useFormListStore.getState().getForms();
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      `${BACKEND}/api/forms`,
+      expect.objectContaining({
+        method: 'GET',
+        credentials: 'include',
+      })
+    );
+
+    expect(useFormListStore.getState().forms).toEqual(mockForms);
   });
 });

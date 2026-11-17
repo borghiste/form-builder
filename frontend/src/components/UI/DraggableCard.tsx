@@ -16,9 +16,10 @@ import {
   TextareaAutosize,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useFormBuilderStore } from '../../stores';
 
 type Field = {
-  id: string;
+  id: string | number;
   label: string;
   type: string;
   required?: boolean;
@@ -27,9 +28,9 @@ type Field = {
 
 type DraggableCardProps = {
   field: Field;
-  selectedField: { id: string } | null;
+  selectedField: { id: string | number } | null;
   handleFieldClick: (field: Field) => void;
-  handleDeleteField: (id: string) => void;
+  handleDeleteField: (id: string | number) => void;
   onDragStart?: React.DragEventHandler<HTMLDivElement>;
   onDragOver?: React.DragEventHandler<HTMLDivElement>;
   handleDrop?: (e: React.DragEvent<HTMLDivElement>, index: number) => void;
@@ -38,13 +39,22 @@ type DraggableCardProps = {
 
 export default function DraggableCard({
   field,
+ 
   selectedField,
   handleFieldClick,
-  handleDeleteField,
+  
   onDragStart,
-  onDragOver,
-  handleDrop,
+
 }: DraggableCardProps) {
+ const selectedFieldId = useFormBuilderStore((s) => s.selectedFieldId)
+ const deleteField = useFormBuilderStore((s) => s.deleteField);
+
+const  handleDeleteField = () => {
+  deleteField(selectedFieldId)
+
+ 
+}
+
   return (
     <Card
       draggable

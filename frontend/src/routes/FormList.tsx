@@ -22,23 +22,31 @@ import ModalWindow from '../components/ModalWindow';
 // STORE
 
 import { useModalStore } from '../stores/useModalStore';
-import { useAuthStore, useFormListStore } from '../stores/index';
+import { useAuthStore, useFormBuilderStore, useFormListStore } from '../stores/index';
 
 // utils
 
 export default function FormsList() {
   const { setModalOpen, setModalMode } = useModalStore();
 
-  const { getForms, forms, getFormById, deleteForm, setSelectedForm } =
+  const { getForms, forms, getFormById, deleteForm, setSelectedForm} =
     useFormListStore();
+    const user = useAuthStore.getState().user
+    console.log('user',user)
 
-  const { user } = useAuthStore();
+ 
+
+    
+
+  
 
   useEffect(() => {
+    
     getForms();
   }, [getForms]);
 
   const handleNewFormClick = () => {
+    useFormBuilderStore.getState().initializeForm(null);
     setModalMode('newForm');
     setSelectedForm(null);
 
@@ -46,10 +54,14 @@ export default function FormsList() {
   };
 
   const handleViewForm = async (formId: number) => {
-    await getFormById(formId);
+    const selectedForm = await getFormById(formId);
+
+    useFormBuilderStore.getState().initializeForm(selectedForm)
+    console.log(selectedForm)
 
     setModalOpen(true);
     setModalMode('view');
+    console.log('form', selectedForm)
   };
 
   function handleInviteClick() {
@@ -58,9 +70,9 @@ export default function FormsList() {
   }
 
   const handleEditForm = async (formId: number) => {
-    await getFormById(formId);
+    const selectedForm = await getFormById(formId);
+    useFormBuilderStore.getState().initializeForm(selectedForm);
     setModalMode('editing');
-
     setModalOpen(true);
   };
 
@@ -70,7 +82,7 @@ export default function FormsList() {
 
   return (
     <>
-      <ModalWindow />
+      <ModalWindow/>
 
       <Container sx={{ minHeight: '100vh', mt: 4 }}>
         <TableContainer
@@ -112,12 +124,10 @@ export default function FormsList() {
             </TableHead>
             <TableBody>
               {forms?.map((form) => {
-                const createdDate = new Date(form.created_at)
-                  .toISOString()
-                  .slice(0, 10);
-                const updatedDate = new Date(form.updated_at)
-                  .toISOString()
-                  .slice(0, 10);
+                const createdDate = form.created_at.slice(0, 10)
+                
+                const updatedDate = form.updated_at.slice(0, 10)
+                 
 
                 return (
                   <TableRow key={form.id} hover>

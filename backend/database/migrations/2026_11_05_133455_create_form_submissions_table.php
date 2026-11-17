@@ -14,11 +14,11 @@ return new class extends Migration
             $table->json('data');
             $table->string('submitter_ip')->nullable();
             $table->string('user_agent')->nullable();
-            //$table->enum('status', ['new', 'reviewed', 'archived'])->default('new');
+            
             
             $table->timestamps();
 
-            //$table->index(['form_id', 'status']);
+            
             $table->index('created_at');
         });
     }

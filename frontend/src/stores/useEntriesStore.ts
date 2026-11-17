@@ -14,7 +14,7 @@ type Entry = {
 type EntriesState = {
 entries : Entry[];
 getEntries : () => Promise<void>;
-// insertNewEntry : (formId: number, newEntry: dataEntry[]) => Promise<void>;
+ insertNewEntry: (formId: number, newEntry: dataEntry[]) => Promise<void>;
 }
 
 export const useEntriesStore = create<EntriesState>((set, get) => ({
@@ -39,5 +39,23 @@ getEntries: async () => {
 
 },
 
+insertNewEntry: async (newEntry) => {
+    const response = await fetch (`${import.meta.env.VITE_BACKEND_URL}/entries/submit`,
+        {method: 'POST',
+            credentials: 'include',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newEntry),
+        }
+    );
+
+    if(!response.ok) {
+        throw new Error('Unable to submit entry');
+    
+    }
+    const data = await response.json();
+}
 
 }))

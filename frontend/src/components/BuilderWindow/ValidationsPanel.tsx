@@ -1,5 +1,5 @@
-import React from 'react';
 
+import React from 'react';
 import {
   Box,
   FormControl,
@@ -11,6 +11,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { useFormBuilderStore } from '../../stores';
 
 type BuilderField = {
   id: string;
@@ -23,18 +24,22 @@ type BuilderField = {
   [key: string]: unknown;
 };
 
-type ValidationPanelProps = {
-  selectedField: BuilderField | null;
-  onFieldChange: (
+ 
+
+export default function ValidationPanel() {
+
+  // state
+const { formFields, selectedFieldId } = useFormBuilderStore.getState();
+const selectedField = formFields.find((f) => f.id === selectedFieldId) ?? null;
+
+    const handleSelectedFieldChange = (
     key: string,
     value: string | boolean | Record<string, unknown>,
-  ) => void;
-};
+  ) => {
+    if (selectedFieldId === null) return;
+    updateField(selectedFieldId, key, value);
+  };
 
-export default function ValidationPanel({
-  selectedField,
-  onFieldChange,
-}: ValidationPanelProps) {
   if (!selectedField) {
     return (
       <Typography textAlign='center' mt={4}>
@@ -57,7 +62,7 @@ export default function ValidationPanel({
           <Select
             labelId='field-type-label'
             value={fieldType}
-            onChange={(e) => onFieldChange('type', e.target.value)}
+            onChange={(e) => handleSelectedFieldChange('type', e.target.value)}
           >
             <MenuItem value='text'>Text</MenuItem>
             <MenuItem value='textarea'>Text area</MenuItem>
