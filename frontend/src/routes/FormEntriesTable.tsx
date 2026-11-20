@@ -58,12 +58,12 @@ export default function FormEntriesTable() {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>ID</TableCell>
-                <TableCell>Submit date</TableCell>
-                <TableCell>Update date</TableCell>
-                <TableCell>name</TableCell>
-                <TableCell>role</TableCell>
-                <TableCell>submission</TableCell>
+                
+                <TableCell>Form name</TableCell>
+                <TableCell>Form created by</TableCell>
+                <TableCell>Form submitted by</TableCell>
+                <TableCell>Submit date</TableCell> 
+                <TableCell>actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -71,21 +71,27 @@ export default function FormEntriesTable() {
                 const submitDate = new Date(entry.created_at)
                   .toISOString()
                   .slice(0, 10);
-                const updatedDate = new Date(entry.updated_at)
-                  .toISOString()
-                  .slice(0, 10);
-                return (
-                  <TableRow key={entry.id}>
-                    <TableCell>{entry.id}</TableCell>
+                  return (
+                    // Submit date	
+                    // submitted by role	action
+                    <TableRow key={entry.id}>
+                    {/* // Form name	 */}
+                    <TableCell>{entry.form.name}</TableCell>
+                    {/* // Form created by	 */}
+                    <TableCell>{entry.form.creator?.name ?? ''}</TableCell>
+                    {/* // Form submitted by	 */}
+                    <TableCell>{`${entry.submitted_by} - ${entry.submitted_by_role}` }</TableCell>
                     <TableCell>{submitDate}</TableCell>
-                    <TableCell>{updatedDate}</TableCell>
-                    <TableCell>{String(entry.data.name ?? '')}</TableCell>
-                    <TableCell>{String(entry.data.role ?? '')}</TableCell>
+                  
                     <TableCell>
                       <BasicButton
                         text={'view'}
                         onClick={viewSubmission}
                       />
+
+                      <BasicButton
+                      text='delete'
+                      color='magenta.dark'/>
                     </TableCell>
                   </TableRow>
                 );

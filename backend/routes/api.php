@@ -51,7 +51,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{formId}', [FormListController::class, 'deleteForm']);
     });
 
-    // Form entries
+    // Form submissions
     Route::get('entries', [FormEntriesController::class, 'getFormsEntries']);
     Route::post('entries/submit', [FormEntryController::class, 'submitFormEntry']);
 });

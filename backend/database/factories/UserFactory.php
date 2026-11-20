@@ -29,7 +29,7 @@ class UserFactory extends Factory
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'organization_id' => Organization::factory(),
-            
+            'role' => 'admin',
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('devadmin'),
             'remember_token' => Str::random(10),

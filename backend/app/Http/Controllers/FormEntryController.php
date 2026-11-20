@@ -9,6 +9,11 @@ class FormEntryController extends Controller
 
 
 public function submitFormEntry(Request $request){
+
+$request->validate([
+    'entryData.form_fields' => ['required', 'array']
+]);
+
     \Log::info('=== START ===');
     \Log::info('Request data:', $request->all());
     
@@ -27,8 +32,10 @@ public function submitFormEntry(Request $request){
     try {
         $entry = FormSubmission::create([
             'form_id' => $request->form_id,
-            'form_version' => 1, // Default version
-            'data' => $request->entryData['form_fields']
+            'form_version' => 1,
+            'data' => $request->input('entryData.form_fields'),
+            'submitted_by' => $request->user()->name,
+            'submitted_by_role' => $request->user()->role,
         ]);
         
         return response()->json(['success' => true, 'entry' => $entry]);

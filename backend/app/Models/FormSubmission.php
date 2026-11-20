@@ -14,6 +14,8 @@ class FormSubmission extends Model
         //'form_version',
         //'status',
         'data',
+        'submitted_by',
+        'submitted_by_role'
     ];
 
     protected $casts = [
@@ -25,4 +27,5 @@ class FormSubmission extends Model
     {
         return $this->belongsTo(Form::class);
     }
+
 }

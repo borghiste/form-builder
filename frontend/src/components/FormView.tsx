@@ -3,7 +3,12 @@ import React, { useState } from 'react';
 import BasicButton from './UI/BasicButton';
 //STORE
 
-import { useAuthStore, useFormListStore, useFormBuilderStore } from '../stores/index';
+import {
+  useAuthStore,
+  useFormListStore,
+  useFormBuilderStore,
+  useFormSubmissionStore,
+} from '../stores/index';
 
 //UTILS
 import handleModalClose from '../utils/handleModalClose';
@@ -115,17 +120,25 @@ export default function FormView({
   entries?: any;
 }) {
   const { selectedForm } = useFormListStore();
-  const [submitError, setSubmitError] = useState<string | null>(null);
   const formFields = useFormBuilderStore((state) => state.formFields);
+  const {
+    submitForm,
+    isSubmitting,
+    error: submitError,
+    submitted,
+    clearSubmissionState,
+  } = useFormSubmissionStore();
 
   
   const userName =
     useAuthStore((state) => state.user as { name?: string } | null)?.name ?? '';
   const [entryData, setEntryData] = useState({ form_fields: entries || {} });
+  
 
   const handleChange = (e: any) => {
     const { name, value, type, checked } = e.target;
     setEntryData((prev) => ({
+      
       ...prev,
       form_fields: {
         name: userName,
@@ -133,16 +146,24 @@ export default function FormView({
         [name]: type === 'checkbox' ? checked : value,
       },
     }));
+   
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-  
-    
-  }
 
   const handleReset = () => {
     setEntryData({ form_fields: entries || {} });
+    clearSubmissionState();
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    clearSubmissionState();
+
+    if (!selectedForm) {
+      return;
+    }
+
+    await submitForm(selectedForm.id, entryData);
   };
 
   return (
@@ -183,6 +204,16 @@ export default function FormView({
           {selectedForm?.description ? selectedForm.description  : 'No description provided.'}
         </Typography>
         <Box component='form' onSubmit={handleSubmit}>
+          {submitError && (
+            <Typography role='alert' color='error' sx={{ mb: 2 }}>
+              {submitError}
+            </Typography>
+          )}
+          {submitted && (
+            <Typography role='status' color='success.main' sx={{ mb: 2 }}>
+              Form submitted successfully.
+            </Typography>
+          )}
           <Grid
             container
             spacing={2}
@@ -221,7 +252,9 @@ export default function FormView({
                 text={'submit'}
                 type={'submit'}
                 color={'cyan.main'}
-                textColor={'white'}/>
+                textColor={'white'}
+                disabled={isSubmitting}
+              />
 
               {/* reset button */}
 

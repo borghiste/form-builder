@@ -32,12 +32,6 @@ export default function FormsList() {
   const { getForms, forms, getFormById, deleteForm, setSelectedForm} =
     useFormListStore();
     const user = useAuthStore.getState().user
-    console.log('user',user)
-
- 
-
-    
-
   
 
   useEffect(() => {
@@ -61,7 +55,7 @@ export default function FormsList() {
 
     setModalOpen(true);
     setModalMode('view');
-    console.log('form', selectedForm)
+    
   };
 
   function handleInviteClick() {

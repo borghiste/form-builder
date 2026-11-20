@@ -13,6 +13,7 @@ type BasicButtonProps = {
   width?: string | number;
   type?: 'button' | 'submit' | 'reset';
   fullWidth?: boolean;
+  disabled?: boolean;
   fontSize?: number | string;
   borderradius?: number | string;
 };
@@ -29,6 +30,7 @@ export default function BasicButton({
   width,
   type,
   fullWidth,
+  disabled,
   fontSize,
   borderradius,
 }: BasicButtonProps) {
@@ -39,6 +41,7 @@ export default function BasicButton({
       onClick={onClick}
       startIcon={startIcon}
       type={type}
+      disabled={disabled}
       href={href}
       sx={{
         backgroundColor: color,
