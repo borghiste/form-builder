@@ -2,186 +2,146 @@
 
 namespace Tests\Feature;
 
-use GuzzleHttp\Promise\Create;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Testing\Concerns\AssertsStatusCodes;
-use Tests\TestCase;
-use App\Models\User;
 use App\Models\Form;
 use App\Models\FormSubmission;
+use App\Models\Organization;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class SubmitFormEntryTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
-
     use RefreshDatabase;
 
+    private Organization $organization;
     private User $user;
 
     protected function setUp(): void
     {
         parent::setUp();
 
+        $this->organization = Organization::factory()->create();
         $this->user = User::factory()->create([
-            'role' => 'viewer'
+            'organization_id' => $this->organization->id,
+            'role' => 'admin',
         ]);
+    }
 
+    private function createForm(?Organization $organization = null): Form
+    {
+        $organization ??= $this->organization;
+
+        return Form::factory()->create([
+            'organization_id' => $organization->id,
+            'created_by' => $this->user->id,
+        ]);
+    }
+
+    public function test_submission_requires_authentication(): void
+    {
+        $form = $this->createForm();
+
+        $this->postJson("/api/forms/{$form->id}/entries", [
+            'entryData' => ['form_fields' => [['label' => 'Nome', 'value' => 'Ada']]],
+        ])->assertUnauthorized();
+    }
+
+    public function test_submission_is_rejected_for_another_organization(): void
+    {
         $this->actingAs($this->user, 'sanctum');
+        $form = $this->createForm(Organization::factory()->create());
 
+        $this->postJson("/api/forms/{$form->id}/entries", [
+            'entryData' => ['form_fields' => [['label' => 'Nome', 'value' => 'Ada']]],
+        ])->assertForbidden();
     }
 
-    protected $formFields = [
-        ['label' => 'Nome', 'value' => 'Ada'],];
-
-      private function createOwnForm(array $attributes = []): Form
-      
-{
-    return Form::factory()->create(array_merge([
-        'organization_id' => $this->user->organization_id,
-    ], $attributes));
-
-}
-    public function test_form_submission_rejects_non_authenticated_user(): void
+    public function test_submission_successfully_created_for_the_form(): void
     {
-        // 401 senza autenticazione, perché la route usa auth:sanctum
+        $this->actingAs($this->user, 'sanctum');
+        $form = $this->createForm();
+        $formFields = [['label' => 'Nome', 'value' => 'Ada']];
 
-        $form = $this->createOwnForm([
-            'name' => 'test'
+        $this->postJson("/api/forms/{$form->id}/entries", [
+            'entryData' => ['form_fields' => $formFields],
+        ])
+            ->assertOk()
+            ->assertJsonPath('success', true)
+            ->assertJsonPath('entry.form_id', $form->id)
+            ->assertJsonPath('entry.submitted_by', $this->user->name)
+            ->assertJsonPath('entry.data', $formFields);
+
+        $this->assertDatabaseHas('form_submissions', [
+            'form_id' => $form->id,
         ]);
-     
-        $this->app['auth']->forgetGuards();
-       
-        $this->postJson("/api/entries/submit", ['form_id' => $form->id])->assertUnauthorized();
-        
-
-        
     }
 
-    // 400 se manca form_id.
-
-    public function test_missing_form_id()
+    public function test_missing_entry_data_is_rejected(): void
     {
+        $this->actingAs($this->user, 'sanctum');
+        $form = $this->createForm();
 
-        $formFields = [
-        ['label' => 'Nome', 'value' => 'Ada'],
-    ];
-
-
-        $response = $this->postJson("/api/entries/submit", [
-            'entryData' => [ 
-            'form_fields' =>$formFields]
-        ]);
-
-        $response->assertStatus(400);
+        $this->postJson("/api/forms/{$form->id}/entries", [])
+            ->assertUnprocessable();
     }
 
-//     404 se form_id non corrisponde a nessun form.
+    public function test_entries_endpoint_returns_only_the_selected_form(): void
+    {
+        $this->actingAs($this->user, 'sanctum');
+        $form = $this->createForm();
+        $otherForm = $this->createForm();
 
-public function test_form_id_not_existing()
-{
-     $formFields = [
-        ['label' => 'Nome', 'value' => 'Ada'],
-    ];
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'data' => [['label' => 'Selected', 'value' => 'yes']],
+            'submitted_by' => $this->user->name,
+            'submitted_by_role' => $this->user->role,
+        ]);
+        FormSubmission::create([
+            'form_id' => $otherForm->id,
+            'data' => [['label' => 'Other', 'value' => 'no']],
+            'submitted_by' => $this->user->name,
+            'submitted_by_role' => $this->user->role,
+        ]);
 
-    $response = $this->postJson("/api/entries/submit", [
-        'form_id' => 0,
-        'entryData' => [ 
-            'form_fields' =>$formFields]
+        $this->getJson("/api/forms/{$form->id}/entries")
+            ->assertOk()
+            ->assertJsonCount(1, 'entries')
+            ->assertJsonPath('entries.0.form_id', $form->id);
+    }
 
-    ]);
+    public function test_entries_endpoint_rejects_another_organization(): void
+    {
+        $this->actingAs($this->user, 'sanctum');
+        $form = $this->createForm(Organization::factory()->create());
 
-    $response->assertStatus(404);
-}
-// 200 con dati validi e creazione corretta della FormSubmission.
+        $this->getJson("/api/forms/{$form->id}/entries")
+            ->assertForbidden();
+    }
 
-public function test_submission_successfully_created_with_valid_data()
-{
-    $form = Form::factory()->create([
-        'name' => 'test'
-    ]);
+    public function test_all_entries_endpoint_returns_entries_for_the_users_organization(): void
+    {
+        $this->actingAs($this->user, 'sanctum');
+        $form = $this->createForm();
+        $otherForm = $this->createForm(Organization::factory()->create());
 
-     $formFields = [
-        ['label' => 'Nome', 'value' => 'Ada'],
-    ];
+        FormSubmission::create([
+            'form_id' => $form->id,
+            'data' => [['label' => 'Own form', 'value' => 'yes']],
+            'submitted_by' => $this->user->name,
+            'submitted_by_role' => $this->user->role,
+        ]);
+        FormSubmission::create([
+            'form_id' => $otherForm->id,
+            'data' => [['label' => 'Other form', 'value' => 'no']],
+            'submitted_by' => $this->user->name,
+            'submitted_by_role' => $this->user->role,
+        ]);
 
-    $response = $this->postJson("/api/entries/submit", [
-        'form_id' => $form->id,
-        'entryData' => [ 
-            'form_fields' =>$formFields]
-    ]);
-
-    $response->assertStatus(200)
-      ->assertOk()
-        ->assertJsonPath('success', true)
-        ->assertJsonPath('entry.form_id', $form->id)
-        ->assertJsonPath('entry.submitted_by', $this->user->name)
-        ->assertJsonPath('entry.data', $formFields);
-
-    $this->assertDatabaseHas('form_submissions', [
-        'form_id' => $form->id,
-    ]);
-}
-
-// Verifica della persistenza JSON di entryData.form_fields.
-
-
-public function test_json_data_in_db(): void
-{
-    $form = $this->createOwnForm();
-    $formFields = [
-        ['label' => 'Nome', 'value' => 'Ada'],
-    ];
-
-    $response = $this->postJson('/api/entries/submit', [
-        'form_id' => $form->id,
-        'entryData' => [
-            'form_fields' => $formFields,
-        ],
-    ]);
-
-    $response->assertOk();
-
-    $submission = FormSubmission::findOrFail(
-        $response->json('entry.id')
-    );
-
-    $this->assertSame($formFields, $submission->data);
-}
-
-
-public function test_missing_entry_data()
-{
-
-    $form = $this->createOwnForm();
-      $response = $this->postJson('/api/entries/submit', [
-        'form_id' => $form->id,
-        
-    ]);
-
-    $response->assertStatus(422);
-}
-// 500 se avviene un errore durante la creazione del record.
-
-public function test_error_during_record_creation()
-{
-    $form = $this->createOwnForm();
-
-      FormSubmission::creating(function () {
-        throw new \RuntimeException('Errore simulato');
-    });
-      $response = $this->postJson('/api/entries/submit', [
-        'form_id' => $form->id,
-        'entryData' => [
-        'form_fields' => $this->formFields ]
-        
-    ]);
-
-    $response->assertStatus(500);
-
-
-  
-}
+        $this->getJson('/api/forms/entries')
+            ->assertOk()
+            ->assertJsonCount(1, 'entries')
+            ->assertJsonPath('entries.0.form.id', $form->id)
+            ->assertJsonPath('entries.0.form.creator.name', $this->user->name);
+    }
 }

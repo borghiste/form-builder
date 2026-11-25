@@ -46,12 +46,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('forms')->group(function () {
         Route::get('/', [FormListController::class, 'getFormList']);
         Route::post('/', [FormController::class, 'createNewForm']);
+        Route::get('/entries', [FormEntriesController::class, 'getAllFormsEntries']);
         Route::get('/{id}', [FormController::class, 'getForm']);
-        Route::put('/{form}', [FormController::class, 'updateForm']); // {form} must match "Form $form" (route model binding)
+        Route::put('/{form}', [FormController::class, 'updateForm']);
         Route::delete('/{formId}', [FormListController::class, 'deleteForm']);
-    });
 
-    // Form submissions
-    Route::get('entries', [FormEntriesController::class, 'getFormsEntries']);
-    Route::post('entries/submit', [FormEntryController::class, 'submitFormEntry']);
+    // entries
+        Route::get('/{form}/entries', [FormEntriesController::class, 'getFormsEntriesbyForm']);
+        Route::post('/{form}/entries', [FormEntryController::class, 'submitFormEntry']);
+    });
 });

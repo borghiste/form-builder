@@ -1,3 +1,4 @@
+// Manages authentication state and login, logout, and current-user initialization.
 import { create } from 'zustand';
 
 type AuthState = {
@@ -18,6 +19,29 @@ type AuthState = {
   loginUser: () => Promise<any>;
   logoutUser: () => Promise<any>;
 };
+
+// Initializes Sanctum CSRF protection and returns the XSRF token.
+async function getXsrfToken(): Promise<string> {
+  const csrfResponse = await fetch(`${import.meta.env.VITE_BACKEND_URL}/sanctum/csrf-cookie`, {
+    method: 'GET',
+    credentials: 'include',
+  });
+
+  if (!csrfResponse.ok) {
+    throw new Error(
+      `Failed to initialize CSRF protection (${csrfResponse.status})`,
+    );
+  }
+
+  const xsrfCookie = document.cookie
+    .split('; ')
+    .find((row) => row.startsWith('XSRF-TOKEN='));
+  if (!xsrfCookie) {
+    throw new Error('Failed to obtain CSRF token');
+  }
+
+  return decodeURIComponent(xsrfCookie.substring('XSRF-TOKEN='.length));
+}
 
 export const useAuthStore = create<AuthState>((set, get) => ({
   email: '',
@@ -52,18 +76,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     const { email, password } = get();
     set({ loading: true, error: null, success: false });
     try {
-      await fetch(`${import.meta.env.VITE_BACKEND_URL}/sanctum/csrf-cookie`, {
-        method: 'GET',
-        credentials: 'include',
-      });
-
-      const xsrfCookie = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('XSRF-TOKEN='));
-
-      const xsrfToken = xsrfCookie
-        ? decodeURIComponent(xsrfCookie.substring('XSRF-TOKEN='.length))
-        : '';
+      const xsrfToken = await getXsrfToken();
 
       const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/login`, {
         method: 'POST',
@@ -105,6 +118,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   logoutUser: async () => {
     set({ loading: true, error: null, success: false });
     try {
+      const xsrfToken = await getXsrfToken();
+
       const res = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}/api/logout`,
         {
@@ -112,6 +127,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           headers: {
             'Content-Type': 'application/json',
             Accept: 'application/json',
+            'X-XSRF-TOKEN': xsrfToken,
           },
           credentials: 'include',
         },

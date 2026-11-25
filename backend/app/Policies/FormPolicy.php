@@ -8,6 +8,17 @@ use Illuminate\Auth\Access\Response;
 
 class FormPolicy
 {
+    public function viewEntries(User $user, Form $form): bool
+    {
+        return $user->organization_id === $form->organization_id
+            && in_array($user->role, ['owner', 'admin', 'editor'], true);
+    }
+
+    public function submitEntry(User $user, Form $form): bool
+    {
+        return $user->organization_id === $form->organization_id;
+    }
+
     /**
      * Determine whether the user can view any models.
      */

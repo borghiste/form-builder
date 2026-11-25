@@ -7,7 +7,7 @@ import {
   useAuthStore,
   useFormListStore,
   useFormBuilderStore,
-  useFormSubmissionStore,
+  useEntriesStore,
 } from '../stores/index';
 
 //UTILS
@@ -124,10 +124,10 @@ export default function FormView({
   const {
     submitForm,
     isSubmitting,
-    error: submitError,
+    submissionError: submitError,
     submitted,
     clearSubmissionState,
-  } = useFormSubmissionStore();
+  } = useEntriesStore();
 
   
   const userName =

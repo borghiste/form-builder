@@ -1,10 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { useFormSubmissionStore } from '../../stores/useFormSubmissionStore';
+import { useEntriesStore } from '../../stores/useEntriesStore';
 
-const BACKEND = 'http://localhost';
+const BACKEND = 'http://127.0.0.1:8000';
 
 beforeEach(() => {
-  useFormSubmissionStore.getState().clearSubmissionState();
+  useEntriesStore.getState().clearSubmissionState();
   vi.stubEnv('VITE_BACKEND_URL', BACKEND);
   Object.defineProperty(document, 'cookie', {
     configurable: true,
@@ -19,7 +19,8 @@ afterEach(() => {
   vi.unstubAllEnvs();
 });
 
-describe('useFormSubmissionStore', () => {
+describe('useEntriesStore submission', () => {
+  
   it('submits form data with the selected form ID and records success', async () => {
     const fetchMock = vi
       .fn()
@@ -28,7 +29,7 @@ describe('useFormSubmissionStore', () => {
     vi.stubGlobal('fetch', fetchMock);
     const entryData = { form_fields: { email: 'user@example.com' } };
 
-    await useFormSubmissionStore.getState().submitForm(12, entryData);
+    await useEntriesStore.getState().submitForm(12, entryData);
 
     expect(fetchMock).toHaveBeenNthCalledWith(
       1,
@@ -37,7 +38,7 @@ describe('useFormSubmissionStore', () => {
     );
     expect(fetchMock).toHaveBeenNthCalledWith(
       2,
-      `${BACKEND}/api/entries/submit`,
+      `${BACKEND}/api/forms/12/entries`,
       expect.objectContaining({
         method: 'POST',
         credentials: 'include',
@@ -49,9 +50,9 @@ describe('useFormSubmissionStore', () => {
         body: JSON.stringify({ form_id: 12, entryData }),
       }),
     );
-    expect(useFormSubmissionStore.getState()).toMatchObject({
+    expect(useEntriesStore.getState()).toMatchObject({
       isSubmitting: false,
-      error: null,
+      submissionError: null,
       submitted: true,
     });
   });
@@ -67,13 +68,13 @@ describe('useFormSubmissionStore', () => {
       });
     vi.stubGlobal('fetch', fetchMock);
 
-    await useFormSubmissionStore
+    await useEntriesStore
       .getState()
       .submitForm(99, { form_fields: {} });
 
-    expect(useFormSubmissionStore.getState()).toMatchObject({
+    expect(useEntriesStore.getState()).toMatchObject({
       isSubmitting: false,
-      error: 'Form not found',
+      submissionError: 'Form not found',
       submitted: false,
     });
   });

@@ -50,10 +50,10 @@ export default function BasicButton({
         textAlign: 'center',
         margin: 0.5,
         textWrap: 'nowrap',
+        fontSize,
+        borderRadius: borderradius,
       }}
       fullWidth={fullWidth}
-      fontSize={fontSize}
-      borderRadius={borderradius}
     >
       {text}
     </Button>

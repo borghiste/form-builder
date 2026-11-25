@@ -1,3 +1,4 @@
+// Tracks whether a modal is open and which mode it should display.
 import { create } from 'zustand';
 
 type ModalState = {

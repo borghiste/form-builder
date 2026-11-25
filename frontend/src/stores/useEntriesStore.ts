@@ -1,71 +1,152 @@
-import {create} from 'zustand';
-
-//type
-import {FormRecord} from '../stores/useFormListStore';
-
-type dataEntry = {
-    fieldId: string;
-    value: any;
-    created_by: string;
-    submitted_by: string;
-    role: string;
-}
+import { create } from 'zustand';
+import type { FormRecord } from './useFormListStore';
 
 type Entry = {
-    id: number;
-    status: string;
-    created_at: string;
-    updated_at: string;
-    data : dataEntry[];
-    form: FormRecord
-}
+  id: number;
+  created_at: string;
+  updated_at: string;
+  data: Array<{ label: string; value: unknown }>;
+  submitted_by: string;
+  submitted_by_role: string;
+  form: FormRecord & { creator?: { name: string } | null };
+};
+
+type FormSubmissionData = {
+  form_fields: Record<string, unknown>;
+};
 
 type EntriesState = {
-entries : Entry[];
-getEntries : () => Promise<void>;
- insertNewEntry: (formId: number, newEntry: dataEntry[]) => Promise<void>;
+  entries: Entry[];
+  error: string | null;
+  submissionError: string | null;
+  isSubmitting: boolean;
+  submitted: boolean;
+  getAllEntries: () => Promise<void>;
+  submitForm: (formId: number, entryData: FormSubmissionData) => Promise<void>;
+  clearSubmissionState: () => void;
+};
+
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
+async function getXsrfToken(): Promise<string> {
+  const csrfResponse = await fetch(`${BACKEND_URL}/sanctum/csrf-cookie`, {
+    method: 'GET',
+    credentials: 'include',
+  });
+
+  if (!csrfResponse.ok) {
+    throw new Error(
+      `Failed to initialize CSRF protection (${csrfResponse.status})`,
+    );
+  }
+
+  const xsrfCookie = document.cookie
+    .split('; ')
+    .find((row) => row.startsWith('XSRF-TOKEN='));
+  if (!xsrfCookie) {
+    throw new Error('Failed to obtain CSRF token');
+  }
+
+  return decodeURIComponent(xsrfCookie.substring('XSRF-TOKEN='.length));
 }
 
-export const useEntriesStore = create<EntriesState>((set, get) => ({
-entries: [],
-getEntries: async () => {
-    const response = await fetch (`${import.meta.env.VITE_BACKEND_URL}/api/entries`,
-        {method: 'GET',
-            credentials: 'include',
-            headers: {
-                Accept: 'application/json',
-            },
-        }
-    );
+async function getSubmissionErrorMessage(response: Response): Promise<string> {
+  const errorResponse = (await response.json().catch(() => null)) as {
+    error?: unknown;
+    message?: unknown;
+    errors?: Record<string, string[]>;
+  } | null;
 
-    if (!response.ok) {
-        throw new Error('Unable to retrieve entries'
-        );
-        
-        
-    }
-    const data = await response.json();
-    set({entries: data});
+  const validationErrors = Object.entries(errorResponse?.errors ?? {})
+    .flatMap(([field, messages]) =>
+      messages.map((message) => `${field}: ${message}`),
+    )
+    .join(' ');
 
-},
+  if (validationErrors) {
+    return validationErrors;
+  }
 
-insertNewEntry: async (newEntry) => {
-    const response = await fetch (`${import.meta.env.VITE_BACKEND_URL}/entries/submit`,
-        {method: 'POST',
-            credentials: 'include',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(newEntry),
-        }
-    );
+  if (typeof errorResponse?.error === 'string') {
+    return errorResponse.error;
+  }
 
-    if(!response.ok) {
-        throw new Error('Unable to submit entry');
-    
-    }
-    const data = await response.json();
+  if (typeof errorResponse?.message === 'string') {
+    return errorResponse.message;
+  }
+
+  return `Failed to submit form (${response.status})`;
 }
 
-}))
+export const useEntriesStore = create<EntriesState>((set) => ({
+  entries: [],
+  error: null,
+  submissionError: null,
+  isSubmitting: false,
+  submitted: false,
+  getAllEntries: async () => {
+    set({ error: null });
+
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/forms/entries`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          Accept: 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Unable to retrieve entries (${response.status})`);
+      }
+
+      const data = (await response.json()) as { entries?: Entry[] };
+      if (!Array.isArray(data.entries)) {
+        throw new Error('The entries response is invalid');
+      }
+
+      set({ entries: data.entries });
+    } catch (error) {
+      set({
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Unable to retrieve entries',
+      });
+    }
+  },
+
+  submitForm: async (formId, entryData) => {
+    set({ isSubmitting: true, submissionError: null, submitted: false });
+
+    try {
+      const xsrfToken = await getXsrfToken();
+      const response = await fetch(`${BACKEND_URL}/api/forms/${formId}/entries`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-XSRF-TOKEN': xsrfToken,
+        },
+        body: JSON.stringify({ form_id: formId, entryData }),
+      });
+
+      if (!response.ok) {
+        throw new Error(await getSubmissionErrorMessage(response));
+      }
+
+      set({ submitted: true });
+    } catch (error) {
+      set({
+        submissionError:
+          error instanceof Error ? error.message : 'Failed to submit form',
+      });
+    } finally {
+      set({ isSubmitting: false });
+    }
+  },
+
+  clearSubmissionState: () =>
+    set({ isSubmitting: false, submissionError: null, submitted: false }),
+}));

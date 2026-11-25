@@ -1,3 +1,4 @@
+// Manages form records, including fetching, selecting, creating, updating, and deleting forms.
 import { create } from 'zustand';
 
 // Define the structure of a form field

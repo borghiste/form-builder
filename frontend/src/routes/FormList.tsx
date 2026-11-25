@@ -51,7 +51,7 @@ export default function FormsList() {
     const selectedForm = await getFormById(formId);
 
     useFormBuilderStore.getState().initializeForm(selectedForm)
-    console.log(selectedForm)
+    
 
     setModalOpen(true);
     setModalMode('view');
@@ -133,7 +133,7 @@ export default function FormsList() {
                     <TableCell>
                       <Box sx={{ display: 'flex', gap: 1 }}>
                         <BasicButton
-                          text='View'
+                          text='View/Fill'
                           color='cyan.dark'
                           textColor='white'
                           onClick={() => handleViewForm(form.id)}
@@ -152,6 +152,8 @@ export default function FormsList() {
                               textColor='white'
                               onClick={() => handleDeleteForm(form.id)}
                             />
+                        
+                        <BasicButton text='submissions'/>
                           </>
                         )}
                       </Box>

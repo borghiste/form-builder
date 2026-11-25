@@ -1,3 +1,4 @@
+// Holds form-builder state and actions for editing forms and arranging their fields.
 import { nanoid } from 'nanoid';
 import { create } from 'zustand';
 

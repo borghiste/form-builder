@@ -38,17 +38,11 @@ export default function SubmissionDetail() {
         >
           <Box>
             <Typography variant='h3' fontWeight={600} gutterBottom>
-              {/* Submission #{entry[0].id} */}
+              
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', gap: 1.5 }}>
-            {/* <Button
-              variant="outlined"
-              startIcon={<PrintIcon />}
-              sx={{ fontWeight: 700 }}
-            >
-              Print
-            </Button> */}
+         
             <Button
               variant='contained'
               startIcon={<DeleteIcon />}

@@ -23,21 +23,12 @@ import {
 import BasicButton from '../components/UI/BasicButton';
 
 export default function FormEntriesTable() {
-  const { entries, error, getEntries } = useEntriesStore();
+  const { entries, error, getAllEntries } = useEntriesStore();
   const { setModalOpen, setModalMode } = useModalStore();
-  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
   useEffect(() => {
-
-    try{
-
-      getEntries();
-    } catch (e) {
-      setErrorMessage('Failed to retrieve entries');
-      console.log(e)
-    }
-
-  }, [getEntries]);
+    void getAllEntries();
+  }, [getAllEntries]);
 
   const viewSubmission = () => {
     setModalMode('submission');
@@ -45,7 +36,7 @@ export default function FormEntriesTable() {
   };
 
   if (error) return <div role="alert">{error}</div>;
-  if (entries.length === 0) return <div>No entries</div>;
+  if (entries?.length === 0) return <div>No entries</div>;
 
   return (
     <>
@@ -72,7 +63,7 @@ export default function FormEntriesTable() {
                   .toISOString()
                   .slice(0, 10);
                   return (
-                    // Submit date	
+                 
                     // submitted by role	action
                     <TableRow key={entry.id}>
                     {/* // Form name	 */}
@@ -81,6 +72,7 @@ export default function FormEntriesTable() {
                     <TableCell>{entry.form.creator?.name ?? ''}</TableCell>
                     {/* // Form submitted by	 */}
                     <TableCell>{`${entry.submitted_by} - ${entry.submitted_by_role}` }</TableCell>
+                       {/* // Submit date	 */}
                     <TableCell>{submitDate}</TableCell>
                   
                     <TableCell>

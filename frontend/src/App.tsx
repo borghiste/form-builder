@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import { ThemeProvider } from '@emotion/react';
 import { LightTheme, DarkTheme } from '../src/theme/theme';
-import { useSelector } from 'react-redux';
+
 
 import { useThemeStore, useAuthStore } from './stores/index';
 
