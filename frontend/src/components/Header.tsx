@@ -6,8 +6,7 @@ import {
   Button,
   Typography,
   AppBar,
-  Link,
-  ButtonGroup,
+  Link
 } from '@mui/material';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
@@ -20,20 +19,20 @@ import MenuItem from '@mui/material/MenuItem';
 
 // COMPONENTS
 
+
+
 // REDUX
 
 import { useNavigate } from 'react-router-dom';
-
-import { switchToDarkMode, selectMode } from '../features/themeSlice';
-import BasicButton from './UI/BasicButton';
 import { useThemeStore, useAuthStore } from '../stores/index';
 
 export default function Header() {
   const navigate = useNavigate();
-  const { organization, user, subdomain, logoutUser } = useAuthStore();
+  const { user, subdomain, logoutUser } = useAuthStore();
   const { darkMode, toggleDarkMode } = useThemeStore();
 
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+ 
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -50,11 +49,15 @@ export default function Header() {
 
   const handleThemeToggle = () => {
     toggleDarkMode();
+    
   };
 
   // Costruzione dinamica delle pagine in base allo stato utente
   const pages = [
-    { name: 'Home', path: '/' },
+    
+     !user?.id && { name: 'Home', path: '/' },
+
+    
     ...(user?.id
       ? [
           {
@@ -63,17 +66,13 @@ export default function Header() {
               subdomain != undefined && user ? `/${subdomain}/forms` : '/login',
           },
           {
-            name: 'signup',
-            path:
-              subdomain != undefined && user
-                ? `/${subdomain}/signup`
-                : '/login',
+            name: 'entries',
+            path: `/${subdomain}/entries`,
           },
-          ...(user?.role === 'admin'
-            ? [{ name: 'entries', path: `/${subdomain}/entries` }]
-            : []),
+       
+        
           {
-            name: 'Logout',
+            name: 'logout',
             path: '/login',
             onClick: handleLogout,
           },
@@ -126,12 +125,12 @@ export default function Header() {
               anchorEl={anchorElNav}
               anchorOrigin={{
                 vertical: 'bottom',
-                horizontal: 'left',
+                horizontal: 'right',
               }}
               keepMounted
               transformOrigin={{
                 vertical: 'top',
-                horizontal: 'left',
+                horizontal: 'right',
               }}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
@@ -149,7 +148,7 @@ export default function Header() {
                 >
                   <Typography
                     component='a'
-                    href={page.path}
+                    to={page.path}
                     sx={{
                       textAlign: 'center',
                       textDecoration: 'none',

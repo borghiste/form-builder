@@ -3,10 +3,16 @@ import React, { useState } from 'react';
 import BasicButton from './UI/BasicButton';
 //STORE
 
-import { useAuthStore, useFormListStore, useNewFormStore, useFormBuilderStore } from '../stores/index';
+import {
+  useAuthStore,
+  useFormListStore,
+  useFormBuilderStore,
+  useEntriesStore,
+} from '../stores/index';
 
 //UTILS
 import handleModalClose from '../utils/handleModalClose';
+
 
 import {
   TextField,
@@ -53,6 +59,28 @@ type RenderProps = {
   fullWidth?: boolean;
 };
 
+const renderSelect = (props: RenderProps) => (
+  <FormControl fullWidth required={props.required}>
+    <InputLabel id={`${props.name}-label`}>{props.label}</InputLabel>
+    <Select
+      labelId={`${props.name}-label`}
+      id={props.name}
+      name={props.name}
+      value={props.value || ''}
+      label={props.label}
+      onChange={props.onChange}
+      disabled={props.disabled}
+      required={props.required}
+    >
+      {props.options?.map((option, index) => (
+        <MenuItem key={index} value={option}>
+          {option}
+        </MenuItem>
+      ))}
+    </Select>
+  </FormControl>
+);
+
 const renderedComponent: Record<
   string,
   (props: RenderProps) => React.ReactNode
@@ -69,27 +97,8 @@ const renderedComponent: Record<
   time: (props: RenderProps) => (
     <TextField type='time' InputLabelProps={{ shrink: true }} {...props} />
   ),
-  selectList: (props: RenderProps) => (
-    <FormControl fullWidth>
-      <InputLabel id={`${props.name}-label`}>{props.label}</InputLabel>
-      <Select
-        labelId={`${props.name}-label`}
-        id={props.name}
-        name={props.name}
-        value={props.value || ''}
-        label={props.label}
-        onChange={props.onChange}
-        disabled={props.disabled}
-        required={props.required}
-      >
-        {props.options?.map((option, index) => (
-          <MenuItem key={index} value={option}>
-            {option}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
-  ),
+  select: renderSelect,
+  selectList: renderSelect,
   checkbox: (props: RenderProps) => (
     <FormControlLabel
       control={
@@ -102,6 +111,7 @@ const renderedComponent: Record<
         />
       }
       label={props.label}
+      required={props.required}
     />
   ),
 };
@@ -114,33 +124,47 @@ export default function FormView({
   entries?: any;
 }) {
   const { selectedForm } = useFormListStore();
-  const [submitError, setSubmitError] = useState<string | null>(null);
   const formFields = useFormBuilderStore((state) => state.formFields);
-  const { form_name, form_description } = useNewFormStore();
+  const {
+    submitForm,
+    isSubmitting,
+    submissionError: submitError,
+    submitted,
+    clearSubmissionState,
+  } = useEntriesStore();
+
+  
   const userName =
     useAuthStore((state) => state.user as { name?: string } | null)?.name ?? '';
   const [entryData, setEntryData] = useState({ form_fields: entries || {} });
+  
 
   const handleChange = (e: any) => {
     const { name, value, type, checked } = e.target;
     setEntryData((prev) => ({
       ...prev,
       form_fields: {
-        name: userName,
         ...prev.form_fields,
         [name]: type === 'checkbox' ? checked : value,
       },
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // try {}
-    
-  }
 
   const handleReset = () => {
     setEntryData({ form_fields: entries || {} });
+    clearSubmissionState();
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    clearSubmissionState();
+
+    if (!selectedForm) {
+      return;
+    }
+
+    await submitForm(selectedForm.id, entryData);
   };
 
   return (
@@ -166,7 +190,7 @@ export default function FormView({
         >
           
           <Typography variant='h5' component='h1' gutterBottom>
-          { selectedForm?.name ? selectedForm.name : form_name}
+          { selectedForm?.name && selectedForm.name }
           </Typography>
           {!disabledFields && (
             <BasicButton
@@ -178,44 +202,39 @@ export default function FormView({
           )}
         </Box>
         <Typography sx={{ mb: 2 }} variant='body1' color='text.secondary'>
-          {selectedForm?.description || form_description ? form_description  : 'No description provided.'}
+          {selectedForm?.description ? selectedForm.description  : 'No description provided.'}
         </Typography>
         <Box component='form' onSubmit={handleSubmit}>
+          {submitError && (
+            <Typography role='alert' color='error' sx={{ mb: 2 }}>
+              {submitError}
+            </Typography>
+          )}
+          {submitted && (
+            <Typography role='status' color='success.main' sx={{ mb: 2 }}>
+              Form submitted successfully.
+            </Typography>
+          )}
           <Grid
             container
             spacing={2}
             sx={{ display: 'flex', flexDirection: 'column' }}
           >
-            {selectedForm?.form_fields?.map((field: any) => {
-              const Component =
-                renderedComponent[field.type] ?? renderedComponent.text;
-              return (
-                <Grid key={String(field.id)}>
-                  <Component
-                    label={field.label}
-                    name={field.name || field.id}
-                    value={entryData.form_fields[field.name || field.id] || ''}
-                    onChange={handleChange}
-                    disabled={disabledFields}
-                    required={field.required}
-                    options={field.options}
-                    fullWidth
-                  />
-                </Grid>
-              );
-            })}
+          
             {formFields?.map((field: any) => {
               const Component =
                 renderedComponent[field.type] ?? renderedComponent.text;
+              const fieldKey = field.label || String(field.id);
               return (
                 <Grid key={String(field.id)}>
+                  
                   <Component
                     label={field.label}
-                    name={field.name || field.id}
-                    value={entryData.form_fields[field.name || field.id] || ''}
+                    name={fieldKey}
+                    value={entryData.form_fields[fieldKey] ?? ''}
                     onChange={handleChange}
                     disabled={disabledFields}
-                    required={field.required}
+                    required={!!field.required}
                     options={field.options}
                     fullWidth
                   />
@@ -235,7 +254,9 @@ export default function FormView({
                 text={'submit'}
                 type={'submit'}
                 color={'cyan.main'}
-                textColor={'white'}/>
+                textColor={'white'}
+                disabled={isSubmitting}
+              />
 
               {/* reset button */}
 

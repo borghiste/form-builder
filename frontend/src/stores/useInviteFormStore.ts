@@ -1,3 +1,4 @@
+// Manages the invitation form state and sends invitation requests.
 import { create } from 'zustand';
 
 export interface Invitation {

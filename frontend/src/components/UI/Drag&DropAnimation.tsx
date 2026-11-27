@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Box } from '@mui/material';
 
+
+
 const DragDropAnimation = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -104,6 +106,8 @@ const DragDropAnimation = () => {
         <Box
           src={'/images/test2.PNG'}
           alt=''
+          title='Drag & Drop Animation'
+          aria-label='Drag & Drop Animation'
           height={66}
           width={66}
           component='img'

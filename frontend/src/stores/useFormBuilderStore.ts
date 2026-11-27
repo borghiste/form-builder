@@ -1,3 +1,4 @@
+// Holds form-builder state and actions for editing forms and arranging their fields.
 import { nanoid } from 'nanoid';
 import { create } from 'zustand';
 
@@ -13,18 +14,31 @@ export type BuilderField = {
   [key: string]: unknown;
 };
 
+export type FormDraft = {
+  id: number | null;
+  name: string;
+  description: string | null;
+  form_fields: BuilderField[];
+};
+
 export type FieldTemplate = {
   name: string;
   type: string;
-  description?: string;
+ 
   icon?: unknown;
 };
 
 type FormBuilderState = {
-  formFields: BuilderField[] | null;
+  formId: number | null;
+  formName: string;
+  formDescription: string;
+  formFields: BuilderField[];
   selectedFieldId: string | number | null;
   draggedField: FieldTemplate | null;
   draggedFieldIndex: number | null;
+  initializeForm: (form: FormDraft | null) => void;
+  setFormName: (name: string) => void;
+  setFormDescription: (description: string) => void;
   initializeFormFields: (fields: BuilderField[]) => void;
   startTemplateDrag: (field: FieldTemplate) => void;
   startFieldDrag: (index: number) => void;
@@ -36,7 +50,7 @@ type FormBuilderState = {
     key: string,
     value: string | boolean | Record<string, unknown>,
   ) => void;
-  deleteField: (fieldId: string | number) => void;
+  deleteField: (fieldId: string | number | null) => void;
 };
 
 const clearDragState = {
@@ -45,9 +59,27 @@ const clearDragState = {
 };
 
 export const useFormBuilderStore = create<FormBuilderState>((set) => ({
+  formId: null,
+  formName: '',
+  formDescription: '',
   formFields: [],
+
   selectedFieldId: null,
   ...clearDragState,
+
+  initializeForm: (form) =>
+    set({
+      formId: form?.id ?? null,
+      formName: form?.name ?? '',
+      formDescription: form?.description ?? '',
+      formFields: form?.form_fields ?? [],
+      selectedFieldId: null,
+      ...clearDragState,
+    }),
+
+  setFormName: (formName) => set({ formName }),
+
+  setFormDescription: (formDescription) => set({ formDescription }),
 
   initializeFormFields: (fields) =>
     set({

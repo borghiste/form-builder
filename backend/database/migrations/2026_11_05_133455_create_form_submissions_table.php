@@ -12,13 +12,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('form_id')->constrained()->onDelete('cascade');
             $table->json('data');
-            $table->string('submitter_ip')->nullable();
-            $table->string('user_agent')->nullable();
-            //$table->enum('status', ['new', 'reviewed', 'archived'])->default('new');
-            
+            $table->string('submitted_by');
+            $table->string('submitted_by_role');
             $table->timestamps();
-
-            //$table->index(['form_id', 'status']);
             $table->index('created_at');
         });
     }

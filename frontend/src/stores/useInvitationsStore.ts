@@ -1,3 +1,4 @@
+// Fetches and stores the pending invitations for the current user.
 import { create } from 'zustand';
 import { Invitation } from './useInviteFormStore';
 

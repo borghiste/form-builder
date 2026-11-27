@@ -1,3 +1,4 @@
+// Manages form records, including fetching, selecting, creating, updating, and deleting forms.
 import { create } from 'zustand';
 
 // Define the structure of a form field
@@ -29,6 +30,18 @@ export type NewFormInput = {
   }>;
 };
 
+// Only the data the backend accepts when updating a form.
+export type UpdateFormInput = {
+  id: number;
+  name: string;
+  description: string | null;
+  form_fields: Array<{
+    label: string;
+    type: string;
+    required?: boolean;
+  }>;
+};
+
 type FormListState = {
   forms: FormRecord[];
   selectedForm: FormRecord | null;
@@ -36,9 +49,62 @@ type FormListState = {
   getForms: () => Promise<void>;
   getFormById: (formId: number) => FormRecord;
   setSelectedForm: (form: FormRecord | null) => void;
+  updateForm: (form: UpdateFormInput) => Promise<void>;
   deleteForm: (formId: number) => Promise<void>;
-  insertNewForm: (newForm: NewFormInput) => Promise<void>;
+  insertForm: (newForm: NewFormInput) => Promise<void>;
 };
+
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
+// Initializes Sanctum CSRF protection and returns the XSRF token.
+async function getXsrfToken(): Promise<string> {
+  const csrfResponse = await fetch(`${BACKEND_URL}/sanctum/csrf-cookie`, {
+    method: 'GET',
+    credentials: 'include',
+  });
+
+  if (!csrfResponse.ok) {
+    throw new Error(
+      `Failed to initialize CSRF protection (${csrfResponse.status})`,
+    );
+  }
+
+  const xsrfCookie = document.cookie
+    .split('; ')
+    .find((row) => row.startsWith('XSRF-TOKEN='));
+  if (!xsrfCookie) {
+    throw new Error('Failed to obtain CSRF token');
+  }
+
+  return decodeURIComponent(xsrfCookie.substring('XSRF-TOKEN='.length));
+}
+
+// Builds a readable error message from a failed Laravel response.
+async function getErrorMessage(
+  response: Response,
+  fallback: string,
+): Promise<string> {
+  const errorResponse = (await response.json().catch(() => null)) as {
+    message?: unknown;
+    errors?: Record<string, string[]>;
+  } | null;
+
+  const validationErrors = Object.entries(errorResponse?.errors ?? {})
+    .flatMap(([field, messages]) =>
+      messages.map((message) => `${field}: ${message}`),
+    )
+    .join(' ');
+
+  if (validationErrors) {
+    return validationErrors;
+  }
+
+  if (typeof errorResponse?.message === 'string') {
+    return errorResponse.message;
+  }
+
+  return `${fallback} (${response.status})`;
+}
 
 export const useFormListStore = create<FormListState>((set, get) => ({
   forms: [],
@@ -46,16 +112,13 @@ export const useFormListStore = create<FormListState>((set, get) => ({
 
   getForms: async () => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/forms`,
-        {
-          method: 'GET',
-          credentials: 'include',
-          headers: {
-            Accept: 'application/json',
-          },
+      const response = await fetch(`${BACKEND_URL}/api/forms`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          Accept: 'application/json',
         },
-      );
+      });
 
       if (!response.ok) {
         throw new Error(`Failed to fetch forms (${response.status})`);
@@ -80,35 +143,60 @@ export const useFormListStore = create<FormListState>((set, get) => ({
     set({ selectedForm });
     return selectedForm;
   },
+
   setSelectedForm: (form: FormRecord | null) => {
     set({ selectedForm: form });
   },
 
-  deleteForm: async (formId: number) => {
-    await fetch(`${import.meta.env.VITE_BACKEND_URL}/sanctum/csrf-cookie`, {
-      method: 'GET',
+  updateForm: async (form: UpdateFormInput) => {
+    const xsrfToken = await getXsrfToken();
+
+    const response = await fetch(`${BACKEND_URL}/api/forms/${form.id}`, {
+      method: 'PUT',
       credentials: 'include',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-XSRF-TOKEN': xsrfToken,
+      },
+      // organization_id is never sent: the server decides it.
+      body: JSON.stringify({
+        name: form.name,
+        description: form.description,
+        form_fields: form.form_fields,
+      }),
     });
 
-    const xsrfCookie = document.cookie
-      .split('; ')
-      .find((row) => row.startsWith('XSRF-TOKEN='));
+    if (!response.ok) {
+      throw new Error(await getErrorMessage(response, 'Failed to update form'));
+    }
 
-    const xsrfToken = xsrfCookie
-      ? decodeURIComponent(xsrfCookie.substring('XSRF-TOKEN='.length))
-      : '';
+    const { form: updatedForm } = (await response.json()) as {
+      form: FormRecord;
+    };
 
-    const response = await fetch(
-      `${import.meta.env.VITE_BACKEND_URL}/api/forms/${formId}`,
-      {
-        method: 'DELETE',
-        credentials: 'include',
-        headers: {
-          Accept: 'application/json',
-          'X-XSRF-TOKEN': xsrfToken,
-        },
+    set((state) => ({
+      forms: state.forms.map((f) =>
+        f.id === updatedForm.id ? updatedForm : f,
+      ),
+      selectedForm:
+        state.selectedForm?.id === updatedForm.id
+          ? updatedForm
+          : state.selectedForm,
+    }));
+  },
+
+  deleteForm: async (formId: number) => {
+    const xsrfToken = await getXsrfToken();
+
+    const response = await fetch(`${BACKEND_URL}/api/forms/${formId}`, {
+      method: 'DELETE',
+      credentials: 'include',
+      headers: {
+        Accept: 'application/json',
+        'X-XSRF-TOKEN': xsrfToken,
       },
-    );
+    });
 
     if (!response.ok) {
       throw new Error(`Failed to delete form (${response.status})`);
@@ -123,68 +211,30 @@ export const useFormListStore = create<FormListState>((set, get) => ({
     }));
   },
 
-  insertNewForm: async (newForm: NewFormInput) => {
-    const csrfResponse = await fetch(
-      `${import.meta.env.VITE_BACKEND_URL}/sanctum/csrf-cookie`,
-      {
-        method: 'GET',
-        credentials: 'include',
+  insertForm: async (newForm: NewFormInput) => {
+    const xsrfToken = await getXsrfToken();
+
+    const response = await fetch(`${BACKEND_URL}/api/forms`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-XSRF-TOKEN': xsrfToken,
       },
-    );
-
-    if (!csrfResponse.ok) {
-      throw new Error(
-        `Failed to initialize CSRF protection (${csrfResponse.status})`,
-      );
-    }
-
-    const xsrfCookie = document.cookie
-      .split('; ')
-      .find((row) => row.startsWith('XSRF-TOKEN='));
-    if (!xsrfCookie) {
-      throw new Error('Failed to obtain CSRF token for form creation');
-    }
-
-    const xsrfToken = decodeURIComponent(
-      xsrfCookie.substring('XSRF-TOKEN='.length),
-    );
-
-    const response = await fetch(
-      `${import.meta.env.VITE_BACKEND_URL}/api/forms`,
-      {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-XSRF-TOKEN': xsrfToken,
-        },
-        body: JSON.stringify(newForm),
-      },
-    );
+      body: JSON.stringify(newForm),
+    });
 
     if (!response.ok) {
-      const errorResponse = (await response.json().catch(() => null)) as {
-        message?: unknown;
-        errors?: Record<string, string[]>;
-      } | null;
-      const validationErrors = Object.entries(errorResponse?.errors ?? {})
-        .flatMap(([field, messages]) =>
-          messages.map((message) => `${field}: ${message}`),
-        )
-        .join(' ');
-
       throw new Error(
-        validationErrors ||
-          (typeof errorResponse?.message === 'string'
-            ? errorResponse.message
-            : `Failed to insert new form (${response.status})`),
+        await getErrorMessage(response, 'Failed to insert new form'),
       );
     }
 
     const { form: createdForm } = (await response.json()) as {
       form: FormRecord;
     };
+
     set((state) => ({
       forms: [...state.forms, createdForm],
     }));

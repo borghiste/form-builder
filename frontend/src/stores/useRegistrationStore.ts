@@ -1,3 +1,4 @@
+// Manages registration form state and submits new-user or invitation-based registrations.
 import { create } from 'zustand';
 import { useNavigate } from 'react-router-dom';
 

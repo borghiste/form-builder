@@ -142,6 +142,7 @@ public function test_expired_token_is_rejected(): void
   public function test_registration_with_wrong_email_is_rejected(): void
   {
 
+  $rightEmail = 'giusto@example.com';
   
       Invitation::factory()->create([
           'token'    => 'valid-token',
@@ -165,9 +166,10 @@ public function test_expired_token_is_rejected(): void
  // TEST 8: registrazione corretta → utente creato
  public function test_registration_with_correct_email_creates_user(): void
  {
+    $rightEmail = 'giusto@example.com';
      Invitation::factory()->create([
          'token'    => 'valid-token',
-         'status'   => 'pending',
+         
          'email'    => $rightEmail,
          'expires_at' => now()->addDays(2),
      ]);

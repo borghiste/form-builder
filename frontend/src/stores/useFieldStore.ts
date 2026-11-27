@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-// this store is used to manage the state of a single form field in the form builder. It allows for setting and resetting the field's properties, such as its name, label, type, and whether it is required. The store also provides methods to update individual properties and reset the field to its initial state.
+// Manages the editable properties and reset behavior of a single form-builder field.
 
 export type FormFieldState = {
   id: string;

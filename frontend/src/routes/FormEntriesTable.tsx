@@ -1,6 +1,4 @@
 import React, { useEffect } from 'react';
-//COMPONENTS
-import ModalWindow from '../components/ModalWindow';
 
 //MUI
 
@@ -22,34 +20,40 @@ import {
 } from '@mui/material';
 import BasicButton from '../components/UI/BasicButton';
 
-export default function FormEntriesTable() {
-  const { entries, error, getEntries } = useEntriesStore();
+//type
+import Entry from '../stores/useEntriesStore';
+
+export default function FormEntriesTable({
+  loadAllEntries = true,
+}: {
+  loadAllEntries?: boolean;
+}) {
+  const { entries, error, getAllEntries, deleteEntry } = useEntriesStore();
   const { setModalOpen, setModalMode } = useModalStore();
-  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
   useEffect(() => {
-
-    try{
-
-      getEntries();
-    } catch (e) {
-      setErrorMessage('Failed to retrieve entries');
-      console.log(e)
+    if (loadAllEntries) {
+      void getAllEntries();
     }
+  }, [getAllEntries, loadAllEntries]);
 
-  }, [getEntries]);
-
-  const viewSubmission = () => {
+  const viewSubmission = (entry: Entry) => {
+    useEntriesStore.setState({ selectedEntry: entry });
+    
     setModalMode('submission');
     setModalOpen(true);
   };
 
+  const handleDeleteEntry = async (id) => {
+ const res = await deleteEntry(id)
+  }
+
   if (error) return <div role="alert">{error}</div>;
-  if (entries.length === 0) return <div>No entries</div>;
+  if (entries?.length === 0) return <div>No entries</div>;
 
   return (
     <>
-      <ModalWindow message="" />
+      
       <Container sx={{ minHeight: '100vh', mt: 4 }}>
         <TableContainer
           component={Paper}
@@ -58,12 +62,12 @@ export default function FormEntriesTable() {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>ID</TableCell>
-                <TableCell>Submit date</TableCell>
-                <TableCell>Update date</TableCell>
-                <TableCell>name</TableCell>
-                <TableCell>role</TableCell>
-                <TableCell>submission</TableCell>
+                
+                <TableCell>Form name</TableCell>
+                <TableCell>Form created by</TableCell>
+                <TableCell>Form submitted by</TableCell>
+                <TableCell>Submit date</TableCell> 
+                <TableCell>actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -71,21 +75,29 @@ export default function FormEntriesTable() {
                 const submitDate = new Date(entry.created_at)
                   .toISOString()
                   .slice(0, 10);
-                const updatedDate = new Date(entry.updated_at)
-                  .toISOString()
-                  .slice(0, 10);
-                return (
-                  <TableRow key={entry.id}>
-                    <TableCell>{entry.id}</TableCell>
+                  return (
+                 
+                    // submitted by role	action
+                    <TableRow key={entry.id}>
+                    {/* // Form name	 */}
+                    <TableCell>{entry.form.name}</TableCell>
+                    {/* // Form created by	 */}
+                    <TableCell>{entry.form.creator?.name ?? ''}</TableCell>
+                    {/* // Form submitted by	 */}
+                    <TableCell>{`${entry.submitted_by} - ${entry.submitted_by_role}`}</TableCell>
+                       {/* // Submit date	 */}
                     <TableCell>{submitDate}</TableCell>
-                    <TableCell>{updatedDate}</TableCell>
-                    <TableCell>{String(entry.data.name ?? '')}</TableCell>
-                    <TableCell>{String(entry.data.role ?? '')}</TableCell>
+                  
                     <TableCell>
                       <BasicButton
                         text={'view'}
-                        onClick={viewSubmission}
+                        onClick={() => viewSubmission(entry)}
                       />
+
+                      <BasicButton
+                      text='delete'
+                      color='magenta.dark'
+                      onClick={() => handleDeleteEntry(entry.id)}/>
                     </TableCell>
                   </TableRow>
                 );

@@ -11,13 +11,11 @@ return new class extends Migration
         Schema::create('forms', function (Blueprint $table) {
             $table->id();
             $table->foreignId('organization_id')->constrained()->onDelete('cascade');
-            $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
+           
             
             $table->string('name');
             $table->text('description')->nullable();
-           
-            // $table->integer('max_responses')->nullable();
-            
+            $table->string('created_by');
             $table->timestamps();
             $table->softDeletes();
 

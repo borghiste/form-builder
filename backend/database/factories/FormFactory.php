@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Organization;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Form;
 use App\Models\User;
@@ -25,8 +26,8 @@ class FormFactory extends Factory
         return [
             'name' => $this->faker->sentence(3),
             'description' => $this->faker->paragraph(),
-            'created_by' => User::factory(),
-            'organization_id' => fn (array $attributes) => User::findOrFail($attributes['created_by'])->organization_id,
+
+            'organization_id' => Organization::factory(),
         ];
     }
 }

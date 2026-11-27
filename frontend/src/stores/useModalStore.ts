@@ -1,8 +1,9 @@
+// Tracks whether a modal is open and which mode it should display.
 import { create } from 'zustand';
 
 type ModalState = {
   modalOpen: boolean;
-  modalMode: 'newForm' | 'editing' | 'view' | 'submission' | 'invite' | null;
+  modalMode: 'newForm' | 'editing' | 'view' | 'submission' | 'invite' | 'entries'| null;
   setModalOpen: (open: boolean) => void;
   setModalMode: (mode: ModalState['modalMode']) => void;
 };

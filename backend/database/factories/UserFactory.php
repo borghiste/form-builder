@@ -26,8 +26,8 @@ class UserFactory extends Factory
     {
         return [
             
-            'name' => 'Admin User',
-            'email' => 'admin@example.com',
+            'name' => fake()->name(),
+            'email' => fake()->unique()->safeEmail(),
             'organization_id' => Organization::factory(),
             'role' => 'admin',
             'email_verified_at' => now(),

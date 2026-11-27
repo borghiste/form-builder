@@ -1,53 +1,80 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { handleSaveNewForm } from '../../utilities/handleSaveNewForm';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+
 import { useFormBuilderStore } from '../../stores/useFormBuilderStore';
-import {
-  useFormListStore,
-  type FormRecord,
-} from '../../stores/useFormListStore';
+import { useFormListStore } from '../../stores/useFormListStore';
+import saveEditedForm from '../../utils/saveEditedForm';
+import saveNewForm from '../../utils/saveNewForm';
 
-const form: FormRecord = {
-  id: 1,
-  name: 'Test form',
-  description: null,
-  created_at: '',
-  updated_at: '',
-  form_fields: [{ id: 1, label: 'Name', type: 'text', required: false }],
-};
-const originalInsertNewForm = useFormListStore.getState().insertNewForm;
+const originalInsertForm = useFormListStore.getState().insertForm;
+const originalUpdateForm = useFormListStore.getState().updateForm;
 
-describe('handleSaveNewForm', () => {
-  afterEach(() => {
-    useFormListStore.setState({ insertNewForm: originalInsertNewForm });
-    vi.restoreAllMocks();
+afterEach(() => {
+  useFormListStore.setState({
+    insertForm: originalInsertForm,
+    updateForm: originalUpdateForm,
   });
+  useFormBuilderStore.getState().initializeForm(null);
+  vi.restoreAllMocks();
+});
 
-  beforeEach(() => {
-    useFormBuilderStore
-      .getState()
-      .initializeFormFields([
-        { id: 'temporary-field', label: 'Name', type: 'text' },
-      ]);
-  });
+describe('form save utilities', () => {
+  it('creates a form from the builder and resets it only after success', async () => {
+    const insertForm = vi.fn().mockResolvedValue(undefined);
+    useFormListStore.setState({ insertForm });
+    useFormBuilderStore.getState().initializeForm({
+      id: null,
+      name: 'Contact form',
+      description: '',
+      form_fields: [
+        { id: 'temporary-id', label: 'Email', type: 'email', required: true },
+      ],
+    });
 
-  it('resets the builder store after a successful save', async () => {
-    const insertNewForm = vi.fn().mockResolvedValue(undefined);
-    useFormListStore.setState({ insertNewForm });
+    await saveNewForm();
 
-    await handleSaveNewForm(form);
-
-    expect(insertNewForm).toHaveBeenCalledWith(form);
+    expect(insertForm).toHaveBeenCalledWith({
+      name: 'Contact form',
+      description: null,
+      form_fields: [{ label: 'Email', type: 'email', required: true }],
+    });
+    expect(useFormBuilderStore.getState().formName).toBe('');
     expect(useFormBuilderStore.getState().formFields).toEqual([]);
-    expect(useFormBuilderStore.getState().selectedFieldId).toBeNull();
   });
 
-  it('keeps the builder store when saving fails', async () => {
-    const insertNewForm = vi.fn().mockRejectedValue(new Error('Save failed'));
-    vi.spyOn(console, 'error').mockImplementation(() => {});
-    useFormListStore.setState({ insertNewForm });
+  it('does not reset the builder when creating a form fails', async () => {
+    useFormListStore.setState({
+      insertForm: vi.fn().mockRejectedValue(new Error('Save failed')),
+    });
+    useFormBuilderStore.getState().initializeForm({
+      id: null,
+      name: 'Contact form',
+      description: '',
+      form_fields: [{ id: 'temporary-id', label: 'Email', type: 'email' }],
+    });
 
-    await expect(handleSaveNewForm(form)).rejects.toThrow('Save failed');
+    await expect(saveNewForm()).rejects.toThrow('Save failed');
+    expect(useFormBuilderStore.getState().formName).toBe('Contact form');
+  });
 
-    expect(useFormBuilderStore.getState().formFields).toHaveLength(1);
+  it('updates the existing form and includes its current fields', async () => {
+    const updateForm = vi.fn().mockResolvedValue(undefined);
+    useFormListStore.setState({ updateForm });
+    useFormBuilderStore.getState().initializeForm({
+      id: 12,
+      name: 'Updated form',
+      description: 'Updated description',
+      form_fields: [
+        { id: 3, label: 'Phone', type: 'tel', required: false },
+      ],
+    });
+
+    await saveEditedForm();
+
+    expect(updateForm).toHaveBeenCalledWith({
+      id: 12,
+      name: 'Updated form',
+      description: 'Updated description',
+      form_fields: [{ label: 'Phone', type: 'tel', required: false }],
+    });
   });
 });

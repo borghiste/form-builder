@@ -7,8 +7,10 @@ import { Box, Modal } from '@mui/material';
 import BuilderWindow from './BuilderWindow/BuilderWindow';
 import FormEntry from './FormEntry';
 
+// components
 import FormView from './FormView';
 import InvitationPage from '../components/InvitationPage';
+import FormEntriesTable from '../routes/FormEntriesTable';
 
 // //MUI
 import { Divider } from '@mui/material';
@@ -45,6 +47,8 @@ export default function ModalWindow({ message }: { message: string }) {
         return <FormEntry />;
       case 'invite':
         return <InvitationPage />;
+      case 'entries':
+        return <FormEntriesTable loadAllEntries={false} />;
       default:
         return null;
     }

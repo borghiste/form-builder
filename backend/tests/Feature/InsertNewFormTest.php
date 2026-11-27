@@ -13,7 +13,9 @@ class InsertNewFormTest extends TestCase
     use RefreshDatabase;
 
     public function test_insert_new_form(): void
+
     {
+        $formName = 'Test Form';
         $organization = Organization::create([
             'name' => 'Acme Organization',
             'subdomain' => 'acme-organization',
@@ -31,7 +33,7 @@ class InsertNewFormTest extends TestCase
         ]);
 
         $newFormData = [
-            'name' => 'Test Form',
+            'name' => $formName,
             'description' => 'This is a test form',
             'form_fields' => [
                 [
@@ -54,13 +56,13 @@ class InsertNewFormTest extends TestCase
         $response
             ->assertOk()
             ->assertJsonPath('message', 'form created successfully')
-            ->assertJsonPath('form.name', 'Test Form');
+            ->assertJsonPath('form.name', $formName);
 
         $formId = $response->json('form.id');
 
         $this->assertDatabaseHas('forms', [
             'id' => $formId,
-            'name' => 'Test Form',
+            'name' => $formName,
             'description' => 'This is a test form',
         ]);
 
@@ -79,3 +81,4 @@ class InsertNewFormTest extends TestCase
         ]);
     }
 }
+

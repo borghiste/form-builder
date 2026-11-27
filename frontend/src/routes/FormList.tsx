@@ -22,34 +22,49 @@ import ModalWindow from '../components/ModalWindow';
 // STORE
 
 import { useModalStore } from '../stores/useModalStore';
-import { useAuthStore, useFormListStore } from '../stores/index';
+import { useAuthStore, useEntriesStore, useFormBuilderStore, useFormListStore } from '../stores/index';
 
 // utils
 
 export default function FormsList() {
   const { setModalOpen, setModalMode } = useModalStore();
+  const{ entries } = useEntriesStore()
 
-  const { getForms, forms, getFormById, deleteForm, setSelectedForm } =
+  const { getForms, forms, getFormById, deleteForm, setSelectedForm} =
     useFormListStore();
-
-  const { user } = useAuthStore();
+    const user = useAuthStore.getState().user
+  
 
   useEffect(() => {
+    
     getForms();
   }, [getForms]);
 
   const handleNewFormClick = () => {
+    useFormBuilderStore.getState().initializeForm(null);
     setModalMode('newForm');
     setSelectedForm(null);
-
     setModalOpen(true);
   };
 
+   const handleViewFormSubmissions = async (form: number) => {
+     await useEntriesStore.getState().getEntriesByFormId(form)
+    setModalOpen(true);
+    setModalMode('entries');
+  
+    
+    
+  }
+
   const handleViewForm = async (formId: number) => {
-    await getFormById(formId);
+    const selectedForm = await getFormById(formId);
+
+    useFormBuilderStore.getState().initializeForm(selectedForm)
+    
 
     setModalOpen(true);
     setModalMode('view');
+    
   };
 
   function handleInviteClick() {
@@ -58,9 +73,9 @@ export default function FormsList() {
   }
 
   const handleEditForm = async (formId: number) => {
-    await getFormById(formId);
+    const selectedForm = await getFormById(formId);
+    useFormBuilderStore.getState().initializeForm(selectedForm);
     setModalMode('editing');
-
     setModalOpen(true);
   };
 
@@ -68,9 +83,10 @@ export default function FormsList() {
     await deleteForm(formId);
   };
 
+
   return (
     <>
-      <ModalWindow />
+      <ModalWindow/>
 
       <Container sx={{ minHeight: '100vh', mt: 4 }}>
         <TableContainer
@@ -112,12 +128,10 @@ export default function FormsList() {
             </TableHead>
             <TableBody>
               {forms?.map((form) => {
-                const createdDate = new Date(form.created_at)
-                  .toISOString()
-                  .slice(0, 10);
-                const updatedDate = new Date(form.updated_at)
-                  .toISOString()
-                  .slice(0, 10);
+                const createdDate = form.created_at.slice(0, 10)
+                
+                const updatedDate = form.updated_at.slice(0, 10)
+                 
 
                 return (
                   <TableRow key={form.id} hover>
@@ -129,7 +143,7 @@ export default function FormsList() {
                     <TableCell>
                       <Box sx={{ display: 'flex', gap: 1 }}>
                         <BasicButton
-                          text='View'
+                          text='View/Fill'
                           color='cyan.dark'
                           textColor='white'
                           onClick={() => handleViewForm(form.id)}
@@ -148,6 +162,9 @@ export default function FormsList() {
                               textColor='white'
                               onClick={() => handleDeleteForm(form.id)}
                             />
+                        
+                        <BasicButton text='submissions'
+                          onClick={() => handleViewFormSubmissions(form.id)}/>
                           </>
                         )}
                       </Box>
