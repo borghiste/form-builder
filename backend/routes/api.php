@@ -52,7 +52,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{formId}', [FormListController::class, 'deleteForm']);
 
     // entries
-        Route::get('/{form}/entries', [FormEntriesController::class, 'getFormsEntriesbyForm']);
+        Route::get('/{form}/entries', [FormEntriesController::class, 'getFormsEntriesByForm']);
         Route::post('/{form}/entries', [FormEntryController::class, 'submitFormEntry']);
     });
 });

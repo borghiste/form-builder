@@ -24,13 +24,13 @@ class FormEntriesController extends Controller
         return response()->json(['entries' => $entries]);
     }
 
-    public function getFormsEntriesbyForm(Form $form)
+    public function getFormsEntriesByForm(Form $form)
     {
         $this->authorize('viewEntries', $form);
 
         $entries = FormSubmission::query()
             ->where('form_id', $form->id)
-            ->with('form:id,name,created_by')
+            ->with(['form:id,name,created_by', 'form.creator:id,name'])
             ->latest()
             ->get();
 

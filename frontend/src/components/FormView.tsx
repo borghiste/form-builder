@@ -228,7 +228,7 @@ export default function FormView({
                   
                   <Component
                     label={field.label}
-                    name={field.name || field.id}
+                    name={field.label || field.id}
                     value={entryData.form_fields[field.name || field.id] || ''}
                     onChange={handleChange}
                     disabled={disabledFields}

@@ -54,7 +54,10 @@ export default function Header() {
 
   // Costruzione dinamica delle pagine in base allo stato utente
   const pages = [
-    { name: 'Home', path: '/' },
+    
+     !user?.id && { name: 'Home', path: '/' },
+
+    
     ...(user?.id
       ? [
           {

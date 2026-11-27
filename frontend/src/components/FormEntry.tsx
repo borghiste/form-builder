@@ -14,17 +14,23 @@ import {
   IconButton,
 } from '@mui/material';
 import {
-  Print as PrintIcon,
+ 
   Delete as DeleteIcon,
   CalendarToday as CalendarIcon,
   ChatBubble as ChatBubbleIcon,
   ContentCopy as ContentCopyIcon,
-  CheckCircle as CheckCircleIcon,
-  ArrowBack as ArrowBackIcon,
-  ArrowForward as ArrowForwardIcon,
+  
 } from '@mui/icons-material';
+import { useEntriesStore } from '../stores';
+import BasicButton from './UI/BasicButton';
 
 export default function SubmissionDetail() {
+
+  const { selectedEntry} = useEntriesStore()
+  console.log(selectedEntry)
+
+
+     const submitDate = new Date(selectedEntry.created_at).toISOString().slice(0, 10)
   return (
     <Box sx={{ bgcolor: 'background.default', py: 4 }}>
       <Container sx={{ overflow: 'auto' }}>
@@ -37,11 +43,11 @@ export default function SubmissionDetail() {
           }}
         >
           <Box>
-            <Typography variant='h3' fontWeight={600} gutterBottom>
-              
-            </Typography>
           </Box>
-          <Box sx={{ display: 'flex', gap: 1.5 }}>
+          <Box sx={{ display: 'flex', justifyContent:'space-evenly' , gap: 1.5 }}>
+
+            <BasicButton
+            text='back'/>
          
             <Button
               variant='contained'
@@ -79,36 +85,21 @@ export default function SubmissionDetail() {
               gap: 2,
             }}
           >
+            <Typography variant='h5' fontWeight={600} gutterBottom>
+             {selectedEntry?.form.name}
+            </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            </Box>
               <CalendarIcon sx={{ color: 'text.secondary', fontSize: 20 }} />
               <Typography
                 variant='body2'
                 color='text.secondary'
-                fontWeight={500}
-              >
-                Submitted on Oct 24, 2023 at 10:42 AM
+                fontWeight={500}>
+             {submitDate}
               </Typography>
-            </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Chip
-                label='NEW'
-                size='small'
-                sx={{
-                  bgcolor: '#e3f2fd',
-                  color: '#1565c0',
-                  fontWeight: 700,
-                  fontSize: '0.75rem',
-                  border: 1,
-                  borderColor: '#90caf9',
-                }}
-              />
-              <Typography
-                variant='body2'
-                color='text.secondary'
-                fontWeight={500}
-              >
-                ID: REF-9928-XA
-              </Typography>
+          
+         
             </Box>
           </Box>
 
@@ -117,31 +108,34 @@ export default function SubmissionDetail() {
             <Grid container spacing={4}>
               {/* Section Header */}
               <Grid item xs={12}>
-                <Typography variant='h6' fontWeight={700} gutterBottom>
-                  Personal Information
-                </Typography>
+                
                 <Divider />
               </Grid>
 
               {/* Full Name */}
               <Grid item xs={12} md={6}>
-                <Typography
-                  variant='caption'
-                  sx={{
-                    color: 'text.secondary',
-                    fontWeight: 700,
-                    textTransform: 'uppercase',
-                    letterSpacing: 1,
-                    display: 'block',
-                    mb: 1,
-                  }}
-                >
-                  Full Name
-                </Typography>
-                <Typography variant='body1' fontWeight={500}>
-                  John Doe
-                </Typography>
-              </Grid>
+        
+       {Object.entries(selectedEntry?.data || {}).map(([chiave, valore]) => (
+  <Box key={chiave} sx={{ mb: 2 }}>
+    <Typography
+      variant="caption"
+      sx={{
+        color: 'text.secondary',
+        fontWeight: 700,
+        textTransform: 'uppercase',
+        letterSpacing: 1,
+        display: 'block',
+        mb: 1,
+      }}
+    >
+      {chiave}
+    </Typography>
+    <Typography variant="body1" fontWeight={500}>
+      {String(valore)}
+    </Typography>
+  </Box>
+))}
+                </Grid>
 
               {/* Email */}
               <Grid item xs={12} md={6}>
@@ -156,7 +150,7 @@ export default function SubmissionDetail() {
                     mb: 1,
                   }}
                 >
-                  Email Address
+                  Value
                 </Typography>
                 <Box
                   sx={{

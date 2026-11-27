@@ -22,12 +22,13 @@ import ModalWindow from '../components/ModalWindow';
 // STORE
 
 import { useModalStore } from '../stores/useModalStore';
-import { useAuthStore, useFormBuilderStore, useFormListStore } from '../stores/index';
+import { useAuthStore, useEntriesStore, useFormBuilderStore, useFormListStore } from '../stores/index';
 
 // utils
 
 export default function FormsList() {
   const { setModalOpen, setModalMode } = useModalStore();
+  const{ entries } = useEntriesStore()
 
   const { getForms, forms, getFormById, deleteForm, setSelectedForm} =
     useFormListStore();
@@ -43,9 +44,17 @@ export default function FormsList() {
     useFormBuilderStore.getState().initializeForm(null);
     setModalMode('newForm');
     setSelectedForm(null);
-
     setModalOpen(true);
   };
+
+   const handleViewFormSubmissions = async (form: number) => {
+     await useEntriesStore.getState().getEntriesByFormId(form)
+    setModalOpen(true);
+    setModalMode('entries');
+  
+    
+    
+  }
 
   const handleViewForm = async (formId: number) => {
     const selectedForm = await getFormById(formId);
@@ -73,6 +82,7 @@ export default function FormsList() {
   const handleDeleteForm = async (formId: number) => {
     await deleteForm(formId);
   };
+
 
   return (
     <>
@@ -153,7 +163,8 @@ export default function FormsList() {
                               onClick={() => handleDeleteForm(form.id)}
                             />
                         
-                        <BasicButton text='submissions'/>
+                        <BasicButton text='submissions'
+                          onClick={() => handleViewFormSubmissions(form.id)}/>
                           </>
                         )}
                       </Box>

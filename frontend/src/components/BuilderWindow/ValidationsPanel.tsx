@@ -29,7 +29,7 @@ type BuilderField = {
 export default function ValidationPanel() {
 
   // state
-const { formFields, selectedFieldId } = useFormBuilderStore.getState();
+const { formFields, selectedFieldId, updateField } = useFormBuilderStore.getState();
 const selectedField = formFields.find((f) => f.id === selectedFieldId) ?? null;
 
     const handleSelectedFieldChange = (
@@ -80,8 +80,8 @@ const selectedField = formFields.find((f) => f.id === selectedFieldId) ?? null;
         <TextField
           label='Field Label'
           type='text'
-          value={selectedField.label}
-          onChange={(e) => onFieldChange('label', e.target.value)}
+          onChange={(e) => handleSelectedFieldChange('label', e.target.value)}
+         
           fullWidth
         />
 
@@ -111,14 +111,7 @@ const selectedField = formFields.find((f) => f.id === selectedFieldId) ?? null;
             <TextField
               label='Min length'
               type='number'
-              value={Number(selectedField.validations?.minLength ?? '') || ''}
-              onChange={(e) =>
-                onFieldChange('validations', {
-                  ...(selectedField.validations ?? {}),
-                  minLength: Number(e.target.value),
-                })
-              }
-            />
+              value={Number(selectedField.validations?.minLength ?? '') || ''}/>
             <TextField
               label='Max length'
               type='number'

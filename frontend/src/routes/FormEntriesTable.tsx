@@ -1,6 +1,4 @@
 import React, { useEffect } from 'react';
-//COMPONENTS
-import ModalWindow from '../components/ModalWindow';
 
 //MUI
 
@@ -22,15 +20,26 @@ import {
 } from '@mui/material';
 import BasicButton from '../components/UI/BasicButton';
 
-export default function FormEntriesTable() {
+//type
+import Entry from '../stores/useEntriesStore';
+
+export default function FormEntriesTable({
+  loadAllEntries = true,
+}: {
+  loadAllEntries?: boolean;
+}) {
   const { entries, error, getAllEntries } = useEntriesStore();
   const { setModalOpen, setModalMode } = useModalStore();
 
   useEffect(() => {
-    void getAllEntries();
-  }, [getAllEntries]);
+    if (loadAllEntries) {
+      void getAllEntries();
+    }
+  }, [getAllEntries, loadAllEntries]);
 
-  const viewSubmission = () => {
+  const viewSubmission = (entry: Entry) => {
+    useEntriesStore.setState({ selectedEntry: entry });
+    
     setModalMode('submission');
     setModalOpen(true);
   };
@@ -40,7 +49,7 @@ export default function FormEntriesTable() {
 
   return (
     <>
-      <ModalWindow message="" />
+      
       <Container sx={{ minHeight: '100vh', mt: 4 }}>
         <TableContainer
           component={Paper}
@@ -71,14 +80,14 @@ export default function FormEntriesTable() {
                     {/* // Form created by	 */}
                     <TableCell>{entry.form.creator?.name ?? ''}</TableCell>
                     {/* // Form submitted by	 */}
-                    <TableCell>{`${entry.submitted_by} - ${entry.submitted_by_role}` }</TableCell>
+                    <TableCell>{`${entry.submitted_by} - ${entry.submitted_by_role}`}</TableCell>
                        {/* // Submit date	 */}
                     <TableCell>{submitDate}</TableCell>
                   
                     <TableCell>
                       <BasicButton
                         text={'view'}
-                        onClick={viewSubmission}
+                        onClick={() => viewSubmission(entry)}
                       />
 
                       <BasicButton

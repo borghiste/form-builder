@@ -18,6 +18,7 @@ import RegisterForm from './routes/RegistrationForm';
 import TermsAndPrivacy from './routes/TermsandPrivacy';
 import NotFound from './routes/NotFound';
 import InvitationPage from '../src/components/InvitationPage';
+import ModalWindow from './components/ModalWindow';
 
 // ---------------------- APP ----------------------
 export default function App() {
@@ -56,7 +57,10 @@ export default function App() {
               path={`/${subdomain}/entries`}
               element={
                 <ProtectedRoute>
-                  <FormEntriesTable />
+                  <>
+                    <ModalWindow message="" />
+                    <FormEntriesTable />
+                  </>
                 </ProtectedRoute>
               }
             />

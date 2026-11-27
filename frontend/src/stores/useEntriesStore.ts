@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import type { FormRecord } from './useFormListStore';
 
-type Entry = {
+export type Entry = {
   id: number;
   created_at: string;
   updated_at: string;
@@ -17,11 +17,13 @@ type FormSubmissionData = {
 
 type EntriesState = {
   entries: Entry[];
+  selectedEntry: Entry | null;
   error: string | null;
   submissionError: string | null;
   isSubmitting: boolean;
   submitted: boolean;
   getAllEntries: () => Promise<void>;
+  getEntriesByFormId: (id: number) => Promise<void>;
   submitForm: (formId: number, entryData: FormSubmissionData) => Promise<void>;
   clearSubmissionState: () => void;
 };
@@ -80,6 +82,7 @@ async function getSubmissionErrorMessage(response: Response): Promise<string> {
 
 export const useEntriesStore = create<EntriesState>((set) => ({
   entries: [],
+  selectedEntry: null ,
   error: null,
   submissionError: null,
   isSubmitting: false,
@@ -114,6 +117,24 @@ export const useEntriesStore = create<EntriesState>((set) => ({
             : 'Unable to retrieve entries',
       });
     }
+  },
+
+  getEntriesByFormId: async (form) => {
+
+    
+    const res = await fetch(`${BACKEND_URL}/api/forms/${form}/entries`, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        Accept: 'application/json',
+      },
+    });
+
+    if(!res.ok) {
+        throw new Error(`Unable to retrieve entries (${res.status})`)
+    }
+    const data = await res.json() as { entries: Entry[] };
+    set({entries: data.entries})
   },
 
   submitForm: async (formId, entryData) => {
