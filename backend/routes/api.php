@@ -47,6 +47,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [FormListController::class, 'getFormList']);
         Route::post('/', [FormController::class, 'createNewForm']);
         Route::get('/entries', [FormEntriesController::class, 'getAllFormsEntries']);
+        Route::delete('/entries/{entry}', [FormEntryController::class, 'deleteFormEntry']);
         Route::get('/{id}', [FormController::class, 'getForm']);
         Route::put('/{form}', [FormController::class, 'updateForm']);
         Route::delete('/{formId}', [FormListController::class, 'deleteForm']);
@@ -54,5 +55,6 @@ Route::middleware('auth:sanctum')->group(function () {
     // entries
         Route::get('/{form}/entries', [FormEntriesController::class, 'getFormsEntriesByForm']);
         Route::post('/{form}/entries', [FormEntryController::class, 'submitFormEntry']);
+        Route::delete('/api/forms/entries/${entryId}', [FormEntriesController::class, 'deleteFormEntry']);
     });
 });

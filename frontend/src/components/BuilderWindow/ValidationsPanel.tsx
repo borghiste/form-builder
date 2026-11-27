@@ -89,7 +89,7 @@ const selectedField = formFields.find((f) => f.id === selectedFieldId) ?? null;
           label='Placeholder'
           type='text'
           value={selectedField.placeholder ?? ''}
-          onChange={(e) => onFieldChange('placeholder', e.target.value)}
+          onChange={(e) => handleSelectedFieldChange('placeholder', e.target.value)}
           fullWidth
         />
 
@@ -97,7 +97,7 @@ const selectedField = formFields.find((f) => f.id === selectedFieldId) ?? null;
           control={
             <Switch
               checked={Boolean(selectedField.required)}
-              onChange={(e) => onFieldChange('required', e.target.checked)}
+              onChange={(e) => handleSelectedFieldChange('required', e.target.checked)}
               color='primary'
             />
           }

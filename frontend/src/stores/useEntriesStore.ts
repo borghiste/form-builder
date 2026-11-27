@@ -21,10 +21,12 @@ type EntriesState = {
   error: string | null;
   submissionError: string | null;
   isSubmitting: boolean;
+  isDeleting: boolean;
   submitted: boolean;
   getAllEntries: () => Promise<void>;
   getEntriesByFormId: (id: number) => Promise<void>;
   submitForm: (formId: number, entryData: FormSubmissionData) => Promise<void>;
+  deleteEntry: (entryId: number) => Promise<boolean>;
   clearSubmissionState: () => void;
 };
 
@@ -66,7 +68,7 @@ async function getSubmissionErrorMessage(response: Response): Promise<string> {
     .join(' ');
 
   if (validationErrors) {
-    return validationErrors;
+    return 'validations error: some fields in the form are required';
   }
 
   if (typeof errorResponse?.error === 'string') {
@@ -86,6 +88,7 @@ export const useEntriesStore = create<EntriesState>((set) => ({
   error: null,
   submissionError: null,
   isSubmitting: false,
+  isDeleting: false,
   submitted: false,
   getAllEntries: async () => {
     set({ error: null });
@@ -165,6 +168,46 @@ export const useEntriesStore = create<EntriesState>((set) => ({
       });
     } finally {
       set({ isSubmitting: false });
+    }
+  },
+
+  deleteEntry: async (entryId) => {
+    set({ isDeleting: true, error: null });
+
+    try {
+      const xsrfToken = await getXsrfToken();
+      const response = await fetch(
+        `${BACKEND_URL}/api/forms/entries/${entryId}`,
+        {
+          method: 'DELETE',
+          credentials: 'include',
+          headers: {
+            Accept: 'application/json',
+            'X-XSRF-TOKEN': xsrfToken,
+          },
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(`Unable to delete entry (${response.status})`);
+      }
+
+      set((state) => ({
+        entries: state.entries.filter((entry) => entry.id !== entryId),
+        selectedEntry:
+          state.selectedEntry?.id === entryId ? null : state.selectedEntry,
+      }));
+      return response.json();
+      
+    } catch (error) {
+      set({
+        error:
+          error instanceof Error ? error.message : 'Unable to delete entry',
+      });
+      return false;
+    } finally {
+      set({ isDeleting: false });
+
     }
   },
 

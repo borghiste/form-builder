@@ -1,38 +1,48 @@
 import '@testing-library/jest-dom';
-import { fireEvent, render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import FormView from '../../components/FormView';
+import { useFormBuilderStore } from '../../stores/useFormBuilderStore';
+import { useFormListStore } from '../../stores/useFormListStore';
 
 describe('FormView Component', () => {
+  beforeEach(() => {
+    useFormListStore.setState({
+      selectedForm: {
+        id: 1,
+        name: 'Test form',
+        description: null,
+        created_at: '',
+        updated_at: '',
+        form_fields: [],
+      },
+    });
+    useFormBuilderStore.getState().initializeFormFields([]);
+  });
 
-    it('renders form fields based on selectedForm prop', () => {
-        const selectedForm = {
-            form_fields: [
-                { id: 1, type: 'text', label: 'Name', name: 'name', required: true },
-                { id: 2, type: 'number', label: 'Age', name: 'age', required: false },
-            ],
-        };
+  it('shows a required indicator for required text, select, and checkbox fields', () => {
+    useFormBuilderStore.getState().initializeFormFields([
+      { id: 1, type: 'text', label: 'Name', required: true },
+      {
+        id: 2,
+        type: 'select',
+        label: 'Country',
+        required: true,
+        options: ['Italy'],
+      },
+      { id: 3, type: 'checkbox', label: 'Consent', required: true },
+      { id: 4, type: 'text', label: 'Optional', required: false },
+    ]);
 
-        render(<FormView entries={{ form_fields: {}}} disabledFields={false} />);
-        
-        expect(selectedForm.form_fields).toHaveLength(2);
-    })
+    const { container } = render(<FormView entries={{ form_fields: {} }} />);
 
-    // it('should send form entries to the server when the form is submitted', async () => {
-    //     const submitMock = vi.fn().mockResolvedValue(undefined);
-
-    //     render(<FormView/>)
-    //     fireEvent.click(screen.getByRole('button', { name: /submit/i }));
-    //     expect(submitMock).toHaveBeenCalled();
-        
-    // })
-
-    // it('should display an error message when form submission fails', async () => {
-    //     const submitMock = vi.fn().mockRejectedValue(new Error('Submission failed'));
-
-    //     render(<FormView/>)
-    //     fireEvent.click(screen.getByRole('button', { name: /submit/i }));
-    //     expect(await screen.findByText(/Submission failed/i)).toBeInTheDocument();
-    // })
+    expect(container.querySelectorAll('.MuiFormLabel-asterisk')).toHaveLength(2);
+    expect(
+      container.querySelectorAll('.MuiFormControlLabel-asterisk'),
+    ).toHaveLength(1);
+    expect(screen.getByRole('combobox', { name: 'Country' })).toBeRequired();
+    expect(screen.getByRole('checkbox', { name: /Consent/ })).toBeRequired();
+    expect(screen.getByLabelText('Optional')).not.toBeRequired();
+  });
 })

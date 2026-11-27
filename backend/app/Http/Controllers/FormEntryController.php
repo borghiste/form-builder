@@ -11,6 +11,23 @@ class FormEntryController extends Controller
 {
     use AuthorizesRequests;
 
+    public function deleteFormEntry(Request $request, FormSubmission $entry)
+    {
+        $entry->loadMissing('form');
+
+        if (
+            !$entry->form
+            || $request->user()->organization_id !== $entry->form->organization_id
+            || !in_array($request->user()->role, ['owner', 'admin', 'editor'], true)
+        ) {
+            abort(403);
+        }
+
+        $entry->delete();
+
+        return response()->json(['success' => true]);
+    }
+
     public function submitFormEntry(Request $request, Form $form)
     {
         $this->authorize('submitEntry', $form);

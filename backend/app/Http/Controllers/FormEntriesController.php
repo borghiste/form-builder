@@ -7,6 +7,7 @@ use App\Models\FormSubmission;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 
+
 class FormEntriesController extends Controller
 {
     use AuthorizesRequests;
@@ -38,5 +39,15 @@ class FormEntriesController extends Controller
             'form_id' => $form->id,
             'entries' => $entries,
         ]);
+    }
+
+    public function deleteFormEntry($entryId)
+    {
+        $entry = FormSubmission::findOrFail($entryId);
+        
+        $entry->delete();
+
+        return response()->json(['message' => 'entry deleted successfully']);
+
     }
 }

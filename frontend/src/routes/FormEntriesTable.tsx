@@ -28,7 +28,7 @@ export default function FormEntriesTable({
 }: {
   loadAllEntries?: boolean;
 }) {
-  const { entries, error, getAllEntries } = useEntriesStore();
+  const { entries, error, getAllEntries, deleteEntry } = useEntriesStore();
   const { setModalOpen, setModalMode } = useModalStore();
 
   useEffect(() => {
@@ -43,6 +43,10 @@ export default function FormEntriesTable({
     setModalMode('submission');
     setModalOpen(true);
   };
+
+  const handleDeleteEntry = async (id) => {
+ const res = await deleteEntry(id)
+  }
 
   if (error) return <div role="alert">{error}</div>;
   if (entries?.length === 0) return <div>No entries</div>;
@@ -92,7 +96,8 @@ export default function FormEntriesTable({
 
                       <BasicButton
                       text='delete'
-                      color='magenta.dark'/>
+                      color='magenta.dark'
+                      onClick={() => handleDeleteEntry(entry.id)}/>
                     </TableCell>
                   </TableRow>
                 );

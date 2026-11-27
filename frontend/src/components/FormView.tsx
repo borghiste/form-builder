@@ -59,6 +59,28 @@ type RenderProps = {
   fullWidth?: boolean;
 };
 
+const renderSelect = (props: RenderProps) => (
+  <FormControl fullWidth required={props.required}>
+    <InputLabel id={`${props.name}-label`}>{props.label}</InputLabel>
+    <Select
+      labelId={`${props.name}-label`}
+      id={props.name}
+      name={props.name}
+      value={props.value || ''}
+      label={props.label}
+      onChange={props.onChange}
+      disabled={props.disabled}
+      required={props.required}
+    >
+      {props.options?.map((option, index) => (
+        <MenuItem key={index} value={option}>
+          {option}
+        </MenuItem>
+      ))}
+    </Select>
+  </FormControl>
+);
+
 const renderedComponent: Record<
   string,
   (props: RenderProps) => React.ReactNode
@@ -75,27 +97,8 @@ const renderedComponent: Record<
   time: (props: RenderProps) => (
     <TextField type='time' InputLabelProps={{ shrink: true }} {...props} />
   ),
-  selectList: (props: RenderProps) => (
-    <FormControl fullWidth>
-      <InputLabel id={`${props.name}-label`}>{props.label}</InputLabel>
-      <Select
-        labelId={`${props.name}-label`}
-        id={props.name}
-        name={props.name}
-        value={props.value || ''}
-        label={props.label}
-        onChange={props.onChange}
-        disabled={props.disabled}
-        required={props.required}
-      >
-        {props.options?.map((option, index) => (
-          <MenuItem key={index} value={option}>
-            {option}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
-  ),
+  select: renderSelect,
+  selectList: renderSelect,
   checkbox: (props: RenderProps) => (
     <FormControlLabel
       control={
@@ -108,6 +111,7 @@ const renderedComponent: Record<
         />
       }
       label={props.label}
+      required={props.required}
     />
   ),
 };
@@ -138,15 +142,12 @@ export default function FormView({
   const handleChange = (e: any) => {
     const { name, value, type, checked } = e.target;
     setEntryData((prev) => ({
-      
       ...prev,
       form_fields: {
-        name: userName,
         ...prev.form_fields,
         [name]: type === 'checkbox' ? checked : value,
       },
     }));
-   
   };
 
 
@@ -223,16 +224,17 @@ export default function FormView({
             {formFields?.map((field: any) => {
               const Component =
                 renderedComponent[field.type] ?? renderedComponent.text;
+              const fieldKey = field.label || String(field.id);
               return (
                 <Grid key={String(field.id)}>
                   
                   <Component
                     label={field.label}
-                    name={field.label || field.id}
-                    value={entryData.form_fields[field.name || field.id] || ''}
+                    name={fieldKey}
+                    value={entryData.form_fields[fieldKey] ?? ''}
                     onChange={handleChange}
                     disabled={disabledFields}
-                    required={field.required}
+                    required={!!field.required}
                     options={field.options}
                     fullWidth
                   />
